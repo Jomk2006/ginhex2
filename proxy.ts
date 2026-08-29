@@ -14,7 +14,7 @@ function stripLocale(pathname: string): string {
   return match ? (match[2] ?? "/") : pathname;
 }
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   // 1. Locale routing/rewriting first — this establishes the response
   //    next-intl owns (locale cookie, rewritten pathname).
   const intlResponse = intlMiddleware(request);

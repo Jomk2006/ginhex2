@@ -1,11 +1,11 @@
-@import "tailwindcss";
-
 /* Brand typefaces (per approved GENHEX identity board): Space Grotesk for
    headlines/titles, Inter for body/UI. Loaded via runtime @import rather
    than next/font/google so the production build has no build-time network
    dependency on fonts.googleapis.com — the browser fetches these normally
-   at runtime, same as any other external stylesheet. */
+   at runtime, same as any other external stylesheet. Must precede the
+   Tailwind import — CSS requires @import rules to come first. */
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap");
+@import "tailwindcss";
 
 @theme inline {
   --font-display: "Space Grotesk", var(--font-sans);
