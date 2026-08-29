@@ -136,14 +136,264 @@ export interface Database {
         ];
       };
 
-      // ...remaining 23 tables (course_instructors, modules, lessons,
-      // enrollments, lesson_progress, attendance_sessions, attendance_records,
+      course_instructors: {
+        Row: {
+          id: string;
+          course_id: string;
+          instructor_id: string;
+          is_primary: boolean;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          course_id: string;
+          instructor_id: string;
+          is_primary?: boolean;
+          created_at?: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["course_instructors"]["Insert"]>;
+        Relationships: [
+          {
+            foreignKeyName: "course_instructors_course_id_fkey";
+            columns: ["course_id"];
+            referencedRelation: "courses";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "course_instructors_instructor_id_fkey";
+            columns: ["instructor_id"];
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          }
+        ];
+      };
+
+      modules: {
+        Row: {
+          id: string;
+          course_id: string;
+          title_en: string;
+          title_ar: string;
+          order_index: number;
+        };
+        Insert: {
+          id?: string;
+          course_id: string;
+          title_en: string;
+          title_ar: string;
+          order_index: number;
+        };
+        Update: Partial<Database["public"]["Tables"]["modules"]["Insert"]>;
+        Relationships: [
+          {
+            foreignKeyName: "modules_course_id_fkey";
+            columns: ["course_id"];
+            referencedRelation: "courses";
+            referencedColumns: ["id"];
+          }
+        ];
+      };
+
+      lessons: {
+        Row: {
+          id: string;
+          module_id: string;
+          title_en: string;
+          title_ar: string;
+          youtube_video_id: string;
+          duration_seconds: number;
+          order_index: number;
+          is_preview: boolean;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          module_id: string;
+          title_en: string;
+          title_ar: string;
+          youtube_video_id: string;
+          duration_seconds: number;
+          order_index: number;
+          is_preview?: boolean;
+          created_at?: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["lessons"]["Insert"]>;
+        Relationships: [
+          {
+            foreignKeyName: "lessons_module_id_fkey";
+            columns: ["module_id"];
+            referencedRelation: "modules";
+            referencedColumns: ["id"];
+          }
+        ];
+      };
+
+      enrollments: {
+        Row: {
+          id: string;
+          student_id: string;
+          course_id: string;
+          status: Database["public"]["Enums"]["enrollment_status"];
+          source_submission_id: string | null;
+          enrolled_at: string;
+          completed_at: string | null;
+        };
+        Insert: {
+          id?: string;
+          student_id: string;
+          course_id: string;
+          status?: Database["public"]["Enums"]["enrollment_status"];
+          source_submission_id?: string | null;
+          enrolled_at?: string;
+          completed_at?: string | null;
+        };
+        Update: Partial<Database["public"]["Tables"]["enrollments"]["Insert"]>;
+        Relationships: [
+          {
+            foreignKeyName: "enrollments_student_id_fkey";
+            columns: ["student_id"];
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "enrollments_course_id_fkey";
+            columns: ["course_id"];
+            referencedRelation: "courses";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "enrollments_source_submission_id_fkey";
+            columns: ["source_submission_id"];
+            referencedRelation: "form_submissions";
+            referencedColumns: ["id"];
+          }
+        ];
+      };
+
+      lesson_progress: {
+        Row: {
+          id: string;
+          enrollment_id: string;
+          lesson_id: string;
+          watched_seconds: number;
+          is_completed: boolean;
+          completed_at: string | null;
+          last_watched_at: string;
+        };
+        Insert: {
+          id?: string;
+          enrollment_id: string;
+          lesson_id: string;
+          watched_seconds?: number;
+          // is_completed/completed_at are server-derived by trigger from
+          // watched_seconds vs. 90% of lessons.duration_seconds — never
+          // set these from client code, the trigger overwrites them anyway.
+          last_watched_at?: string;
+        };
+        Update: Partial<{
+          watched_seconds: number;
+          last_watched_at: string;
+        }>;
+        Relationships: [
+          {
+            foreignKeyName: "lesson_progress_enrollment_id_fkey";
+            columns: ["enrollment_id"];
+            referencedRelation: "enrollments";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "lesson_progress_lesson_id_fkey";
+            columns: ["lesson_id"];
+            referencedRelation: "lessons";
+            referencedColumns: ["id"];
+          }
+        ];
+      };
+
+      forms: {
+        Row: {
+          id: string;
+          slug: string;
+          title_en: string;
+          title_ar: string;
+          description_en: string | null;
+          description_ar: string | null;
+          field_schema: Json;
+          form_type: Database["public"]["Enums"]["form_type"];
+          requires_account: boolean;
+          is_open: boolean;
+          created_by: string;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          slug: string;
+          title_en: string;
+          title_ar: string;
+          description_en?: string | null;
+          description_ar?: string | null;
+          field_schema?: Json;
+          form_type: Database["public"]["Enums"]["form_type"];
+          requires_account?: boolean;
+          is_open?: boolean;
+          created_by: string;
+          created_at?: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["forms"]["Insert"]>;
+        Relationships: [];
+      };
+
+      form_submissions: {
+        Row: {
+          id: string;
+          form_id: string;
+          submitted_by: string | null;
+          guest_email: string | null;
+          data: Json;
+          status: Database["public"]["Enums"]["submission_status"];
+          reviewed_by: string | null;
+          reviewed_at: string | null;
+          review_notes: string | null;
+          submitted_at: string;
+        };
+        Insert: {
+          id?: string;
+          form_id: string;
+          submitted_by?: string | null;
+          guest_email?: string | null;
+          data: Json;
+          status?: Database["public"]["Enums"]["submission_status"];
+          submitted_at?: string;
+        };
+        Update: Partial<{
+          status: Database["public"]["Enums"]["submission_status"];
+          reviewed_by: string;
+          reviewed_at: string;
+          review_notes: string;
+        }>;
+        Relationships: [
+          {
+            foreignKeyName: "form_submissions_form_id_fkey";
+            columns: ["form_id"];
+            referencedRelation: "forms";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "form_submissions_submitted_by_fkey";
+            columns: ["submitted_by"];
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          }
+        ];
+      };
+
+      // ...remaining 16 tables (attendance_sessions, attendance_records,
       // attendance_import_batches, exams, exam_questions, exam_answers,
-      // certificate_templates, certificates, forms, form_submissions,
-      // events, event_registrations, labs_projects, labs_collaborators,
-      // resources, notifications, audit_logs, background_jobs) follow the
-      // identical pattern — generate the full file rather than hand-extending
-      // this stub once you're ready to build those features.
+      // certificate_templates, certificates, events, event_registrations,
+      // labs_projects, labs_collaborators, resources, notifications,
+      // audit_logs, background_jobs) follow the identical pattern —
+      // generate the full file rather than hand-extending this stub once
+      // you're ready to build those features.
     };
     Views: Record<string, never>;
     Functions: {
