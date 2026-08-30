@@ -22,6 +22,7 @@ function readCourseFields(formData: FormData) {
     level: (formData.get("level") || undefined) as "beginner" | "intermediate" | "advanced" | undefined,
     status: String(formData.get("status") ?? "draft") as "draft" | "published" | "archived",
     enrollment_mode: String(formData.get("enrollment_mode") ?? "open") as "open" | "application",
+    application_form_id: String(formData.get("application_form_id") ?? ""),
     exam_requirement: String(formData.get("exam_requirement") ?? "none") as "required" | "optional" | "none",
   };
 }
@@ -55,6 +56,7 @@ export async function createCourseAction(
       level: parsed.data.level ?? null,
       status: parsed.data.status,
       enrollment_mode: parsed.data.enrollment_mode,
+      application_form_id: parsed.data.application_form_id || null,
       exam_requirement: parsed.data.exam_requirement,
       instructor_id: user.id,
     })
@@ -94,6 +96,7 @@ export async function updateCourseAction(
       level: parsed.data.level ?? null,
       status: parsed.data.status,
       enrollment_mode: parsed.data.enrollment_mode,
+      application_form_id: parsed.data.application_form_id || null,
       exam_requirement: parsed.data.exam_requirement,
     })
     .eq("id", courseId);
