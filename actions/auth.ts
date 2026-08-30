@@ -148,11 +148,12 @@ export async function updatePasswordAction(
 }
 
 export async function signInWithGoogleAction(formData: FormData): Promise<void> {
+  const locale = String(formData.get("locale") ?? "en");
   const supabase = await createClient();
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: "google",
     options: {
-      redirectTo: `${clientEnv.NEXT_PUBLIC_SITE_URL}/auth/callback`,
+      redirectTo: `${clientEnv.NEXT_PUBLIC_SITE_URL}/auth/callback?locale=${locale}`,
     },
   });
 

@@ -2,6 +2,7 @@ import { NextResponse, type NextRequest } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { decodeJwtClaims } from "@/lib/auth/decode-claims";
 import { ROLE_HOME_PATH } from "@/types/domain";
+import { LOCALES, DEFAULT_LOCALE, type Locale } from "@/types/domain";
 
 // Handles the redirect back from both Google OAuth and Supabase email
 // links (password reset, sign-up confirmation) — both use the PKCE
@@ -10,16 +11,18 @@ export async function GET(request: NextRequest) {
   const { searchParams, origin } = new URL(request.url);
   const code = searchParams.get("code");
   const next = searchParams.get("next");
+  const localeParam = searchParams.get("locale");
+  const locale: Locale = LOCALES.includes(localeParam as Locale) ? (localeParam as Locale) : DEFAULT_LOCALE;
 
   if (!code) {
-    return NextResponse.redirect(`${origin}/en/sign-in?error=missing_code`);
+    return NextResponse.redirect(`${origin}/${locale}/sign-in?error=missing_code`);
   }
 
   const supabase = await createClient();
   const { data, error } = await supabase.auth.exchangeCodeForSession(code);
 
   if (error || !data.session) {
-    return NextResponse.redirect(`${origin}/en/sign-in?error=auth_callback_failed`);
+    return NextResponse.redirect(`${origin}/${locale}/sign-in?error=auth_callback_failed`);
   }
 
   if (next) {
@@ -28,5 +31,5 @@ export async function GET(request: NextRequest) {
 
   const claims = decodeJwtClaims(data.session.access_token);
   const role = claims.user_role ?? "student";
-  return NextResponse.redirect(`${origin}/en${ROLE_HOME_PATH[role]}`);
+  return NextResponse.redirect(`${origin}/${locale}${ROLE_HOME_PATH[role]}`);
 }
