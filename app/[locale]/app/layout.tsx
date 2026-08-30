@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { THEME_COOKIE, DEFAULT_THEME } from "@/lib/theme";
 import { signOutAction } from "@/actions/auth";
 import { ROLE_HOME_PATH } from "@/types/domain";
+import { UserCircle } from "lucide-react";
 
 export default async function AppLayout({
   children,
@@ -53,9 +54,19 @@ export default async function AppLayout({
           </Link>
 
           <nav className="flex items-center gap-4">
-            <span className="hidden text-sm text-muted-foreground sm:inline">
+            <Link
+              href="/app/profile"
+              className="hidden text-sm text-muted-foreground hover:text-foreground sm:inline"
+            >
               {displayName ?? user.email} · {tRoles(role)}
-            </span>
+            </Link>
+            <Link
+              href="/app/profile"
+              className="text-muted-foreground hover:text-foreground sm:hidden"
+              aria-label={locale === "ar" ? "الملف الشخصي" : "Profile"}
+            >
+              <UserCircle className="h-5 w-5" />
+            </Link>
             <LocaleSwitcher />
             <ThemeToggle current={theme} />
             <form action={signOutAction}>
