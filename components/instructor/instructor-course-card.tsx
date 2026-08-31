@@ -9,9 +9,9 @@ const STATUS_VARIANT: Record<Course["status"], "default" | "outline" | "muted"> 
   archived: "muted",
 };
 
-export function InstructorCourseCard({ course }: { course: Course }) {
+export function InstructorCourseCard({ course, adminHref }: { course: Course; adminHref?: string }) {
   return (
-    <Link href={`/app/instructor/courses/${course.id}/edit`}>
+    <Link href={adminHref ?? `/app/instructor/courses/${course.id}/edit`}>
       <Card className="h-full transition-shadow hover:shadow-md">
         <CardHeader className="flex-row items-start justify-between space-y-0">
           <CardTitle className="text-lg">{course.title_en}</CardTitle>

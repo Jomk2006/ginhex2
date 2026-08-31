@@ -13,11 +13,9 @@ import type { CourseModule, Lesson } from "@/types/domain";
 
 export function ModuleManager({
   courseId,
-  locale,
   modules,
 }: {
   courseId: string;
-  locale: string;
   modules: Array<CourseModule & { lessons: Lesson[] }>;
 }) {
   return (
@@ -28,7 +26,7 @@ export function ModuleManager({
             <CardTitle className="text-base">
               {module.order_index}. {module.title_en} / {module.title_ar}
             </CardTitle>
-            <form action={deleteModuleAction.bind(null, module.id, courseId, locale)}>
+            <form action={deleteModuleAction.bind(null, module.id)}>
               <Button type="submit" variant="ghost" size="sm" aria-label="Delete module">
                 <Trash2 className="h-4 w-4 text-destructive" />
               </Button>
@@ -43,7 +41,7 @@ export function ModuleManager({
                       {lesson.order_index}. {lesson.title_en} — {lesson.youtube_video_id} (
                       {Math.round(lesson.duration_seconds / 60)}m){lesson.is_preview ? " · preview" : ""}
                     </span>
-                    <form action={deleteLessonAction.bind(null, lesson.id, courseId, locale)}>
+                    <form action={deleteLessonAction.bind(null, lesson.id)}>
                       <Button type="submit" variant="ghost" size="sm" aria-label="Delete lesson">
                         <Trash2 className="h-3.5 w-3.5 text-destructive" />
                       </Button>
@@ -56,7 +54,7 @@ export function ModuleManager({
             <details className="rounded-md border border-dashed border-border p-3">
               <summary className="cursor-pointer text-sm font-medium">+ Add lesson</summary>
               <form
-                action={createLessonAction.bind(null, module.id, courseId, locale)}
+                action={createLessonAction.bind(null, module.id)}
                 className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2"
               >
                 <div className="flex flex-col gap-1">
@@ -105,7 +103,7 @@ export function ModuleManager({
         </CardHeader>
         <CardContent>
           <form
-            action={createModuleAction.bind(null, courseId, locale)}
+            action={createModuleAction.bind(null, courseId)}
             className="grid grid-cols-1 gap-3 sm:grid-cols-3"
           >
             <div className="flex flex-col gap-1">

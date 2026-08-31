@@ -1,16 +1,26 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Link } from "@/i18n/navigation";
+import { Link, usePathname } from "@/i18n/navigation";
 import { Logo } from "@/components/shared/logo";
 import { LocaleSwitcher } from "@/components/shared/locale-switcher";
 import { ThemeToggle } from "@/components/shared/theme-toggle";
+import { AccountMenu } from "@/components/shared/account-menu";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import type { Theme } from "@/lib/theme";
+import type { UserRole } from "@/types/domain";
 
-export function MarketingNav({ theme }: { theme: Theme }) {
+interface AccountInfo {
+  displayName: string;
+  email: string;
+  role: UserRole;
+  avatarUrl: string | null;
+}
+
+export function MarketingNav({ theme, account }: { theme: Theme; account: AccountInfo | null }) {
   const [scrolled, setScrolled] = useState(false);
+  const pathname = usePathname();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 8);
@@ -18,6 +28,13 @@ export function MarketingNav({ theme }: { theme: Theme }) {
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
+
+  // Only the homepage has a forced-dark hero directly beneath the nav —
+  // every other marketing page (courses, course detail, apply) uses the
+  // normal theme-aware background, so the nav must stay theme-aware there
+  // even before scrolling, or its text would render invisible.
+  const isHomepage = pathname === "/";
+  const onDarkHero = isHomepage && !scrolled;
 
   return (
     <header
@@ -28,19 +45,35 @@ export function MarketingNav({ theme }: { theme: Theme }) {
           : "border-b border-transparent bg-transparent"
       )}
     >
-      <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
+      <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-3">
         <Link href="/">
-          <Logo />
+          <Logo height={40} className="h-9 sm:h-10" />
         </Link>
         <div className="flex items-center gap-2">
-          <Link href="/courses" className="me-2 hidden text-sm text-muted-foreground hover:text-foreground sm:inline">
+          <Link
+            href="/courses"
+            className={cn(
+              "me-2 hidden text-sm sm:inline",
+              onDarkHero ? "text-white/80 hover:text-white" : "text-muted-foreground hover:text-foreground"
+            )}
+          >
             Courses
           </Link>
           <LocaleSwitcher />
           <ThemeToggle current={theme} />
-          <Button asChild size="sm" variant="outline">
-            <Link href="/sign-in">Sign in</Link>
-          </Button>
+          {account ? (
+            <AccountMenu
+              displayName={account.displayName}
+              email={account.email}
+              role={account.role}
+              avatarUrl={account.avatarUrl}
+              onDark={onDarkHero}
+            />
+          ) : (
+            <Button asChild size="sm" variant="outline">
+              <Link href="/sign-in">Sign in</Link>
+            </Button>
+          )}
         </div>
       </div>
     </header>

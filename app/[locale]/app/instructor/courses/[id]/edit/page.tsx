@@ -46,7 +46,7 @@ export default async function EditCoursePage({
 
       <div>
         <h2 className="mb-4 text-lg font-medium">Modules & lessons</h2>
-        <ModuleManager courseId={course.id} locale={locale} modules={modules} />
+        <ModuleManager courseId={course.id} modules={modules} />
       </div>
     </div>
   );

@@ -1,0 +1,150 @@
+"use client";
+
+import { useState, useTransition } from "react";
+import { useLocale } from "next-intl";
+import { updateUserRoleAction, toggleUserActiveAction } from "@/actions/admin-users";
+import { Select } from "@/components/ui/select";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Alert } from "@/components/ui/alert";
+import { ROLE_LABELS, USER_ROLES } from "@/types/domain";
+import type { Profile, UserRole } from "@/types/domain";
+
+type ProfileWithEmail = Profile & { email: string };
+
+export function UsersTable({ profiles, currentUserId }: { profiles: ProfileWithEmail[]; currentUserId: string }) {
+  const locale = useLocale();
+  const isAr = locale === "ar";
+  const [rows, setRows] = useState(profiles);
+  const [error, setError] = useState<string | null>(null);
+  const [isPending, startTransition] = useTransition();
+
+  function handleRoleChange(userId: string, newRole: UserRole) {
+    setError(null);
+    startTransition(async () => {
+      const result = await updateUserRoleAction(userId, newRole, locale);
+      if (result.error) {
+        setError(result.error);
+      } else {
+        setRows((prev) => prev.map((p) => (p.id === userId ? { ...p, role: newRole } : p)));
+      }
+    });
+  }
+
+  function handleToggleActive(userId: string, nextActive: boolean) {
+    setError(null);
+    startTransition(async () => {
+      const result = await toggleUserActiveAction(userId, nextActive, locale);
+      if (result.error) {
+        setError(result.error);
+      } else {
+        setRows((prev) => prev.map((p) => (p.id === userId ? { ...p, is_active: nextActive } : p)));
+      }
+    });
+  }
+
+  return (
+    <div className="flex flex-col gap-4">
+      {error && (
+        <Alert variant="destructive">
+          {isAr ? "حدث خطأ أثناء التحديث. حاول مرة أخرى." : "Something went wrong updating that user. Please try again."}
+        </Alert>
+      )}
+
+      {/* Table on larger screens */}
+      <div className="hidden overflow-x-auto rounded-lg border border-border sm:block">
+        <table className="w-full text-sm">
+          <thead className="border-b border-border bg-muted text-start text-muted-foreground">
+            <tr>
+              <th className="px-4 py-3 text-start font-medium">{isAr ? "الاسم" : "Name"}</th>
+              <th className="px-4 py-3 text-start font-medium">{isAr ? "الدور" : "Role"}</th>
+              <th className="px-4 py-3 text-start font-medium">{isAr ? "تاريخ الانضمام" : "Joined"}</th>
+              <th className="px-4 py-3 text-start font-medium">{isAr ? "الحالة" : "Status"}</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-border">
+            {rows.map((profile) => (
+              <tr key={profile.id}>
+                <td className="px-4 py-3">
+                  <div className="font-medium">{isAr ? profile.full_name_ar : profile.full_name_en}</div>
+                </td>
+                <td className="px-4 py-3">
+                  <Select
+                    value={profile.role}
+                    disabled={isPending || profile.id === currentUserId}
+                    onChange={(e) => handleRoleChange(profile.id, e.target.value as UserRole)}
+                    className="h-8 w-36 text-xs"
+                  >
+                    {USER_ROLES.map((role) => (
+                      <option key={role} value={role}>
+                        {ROLE_LABELS[role][isAr ? "ar" : "en"]}
+                      </option>
+                    ))}
+                  </Select>
+                </td>
+                <td className="px-4 py-3 text-muted-foreground">
+                  {new Date(profile.created_at).toLocaleDateString(isAr ? "ar-EG" : "en-US")}
+                </td>
+                <td className="px-4 py-3">
+                  <div className="flex items-center gap-2">
+                    <Badge variant={profile.is_active ? "default" : "muted"}>
+                      {profile.is_active ? (isAr ? "نشط" : "Active") : (isAr ? "معطّل" : "Deactivated")}
+                    </Badge>
+                    {profile.id !== currentUserId && (
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        disabled={isPending}
+                        onClick={() => handleToggleActive(profile.id, !profile.is_active)}
+                      >
+                        {profile.is_active ? (isAr ? "تعطيل" : "Deactivate") : (isAr ? "تفعيل" : "Activate")}
+                      </Button>
+                    )}
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      {/* Cards on mobile */}
+      <div className="flex flex-col gap-3 sm:hidden">
+        {rows.map((profile) => (
+          <div key={profile.id} className="rounded-lg border border-border p-4">
+            <div className="mb-2 flex items-center justify-between">
+              <span className="font-medium">{isAr ? profile.full_name_ar : profile.full_name_en}</span>
+              <Badge variant={profile.is_active ? "default" : "muted"}>
+                {profile.is_active ? (isAr ? "نشط" : "Active") : (isAr ? "معطّل" : "Deactivated")}
+              </Badge>
+            </div>
+            <div className="flex items-center justify-between gap-2">
+              <Select
+                value={profile.role}
+                disabled={isPending || profile.id === currentUserId}
+                onChange={(e) => handleRoleChange(profile.id, e.target.value as UserRole)}
+                className="h-8 flex-1 text-xs"
+              >
+                {USER_ROLES.map((role) => (
+                  <option key={role} value={role}>
+                    {ROLE_LABELS[role][isAr ? "ar" : "en"]}
+                  </option>
+                ))}
+              </Select>
+              {profile.id !== currentUserId && (
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  disabled={isPending}
+                  onClick={() => handleToggleActive(profile.id, !profile.is_active)}
+                >
+                  {profile.is_active ? (isAr ? "تعطيل" : "Deactivate") : (isAr ? "تفعيل" : "Activate")}
+                </Button>
+              )}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}

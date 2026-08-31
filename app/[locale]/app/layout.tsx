@@ -1,16 +1,13 @@
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import { getTranslations } from "next-intl/server";
 import { createClient } from "@/lib/supabase/server";
 import { Link } from "@/i18n/navigation";
 import { Logo } from "@/components/shared/logo";
 import { LocaleSwitcher } from "@/components/shared/locale-switcher";
 import { ThemeToggle } from "@/components/shared/theme-toggle";
-import { Button } from "@/components/ui/button";
+import { AccountMenu } from "@/components/shared/account-menu";
 import { THEME_COOKIE, DEFAULT_THEME } from "@/lib/theme";
-import { signOutAction } from "@/actions/auth";
 import { ROLE_HOME_PATH } from "@/types/domain";
-import { UserCircle } from "lucide-react";
 
 export default async function AppLayout({
   children,
@@ -39,42 +36,27 @@ export default async function AppLayout({
 
   const cookieStore = await cookies();
   const theme = cookieStore.get(THEME_COOKIE)?.value === "dark" ? "dark" : DEFAULT_THEME;
-  const t = await getTranslations("nav");
-  const tRoles = await getTranslations("roles");
 
   const role = profile?.role ?? "student";
-  const displayName = locale === "ar" ? profile?.full_name_ar : profile?.full_name_en;
+  const displayName = (locale === "ar" ? profile?.full_name_ar : profile?.full_name_en) ?? user.email ?? "";
 
   return (
     <div className="flex min-h-screen flex-col">
       <header className="border-b border-border">
-        <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
+        <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-3">
           <Link href={ROLE_HOME_PATH[role]}>
-            <Logo />
+            <Logo height={40} className="h-9 sm:h-10" />
           </Link>
 
-          <nav className="flex items-center gap-4">
-            <Link
-              href="/app/profile"
-              className="hidden text-sm text-muted-foreground hover:text-foreground sm:inline"
-            >
-              {displayName ?? user.email} · {tRoles(role)}
-            </Link>
-            <Link
-              href="/app/profile"
-              className="text-muted-foreground hover:text-foreground sm:hidden"
-              aria-label={locale === "ar" ? "الملف الشخصي" : "Profile"}
-            >
-              <UserCircle className="h-5 w-5" />
-            </Link>
+          <nav className="flex items-center gap-2">
             <LocaleSwitcher />
             <ThemeToggle current={theme} />
-            <form action={signOutAction}>
-              <input type="hidden" name="locale" value={locale} />
-              <Button type="submit" variant="outline" size="sm">
-                {t("signOut")}
-              </Button>
-            </form>
+            <AccountMenu
+              displayName={displayName}
+              email={user.email ?? ""}
+              role={role}
+              avatarUrl={profile?.avatar_url ?? null}
+            />
           </nav>
         </div>
       </header>

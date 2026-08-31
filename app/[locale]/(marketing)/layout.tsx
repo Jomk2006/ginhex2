@@ -2,14 +2,43 @@ import { cookies } from "next/headers";
 import { MarketingNav } from "@/components/marketing/marketing-nav";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { THEME_COOKIE, DEFAULT_THEME } from "@/lib/theme";
+import { createClient } from "@/lib/supabase/server";
 
-export default async function MarketingLayout({ children }: { children: React.ReactNode }) {
+export default async function MarketingLayout({
+  children,
+  params,
+}: {
+  children: React.ReactNode;
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
   const cookieStore = await cookies();
   const theme = cookieStore.get(THEME_COOKIE)?.value === "dark" ? "dark" : DEFAULT_THEME;
 
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  const profile = user
+    ? (await supabase.from("profiles").select("*").eq("id", user.id).single()).data
+    : null;
+
   return (
     <div className="flex min-h-screen flex-col">
-      <MarketingNav theme={theme} />
+      <MarketingNav
+        theme={theme}
+        account={
+          user && profile
+            ? {
+                displayName: locale === "ar" ? profile.full_name_ar : profile.full_name_en,
+                email: user.email ?? "",
+                role: profile.role,
+                avatarUrl: profile.avatar_url,
+              }
+            : null
+        }
+      />
       <main className="flex-1">{children}</main>
       <MarketingFooter />
     </div>

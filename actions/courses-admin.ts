@@ -67,8 +67,15 @@ export async function createCourseAction(
     return { error: error.code === "23505" ? "slugTaken" : "generic" };
   }
 
-  revalidatePath(`/${locale}/app/instructor`);
-  redirect(`/${locale}/app/instructor/courses/${course.id}/edit`);
+  // Redirect to the creator's own role-scoped edit page — an admin who
+  // creates a course must land on /app/admin/..., not /app/instructor/...,
+  // since that route immediately bounces non-instructors back to their
+  // own dashboard.
+  const { data: creatorProfile } = await supabase.from("profiles").select("role").eq("id", user.id).maybeSingle();
+  const editBase = creatorProfile?.role === "admin" ? "app/admin" : "app/instructor";
+
+  revalidatePath(`/${locale}/${editBase}`);
+  redirect(`/${locale}/${editBase}/courses/${course.id}/edit`);
 }
 
 export async function updateCourseAction(
@@ -76,7 +83,6 @@ export async function updateCourseAction(
   _prevState: FormActionState,
   formData: FormData
 ): Promise<FormActionState> {
-  const locale = String(formData.get("locale") ?? "en");
   const parsed = courseSchema.safeParse(readCourseFields(formData));
   if (!parsed.success) {
     return { error: "invalidInput", fieldErrors: parsed.error.flatten().fieldErrors };
@@ -105,11 +111,11 @@ export async function updateCourseAction(
     return { error: error.code === "23505" ? "slugTaken" : "generic" };
   }
 
-  revalidatePath(`/${locale}/app/instructor/courses/${courseId}/edit`);
+  revalidatePath("/[locale]/app", "layout");
   return {};
 }
 
-export async function createModuleAction(courseId: string, locale: string, formData: FormData) {
+export async function createModuleAction(courseId: string, formData: FormData) {
   const parsed = moduleSchema.safeParse({
     title_en: formData.get("title_en"),
     title_ar: formData.get("title_ar"),
@@ -119,21 +125,16 @@ export async function createModuleAction(courseId: string, locale: string, formD
 
   const supabase = await createClient();
   await supabase.from("modules").insert({ course_id: courseId, ...parsed.data });
-  revalidatePath(`/${locale}/app/instructor/courses/${courseId}/edit`);
+  revalidatePath("/[locale]/app", "layout");
 }
 
-export async function deleteModuleAction(moduleId: string, courseId: string, locale: string) {
+export async function deleteModuleAction(moduleId: string) {
   const supabase = await createClient();
   await supabase.from("modules").delete().eq("id", moduleId);
-  revalidatePath(`/${locale}/app/instructor/courses/${courseId}/edit`);
+  revalidatePath("/[locale]/app", "layout");
 }
 
-export async function createLessonAction(
-  moduleId: string,
-  courseId: string,
-  locale: string,
-  formData: FormData
-) {
+export async function createLessonAction(moduleId: string, formData: FormData) {
   const parsed = lessonSchema.safeParse({
     title_en: formData.get("title_en"),
     title_ar: formData.get("title_ar"),
@@ -146,11 +147,11 @@ export async function createLessonAction(
 
   const supabase = await createClient();
   await supabase.from("lessons").insert({ module_id: moduleId, ...parsed.data });
-  revalidatePath(`/${locale}/app/instructor/courses/${courseId}/edit`);
+  revalidatePath("/[locale]/app", "layout");
 }
 
-export async function deleteLessonAction(lessonId: string, courseId: string, locale: string) {
+export async function deleteLessonAction(lessonId: string) {
   const supabase = await createClient();
   await supabase.from("lessons").delete().eq("id", lessonId);
-  revalidatePath(`/${locale}/app/instructor/courses/${courseId}/edit`);
+  revalidatePath("/[locale]/app", "layout");
 }
