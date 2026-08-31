@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 import { getLocale, getTranslations } from "next-intl/server";
 import { createClient } from "@/lib/supabase/server";
-import { getInstructorCourses } from "@/lib/data/instructor";
+import { getInstructorCourses, getInstructorStudentCount } from "@/lib/data/instructor";
 import { InstructorCourseCard } from "@/components/instructor/instructor-course-card";
 import { Card, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -27,6 +27,7 @@ export default async function InstructorDashboardPage() {
   const courses = await getInstructorCourses(user.id);
   const published = courses.filter((c) => c.status === "published").length;
   const draft = courses.filter((c) => c.status === "draft").length;
+  const studentCount = await getInstructorStudentCount(user.id);
 
   return (
     <div className="flex flex-col gap-8">
@@ -35,7 +36,7 @@ export default async function InstructorDashboardPage() {
         <p className="text-muted-foreground">{t("instructorOverview")}</p>
       </div>
 
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+      <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
         <Card>
           <CardHeader>
             <CardDescription>{isAr ? "إجمالي الدورات" : "Total courses"}</CardDescription>
@@ -52,6 +53,12 @@ export default async function InstructorDashboardPage() {
           <CardHeader>
             <CardDescription>{isAr ? "مسودة" : "Draft"}</CardDescription>
             <CardTitle className="text-3xl">{draft}</CardTitle>
+          </CardHeader>
+        </Card>
+        <Card>
+          <CardHeader>
+            <CardDescription>{isAr ? "عدد الطلاب" : "Students"}</CardDescription>
+            <CardTitle className="text-3xl">{studentCount}</CardTitle>
           </CardHeader>
         </Card>
       </div>

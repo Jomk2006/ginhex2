@@ -48,3 +48,19 @@ export async function getInstructorCourseById(courseId: string) {
     })),
   };
 }
+
+/** Distinct students enrolled across every course this instructor owns/co-teaches. */
+export async function getInstructorStudentCount(instructorId: string) {
+  const supabase = await createClient();
+  const courses = await getInstructorCourses(instructorId);
+  const courseIds = courses.map((c) => c.id);
+  if (courseIds.length === 0) return 0;
+
+  const { data, error } = await supabase
+    .from("enrollments")
+    .select("student_id")
+    .in("course_id", courseIds);
+  if (error) throw error;
+
+  return new Set((data ?? []).map((e) => e.student_id)).size;
+}

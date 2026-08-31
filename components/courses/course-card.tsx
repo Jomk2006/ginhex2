@@ -1,8 +1,8 @@
-import Image from "next/image";
 import { getLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { CourseThumbnail } from "@/components/courses/course-thumbnail";
 import type { Course, CourseLevel } from "@/types/domain";
 import { COURSE_LEVEL_LABELS } from "@/types/domain";
 
@@ -21,13 +21,7 @@ export async function CourseCard({ course }: { course: CourseCardData }) {
     <Link href={`/courses/${course.slug}`}>
       <Card className="h-full overflow-hidden transition-shadow hover:shadow-md">
         <div className="relative aspect-video w-full bg-muted">
-          {course.cover_image_url ? (
-            <Image src={course.cover_image_url} alt={title} fill className="object-cover" />
-          ) : (
-            <div className="flex h-full items-center justify-center text-sm text-muted-foreground">
-              GENHEX
-            </div>
-          )}
+          <CourseThumbnail src={course.cover_image_url} alt={title} />
         </div>
         <CardHeader className="gap-2">
           <div className="flex flex-wrap items-center gap-2">

@@ -1,11 +1,11 @@
 import { notFound } from "next/navigation";
-import Image from "next/image";
 import { getLocale } from "next-intl/server";
 import { getCourseBySlug } from "@/lib/data/courses";
 import { getEnrollment } from "@/lib/data/enrollments";
 import { createClient } from "@/lib/supabase/server";
 import { CurriculumOverview } from "@/components/courses/curriculum-overview";
 import { EnrollmentButton } from "@/components/courses/enrollment-button";
+import { CourseThumbnail } from "@/components/courses/course-thumbnail";
 import { Badge } from "@/components/ui/badge";
 import { COURSE_LEVEL_LABELS } from "@/types/domain";
 import type { CourseLevel } from "@/types/domain";
@@ -55,9 +55,7 @@ export default async function CourseDetailPage({
           </div>
 
           <div className="relative aspect-video w-full overflow-hidden rounded-lg bg-muted">
-            {course.cover_image_url && (
-              <Image src={course.cover_image_url} alt={title} fill className="object-cover" />
-            )}
+            <CourseThumbnail src={course.cover_image_url} alt={title} />
           </div>
 
           <CurriculumOverview modules={modules} isEnrolled={!!enrollment} />
