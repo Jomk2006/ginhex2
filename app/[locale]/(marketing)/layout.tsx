@@ -34,6 +34,7 @@ export default async function MarketingLayout({
                 displayName: locale === "ar" ? profile.full_name_ar : profile.full_name_en,
                 email: user.email ?? "",
                 role: profile.role,
+                genhexId: profile.genhex_id,
                 avatarUrl: profile.avatar_url,
               }
             : null

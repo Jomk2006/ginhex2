@@ -15,6 +15,7 @@ interface AccountInfo {
   displayName: string;
   email: string;
   role: UserRole;
+  genhexId: string;
   avatarUrl: string | null;
 }
 
@@ -66,6 +67,7 @@ export function MarketingNav({ theme, account }: { theme: Theme; account: Accoun
               displayName={account.displayName}
               email={account.email}
               role={account.role}
+              genhexId={account.genhexId}
               avatarUrl={account.avatarUrl}
               onDark={onDarkHero}
             />

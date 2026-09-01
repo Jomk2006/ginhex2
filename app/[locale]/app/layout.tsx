@@ -55,6 +55,7 @@ export default async function AppLayout({
               displayName={displayName}
               email={user.email ?? ""}
               role={role}
+              genhexId={profile?.genhex_id ?? ""}
               avatarUrl={profile?.avatar_url ?? null}
             />
           </nav>

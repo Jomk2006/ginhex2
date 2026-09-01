@@ -13,12 +13,13 @@ interface AccountMenuProps {
   displayName: string;
   email: string;
   role: UserRole;
+  genhexId: string;
   avatarUrl: string | null;
   /** Set true when rendered over a forced-dark surface (e.g. the marketing hero) so text stays readable before the nav's scrolled/glass state kicks in. */
   onDark?: boolean;
 }
 
-export function AccountMenu({ displayName, email, role, avatarUrl, onDark }: AccountMenuProps) {
+export function AccountMenu({ displayName, email, role, genhexId, avatarUrl, onDark }: AccountMenuProps) {
   const locale = useLocale();
   const isAr = locale === "ar";
   const [open, setOpen] = useState(false);
@@ -78,6 +79,7 @@ export function AccountMenu({ displayName, email, role, avatarUrl, onDark }: Acc
           <div className="border-b border-border px-4 py-3">
             <p className="truncate text-sm font-medium">{displayName}</p>
             <p className="truncate text-xs text-muted-foreground">{email}</p>
+            <p className="mt-0.5 font-mono text-xs text-muted-foreground">{genhexId}</p>
             <span className="mt-1 inline-block rounded-full bg-muted px-2 py-0.5 text-xs text-muted-foreground">
               {ROLE_LABELS[role][isAr ? "ar" : "en"]}
             </span>

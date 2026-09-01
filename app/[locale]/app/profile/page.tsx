@@ -38,7 +38,25 @@ export default async function ProfilePage({
           </div>
           <Badge variant="outline">{profile.role}</Badge>
         </CardHeader>
-        <CardContent>
+        <CardContent className="flex flex-col gap-6">
+          <dl className="grid grid-cols-2 gap-4 rounded-lg border border-border bg-muted p-4 text-sm sm:grid-cols-3">
+            <div>
+              <dt className="text-muted-foreground">{isAr ? "معرّف GENHEX" : "GENHEX ID"}</dt>
+              <dd className="font-mono font-medium">{profile.genhex_id}</dd>
+            </div>
+            <div>
+              <dt className="text-muted-foreground">{isAr ? "الحالة" : "Status"}</dt>
+              <dd className="font-medium">
+                {profile.is_active ? (isAr ? "نشط" : "Active") : (isAr ? "معطّل" : "Deactivated")}
+              </dd>
+            </div>
+            <div>
+              <dt className="text-muted-foreground">{isAr ? "تاريخ الانضمام" : "Joined"}</dt>
+              <dd className="font-medium">
+                {new Date(profile.created_at).toLocaleDateString(isAr ? "ar-EG" : "en-US")}
+              </dd>
+            </div>
+          </dl>
           <ProfileForm profile={profile} locale={locale} />
         </CardContent>
       </Card>
