@@ -65,9 +65,14 @@ export default async function InstructorDashboardPage() {
 
       <div className="flex items-center justify-between">
         <h2 className="text-lg font-medium">{isAr ? "دوراتك" : "Your courses"}</h2>
-        <Button asChild size="sm">
-          <Link href="/app/instructor/courses/new">{isAr ? "دورة جديدة" : "New course"}</Link>
-        </Button>
+        <div className="flex gap-2">
+          <Button asChild size="sm" variant="outline">
+            <Link href="/app/instructor/attendance">{isAr ? "الحضور" : "Attendance"}</Link>
+          </Button>
+          <Button asChild size="sm">
+            <Link href="/app/instructor/courses/new">{isAr ? "دورة جديدة" : "New course"}</Link>
+          </Button>
+        </div>
       </div>
 
       {courses.length === 0 ? (

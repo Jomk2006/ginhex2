@@ -31,7 +31,12 @@ export default async function StudentDashboardPage() {
   return (
     <div className="flex flex-col gap-8">
       <div className="flex flex-col gap-2">
-        <h1 className="text-2xl font-semibold">{t("welcome", { name: name ?? user.email ?? "" })}</h1>
+        <div className="flex items-center justify-between">
+          <h1 className="text-2xl font-semibold">{t("welcome", { name: name ?? user.email ?? "" })}</h1>
+          <Button asChild size="sm" variant="outline">
+            <Link href="/app/student/attendance">{isAr ? "الحضور" : "Attendance"}</Link>
+          </Button>
+        </div>
         <p className="text-muted-foreground">{t("studentOverview")}</p>
       </div>
 

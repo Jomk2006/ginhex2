@@ -8,6 +8,7 @@ const TABS = [
   { href: "/app/admin", en: "Overview", ar: "نظرة عامة" },
   { href: "/app/admin/courses", en: "Courses", ar: "الدورات" },
   { href: "/app/admin/users", en: "Users", ar: "المستخدمون" },
+  { href: "/app/admin/attendance", en: "Attendance", ar: "الحضور" },
 ];
 
 export function AdminTabs() {
