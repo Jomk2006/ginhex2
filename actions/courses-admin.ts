@@ -138,7 +138,9 @@ export async function createLessonAction(moduleId: string, formData: FormData) {
   const parsed = lessonSchema.safeParse({
     title_en: formData.get("title_en"),
     title_ar: formData.get("title_ar"),
+    video_source: formData.get("video_source") || "youtube",
     youtube_video_id: formData.get("youtube_video_id"),
+    drive_url: formData.get("drive_url"),
     duration_seconds: formData.get("duration_seconds"),
     order_index: formData.get("order_index"),
     is_preview: formData.get("is_preview") === "on",
@@ -146,12 +148,71 @@ export async function createLessonAction(moduleId: string, formData: FormData) {
   if (!parsed.success) return;
 
   const supabase = await createClient();
-  await supabase.from("lessons").insert({ module_id: moduleId, ...parsed.data });
+  await supabase.from("lessons").insert({
+    module_id: moduleId,
+    title_en: parsed.data.title_en,
+    title_ar: parsed.data.title_ar,
+    video_source: parsed.data.video_source,
+    youtube_video_id: parsed.data.youtube_video_id || null,
+    drive_url: parsed.data.drive_url || null,
+    duration_seconds: parsed.data.duration_seconds,
+    order_index: parsed.data.order_index,
+    is_preview: parsed.data.is_preview,
+  });
   revalidatePath("/[locale]/app", "layout");
 }
 
 export async function deleteLessonAction(lessonId: string) {
   const supabase = await createClient();
   await supabase.from("lessons").delete().eq("id", lessonId);
+  revalidatePath("/[locale]/app", "layout");
+}
+
+/**
+ * Swaps order_index with the sibling immediately before/after. Both
+ * rows are read fresh and written in sequence rather than trusting
+ * client-supplied indices, so a stale UI can't corrupt ordering.
+ */
+export async function moveModuleAction(moduleId: string, direction: "up" | "down") {
+  const supabase = await createClient();
+  const { data: current } = await supabase.from("modules").select("*").eq("id", moduleId).maybeSingle();
+  if (!current) return;
+
+  const { data: siblings } = await supabase
+    .from("modules")
+    .select("id, order_index")
+    .eq("course_id", current.course_id)
+    .order("order_index", { ascending: true });
+  if (!siblings) return;
+
+  const index = siblings.findIndex((s) => s.id === moduleId);
+  const swapIndex = direction === "up" ? index - 1 : index + 1;
+  if (swapIndex < 0 || swapIndex >= siblings.length) return;
+
+  const target = siblings[swapIndex];
+  await supabase.from("modules").update({ order_index: target.order_index }).eq("id", moduleId);
+  await supabase.from("modules").update({ order_index: current.order_index }).eq("id", target.id);
+  revalidatePath("/[locale]/app", "layout");
+}
+
+export async function moveLessonAction(lessonId: string, direction: "up" | "down") {
+  const supabase = await createClient();
+  const { data: current } = await supabase.from("lessons").select("*").eq("id", lessonId).maybeSingle();
+  if (!current) return;
+
+  const { data: siblings } = await supabase
+    .from("lessons")
+    .select("id, order_index")
+    .eq("module_id", current.module_id)
+    .order("order_index", { ascending: true });
+  if (!siblings) return;
+
+  const index = siblings.findIndex((s) => s.id === lessonId);
+  const swapIndex = direction === "up" ? index - 1 : index + 1;
+  if (swapIndex < 0 || swapIndex >= siblings.length) return;
+
+  const target = siblings[swapIndex];
+  await supabase.from("lessons").update({ order_index: target.order_index }).eq("id", lessonId);
+  await supabase.from("lessons").update({ order_index: current.order_index }).eq("id", target.id);
   revalidatePath("/[locale]/app", "layout");
 }

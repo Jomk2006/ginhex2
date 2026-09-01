@@ -35,7 +35,7 @@ export async function getInstructorCourseById(courseId: string) {
 
   const { data: modules, error: modError } = await supabase
     .from("modules")
-    .select("*, lessons(*)")
+    .select("*, lessons(*, resources(id, title_en, title_ar, type, file_url, external_url))")
     .eq("course_id", courseId)
     .order("order_index", { ascending: true });
   if (modError) throw modError;
@@ -44,7 +44,10 @@ export async function getInstructorCourseById(courseId: string) {
     course,
     modules: (modules ?? []).map((m) => ({
       ...m,
-      lessons: (m.lessons ?? []).sort((a, b) => a.order_index - b.order_index),
+      lessons: (m.lessons ?? [])
+        .slice()
+        .sort((a, b) => a.order_index - b.order_index)
+        .map((l) => ({ ...l, resources: l.resources ?? [] })),
     })),
   };
 }

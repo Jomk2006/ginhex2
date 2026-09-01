@@ -12,6 +12,25 @@ export type Enrollment = Database["public"]["Tables"]["enrollments"]["Row"];
 export type LessonProgress = Database["public"]["Tables"]["lesson_progress"]["Row"];
 export type FormRow = Database["public"]["Tables"]["forms"]["Row"];
 export type FormSubmission = Database["public"]["Tables"]["form_submissions"]["Row"];
+export type Resource = Database["public"]["Tables"]["resources"]["Row"];
+export type AttendanceSession = Database["public"]["Tables"]["attendance_sessions"]["Row"];
+export type AttendanceRecord = Database["public"]["Tables"]["attendance_records"]["Row"];
+export type AttendanceStatus = Database["public"]["Enums"]["attendance_status"];
+export type VideoSource = Database["public"]["Enums"]["video_source_type"];
+
+export const ATTENDANCE_STATUS_LABELS: Record<AttendanceStatus, { en: string; ar: string }> = {
+  present: { en: "Present", ar: "حاضر" },
+  absent: { en: "Absent", ar: "غائب" },
+  late: { en: "Late", ar: "متأخر" },
+  excused: { en: "Excused", ar: "معذور" },
+};
+
+export const RESOURCE_TYPE_EXTENSIONS: Record<Database["public"]["Enums"]["resource_type"], string[]> = {
+  pdf: [".pdf"],
+  link: [],
+  video: [".mp4", ".mov", ".webm"],
+  dataset: [".csv", ".xlsx", ".xls", ".zip", ".doc", ".docx", ".ppt", ".pptx"],
+};
 
 export type CourseLevel = NonNullable<Course["level"]>;
 export const COURSE_LEVEL_LABELS: Record<CourseLevel, { en: string; ar: string }> = {

@@ -32,12 +32,23 @@ export const moduleSchema = z.object({
 });
 export type ModuleInput = z.infer<typeof moduleSchema>;
 
-export const lessonSchema = z.object({
-  title_en: z.string().min(2).max(150),
-  title_ar: z.string().min(2).max(150),
-  youtube_video_id: z.string().min(5).max(30),
-  duration_seconds: z.coerce.number().int().min(1),
-  order_index: z.coerce.number().int().min(0),
-  is_preview: z.coerce.boolean().optional(),
-});
+export const lessonSchema = z
+  .object({
+    title_en: z.string().min(2).max(150),
+    title_ar: z.string().min(2).max(150),
+    video_source: z.enum(["youtube", "google_drive"]).default("youtube"),
+    youtube_video_id: z.string().max(30).optional().or(z.literal("")),
+    drive_url: z.string().max(500).optional().or(z.literal("")),
+    duration_seconds: z.coerce.number().int().min(1),
+    order_index: z.coerce.number().int().min(0),
+    is_preview: z.coerce.boolean().optional(),
+  })
+  .refine((data) => data.video_source !== "youtube" || !!data.youtube_video_id, {
+    message: "YouTube video ID is required for YouTube-sourced lessons.",
+    path: ["youtube_video_id"],
+  })
+  .refine((data) => data.video_source !== "google_drive" || !!data.drive_url, {
+    message: "A Google Drive link is required for Drive-sourced lessons.",
+    path: ["drive_url"],
+  });
 export type LessonInput = z.infer<typeof lessonSchema>;

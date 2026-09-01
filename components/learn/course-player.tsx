@@ -2,19 +2,24 @@
 
 import { useMemo, useState, useTransition } from "react";
 import { useLocale } from "next-intl";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, CheckCircle2 } from "lucide-react";
 import { LessonSidebar } from "@/components/learn/lesson-sidebar";
 import { YouTubePlayer } from "@/components/learn/youtube-player";
+import { GoogleDrivePlayer } from "@/components/learn/google-drive-player";
+import { MaterialsList, type ResolvedResource } from "@/components/learn/materials-list";
 import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
 import { updateLessonProgressAction } from "@/actions/progress";
 import { LESSON_COMPLETION_THRESHOLD } from "@/types/domain";
+import type { VideoSource } from "@/types/domain";
 
 interface PlayerLesson {
   id: string;
   title_en: string;
   title_ar: string;
-  youtube_video_id: string;
+  video_source: VideoSource;
+  youtube_video_id: string | null;
+  drive_url: string | null;
   duration_seconds: number;
   watchedSeconds: number;
   isCompleted: boolean;
@@ -32,11 +37,13 @@ export function CoursePlayer({
   courseSlug,
   modules,
   initialLessonId,
+  materialsByLessonId,
 }: {
   enrollmentId: string;
   courseSlug: string;
   modules: PlayerModule[];
   initialLessonId: string;
+  materialsByLessonId: Record<string, ResolvedResource[]>;
 }) {
   const locale = useLocale();
   const isAr = locale === "ar";
@@ -92,11 +99,33 @@ export function CoursePlayer({
   return (
     <div className="grid grid-cols-1 gap-8 lg:grid-cols-4">
       <div className="flex flex-col gap-4 lg:col-span-3">
-        <YouTubePlayer
-          key={activeLesson.id}
-          youtubeVideoId={activeLesson.youtube_video_id}
-          onProgress={(seconds) => reportProgress(activeLesson.id, seconds)}
-        />
+        {activeLesson.video_source === "google_drive" && activeLesson.drive_url ? (
+          <>
+            <GoogleDrivePlayer key={activeLesson.id} url={activeLesson.drive_url} />
+            {!progressState[activeLesson.id]?.isCompleted && (
+              <Button
+                variant="outline"
+                size="sm"
+                className="w-fit"
+                onClick={() => reportProgress(activeLesson.id, activeLesson.duration_seconds)}
+              >
+                <CheckCircle2 className="h-4 w-4" />
+                {isAr ? "تحديد كمكتمل" : "Mark as complete"}
+              </Button>
+            )}
+            <p className="text-xs text-muted-foreground">
+              {isAr
+                ? "فيديوهات Google Drive لا يمكن تتبّع وقت مشاهدتها تلقائيًا — حدّد الدرس كمكتمل يدويًا بعد المشاهدة."
+                : "Google Drive videos can't auto-track watch time — mark the lesson complete manually once you've watched it."}
+            </p>
+          </>
+        ) : (
+          <YouTubePlayer
+            key={activeLesson.id}
+            youtubeVideoId={activeLesson.youtube_video_id ?? ""}
+            onProgress={(seconds) => reportProgress(activeLesson.id, seconds)}
+          />
+        )}
 
         <div className="flex flex-col gap-1">
           <h1 className="text-xl font-semibold">{isAr ? activeLesson.title_ar : activeLesson.title_en}</h1>
@@ -129,6 +158,8 @@ export function CoursePlayer({
             {isAr ? <ChevronLeft className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
           </Button>
         </div>
+
+        <MaterialsList key={`materials-${activeLesson.id}`} resources={materialsByLessonId[activeLesson.id] ?? []} />
       </div>
 
       <div className="flex flex-col gap-4 lg:col-span-1">

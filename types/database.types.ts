@@ -17,6 +17,7 @@ export interface Database {
         Row: {
           id: string;
           role: Database["public"]["Enums"]["user_role"];
+          genhex_id: string;
           full_name_en: string;
           full_name_ar: string;
           avatar_url: string | null;
@@ -30,6 +31,8 @@ export interface Database {
         Insert: {
           id: string;
           role?: Database["public"]["Enums"]["user_role"];
+          // genhex_id is assigned by the assign_genhex_id trigger — never
+          // set it from application code.
           full_name_en: string;
           full_name_ar: string;
           avatar_url?: string | null;
@@ -40,7 +43,7 @@ export interface Database {
           created_at?: string;
           updated_at?: string;
         };
-        Update: Partial<Database["public"]["Tables"]["profiles"]["Insert"]>;
+        Update: Partial<Omit<Database["public"]["Tables"]["profiles"]["Insert"], "id">>;
         Relationships: [];
       };
 
@@ -200,7 +203,9 @@ export interface Database {
           module_id: string;
           title_en: string;
           title_ar: string;
-          youtube_video_id: string;
+          video_source: Database["public"]["Enums"]["video_source_type"];
+          youtube_video_id: string | null;
+          drive_url: string | null;
           duration_seconds: number;
           order_index: number;
           is_preview: boolean;
@@ -211,7 +216,9 @@ export interface Database {
           module_id: string;
           title_en: string;
           title_ar: string;
-          youtube_video_id: string;
+          video_source?: Database["public"]["Enums"]["video_source_type"];
+          youtube_video_id?: string | null;
+          drive_url?: string | null;
           duration_seconds: number;
           order_index: number;
           is_preview?: boolean;
@@ -387,10 +394,165 @@ export interface Database {
         ];
       };
 
-      // ...remaining 16 tables (attendance_sessions, attendance_records,
-      // attendance_import_batches, exams, exam_questions, exam_answers,
+      attendance_sessions: {
+        Row: {
+          id: string;
+          course_id: string;
+          title: string;
+          session_date: string;
+          mode: Database["public"]["Enums"]["attendance_mode"];
+          created_by: string;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          course_id: string;
+          title: string;
+          session_date: string;
+          mode?: Database["public"]["Enums"]["attendance_mode"];
+          created_by: string;
+          created_at?: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["attendance_sessions"]["Insert"]>;
+        Relationships: [
+          {
+            foreignKeyName: "attendance_sessions_course_id_fkey";
+            columns: ["course_id"];
+            referencedRelation: "courses";
+            referencedColumns: ["id"];
+          }
+        ];
+      };
+
+      attendance_records: {
+        Row: {
+          id: string;
+          session_id: string;
+          student_id: string;
+          status: Database["public"]["Enums"]["attendance_status"];
+          source: Database["public"]["Enums"]["attendance_record_source"];
+          import_batch_id: string | null;
+          recorded_by: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          session_id: string;
+          student_id: string;
+          status: Database["public"]["Enums"]["attendance_status"];
+          source?: Database["public"]["Enums"]["attendance_record_source"];
+          import_batch_id?: string | null;
+          recorded_by?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["attendance_records"]["Insert"]>;
+        Relationships: [
+          {
+            foreignKeyName: "attendance_records_session_id_fkey";
+            columns: ["session_id"];
+            referencedRelation: "attendance_sessions";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "attendance_records_student_id_fkey";
+            columns: ["student_id"];
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          }
+        ];
+      };
+
+      attendance_import_batches: {
+        Row: {
+          id: string;
+          course_id: string;
+          uploaded_by: string;
+          file_name: string;
+          status: Database["public"]["Enums"]["import_batch_status"];
+          total_rows: number;
+          matched_rows: number;
+          error_rows: number;
+          staged_rows: Json;
+          error_log: Json;
+          committed_at: string | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          course_id: string;
+          uploaded_by: string;
+          file_name: string;
+          status?: Database["public"]["Enums"]["import_batch_status"];
+          total_rows?: number;
+          matched_rows?: number;
+          error_rows?: number;
+          staged_rows?: Json;
+          error_log?: Json;
+          committed_at?: string | null;
+          created_at?: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["attendance_import_batches"]["Insert"]>;
+        Relationships: [
+          {
+            foreignKeyName: "attendance_import_batches_course_id_fkey";
+            columns: ["course_id"];
+            referencedRelation: "courses";
+            referencedColumns: ["id"];
+          }
+        ];
+      };
+
+      resources: {
+        Row: {
+          id: string;
+          title_en: string;
+          title_ar: string;
+          type: Database["public"]["Enums"]["resource_type"];
+          file_url: string | null;
+          external_url: string | null;
+          category: string | null;
+          course_id: string | null;
+          lesson_id: string | null;
+          visibility: Database["public"]["Enums"]["resource_visibility"];
+          uploaded_by: string;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          title_en: string;
+          title_ar: string;
+          type: Database["public"]["Enums"]["resource_type"];
+          file_url?: string | null;
+          external_url?: string | null;
+          category?: string | null;
+          course_id?: string | null;
+          lesson_id?: string | null;
+          visibility?: Database["public"]["Enums"]["resource_visibility"];
+          uploaded_by: string;
+          created_at?: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["resources"]["Insert"]>;
+        Relationships: [
+          {
+            foreignKeyName: "resources_course_id_fkey";
+            columns: ["course_id"];
+            referencedRelation: "courses";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "resources_lesson_id_fkey";
+            columns: ["lesson_id"];
+            referencedRelation: "lessons";
+            referencedColumns: ["id"];
+          }
+        ];
+      };
+
+      // ...remaining 12 tables (exams, exam_questions, exam_answers,
       // certificate_templates, certificates, events, event_registrations,
-      // labs_projects, labs_collaborators, resources, notifications,
+      // labs_projects, labs_collaborators, notifications,
       // audit_logs, background_jobs) follow the identical pattern —
       // generate the full file rather than hand-extending this stub once
       // you're ready to build those features.
@@ -408,6 +570,7 @@ export interface Database {
     };
     Enums: {
       user_role: "student" | "instructor" | "admin";
+      video_source_type: "youtube" | "google_drive";
       course_status: "draft" | "published" | "archived";
       course_level: "beginner" | "intermediate" | "advanced";
       enrollment_mode: "open" | "application";
