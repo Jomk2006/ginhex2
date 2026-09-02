@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useState } from "react";
 import { useLocale } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select } from "@/components/ui/select";
 import { Alert } from "@/components/ui/alert";
+import { CoverImageField } from "@/components/instructor/cover-image-field";
 import type { FormActionState } from "@/actions/courses-admin";
 import type { Course } from "@/types/domain";
 
@@ -28,7 +29,9 @@ export function CourseForm({
   submitLabel: string;
 }) {
   const locale = useLocale();
+  const isAr = locale === "ar";
   const [state, formAction, isPending] = useActionState(action, {});
+  const [enrollmentMode, setEnrollmentMode] = useState(course?.enrollment_mode ?? "open");
 
   return (
     <form action={formAction} className="flex flex-col gap-5">
@@ -67,16 +70,7 @@ export function CourseForm({
         </div>
       </div>
 
-      <div className="flex flex-col gap-1.5">
-        <Label htmlFor="cover_image_url">Cover image URL</Label>
-        <Input
-          id="cover_image_url"
-          name="cover_image_url"
-          type="url"
-          defaultValue={course?.cover_image_url ?? ""}
-          placeholder="https://..."
-        />
-      </div>
+      <CoverImageField defaultValue={course?.cover_image_url ?? ""} />
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <div className="flex flex-col gap-1.5">
@@ -105,7 +99,12 @@ export function CourseForm({
         </div>
         <div className="flex flex-col gap-1.5">
           <Label htmlFor="enrollment_mode">Enrollment</Label>
-          <Select id="enrollment_mode" name="enrollment_mode" defaultValue={course?.enrollment_mode ?? "open"}>
+          <Select
+            id="enrollment_mode"
+            name="enrollment_mode"
+            value={enrollmentMode}
+            onChange={(e) => setEnrollmentMode(e.target.value as "open" | "application")}
+          >
             <option value="open">Open</option>
             <option value="application">Application-gated</option>
           </Select>
@@ -120,18 +119,30 @@ export function CourseForm({
         </div>
       </div>
 
-      <div className="flex flex-col gap-1.5">
-        <Label htmlFor="application_form_id">Application form ID (required if enrollment is application-gated)</Label>
-        <Input
-          id="application_form_id"
-          name="application_form_id"
-          defaultValue={course?.application_form_id ?? ""}
-          placeholder="UUID of an existing forms row"
-        />
-        {state.fieldErrors?.application_form_id && (
-          <p className="text-xs text-destructive">{state.fieldErrors.application_form_id[0]}</p>
-        )}
-      </div>
+      {/* Only shown (and only required) when "Application-gated" is actually
+          selected -- most courses are open enrollment and should never need
+          to see, let alone fill in, an application form ID. */}
+      {enrollmentMode === "application" && (
+        <div className="flex flex-col gap-1.5 rounded-md border border-dashed border-border p-3">
+          <Label htmlFor="application_form_id">
+            {isAr ? "معرّف نموذج التقديم" : "Application form ID"}
+          </Label>
+          <Input
+            id="application_form_id"
+            name="application_form_id"
+            defaultValue={course?.application_form_id ?? ""}
+            placeholder="UUID of an existing forms row"
+          />
+          <p className="text-xs text-muted-foreground">
+            {isAr
+              ? "لسه مفيش أداة لإنشاء نماذج التقديم من الواجهة — لو مفيش نموذج جاهز، استخدم التسجيل المفتوح بدلاً من ذلك."
+              : "There's no form-builder UI yet — if you don't already have a form, use open enrollment instead."}
+          </p>
+          {state.fieldErrors?.application_form_id && (
+            <p className="text-xs text-destructive">{state.fieldErrors.application_form_id[0]}</p>
+          )}
+        </div>
+      )}
 
       <Button type="submit" disabled={isPending} className="w-fit">
         {submitLabel}

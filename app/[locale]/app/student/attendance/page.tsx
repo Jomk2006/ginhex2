@@ -17,8 +17,8 @@ export default async function StudentAttendancePage({
   if (!user) redirect(`/${locale}/sign-in`);
 
   const { data: profile } = await supabase.from("profiles").select("*").eq("id", user.id).single();
-  if (profile && profile.role !== "student") {
-    redirect(`/${locale}/app/${profile.role}`);
+  if (!profile || profile.role !== "student") {
+    redirect(profile ? `/${locale}/app/${profile.role}` : `/${locale}/sign-in`);
   }
 
   const enrollments = await getStudentEnrollments(user.id);

@@ -19,8 +19,8 @@ export default async function EditCoursePage({
   if (!user) redirect(`/${locale}/sign-in`);
 
   const { data: profile } = await supabase.from("profiles").select("*").eq("id", user.id).single();
-  if (profile && profile.role !== "instructor") {
-    redirect(`/${locale}/app/${profile.role}`);
+  if (!profile || profile.role !== "instructor") {
+    redirect(profile ? `/${locale}/app/${profile.role}` : `/${locale}/sign-in`);
   }
 
   // RLS already scopes this to courses the instructor owns/co-teaches —

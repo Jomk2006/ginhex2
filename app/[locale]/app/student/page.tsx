@@ -16,8 +16,8 @@ export default async function StudentDashboardPage() {
   if (!user) redirect(`/${locale}/sign-in`);
 
   const { data: profile } = await supabase.from("profiles").select("*").eq("id", user.id).single();
-  if (profile && profile.role !== "student") {
-    redirect(`/${locale}/app/${profile.role}`);
+  if (!profile || profile.role !== "student") {
+    redirect(profile ? `/${locale}/app/${profile.role}` : `/${locale}/sign-in`);
   }
 
   const t = await getTranslations("dashboard");

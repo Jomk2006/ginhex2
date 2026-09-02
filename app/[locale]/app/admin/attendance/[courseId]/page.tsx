@@ -17,8 +17,8 @@ export default async function AdminCourseAttendancePage({
   if (!user) redirect(`/${locale}/sign-in`);
 
   const { data: profile } = await supabase.from("profiles").select("*").eq("id", user.id).single();
-  if (profile && profile.role !== "admin") {
-    redirect(`/${locale}/app/${profile.role}`);
+  if (!profile || profile.role !== "admin") {
+    redirect(profile ? `/${locale}/app/${profile.role}` : `/${locale}/sign-in`);
   }
 
   const { data: course } = await supabase.from("courses").select("title_en, title_ar").eq("id", courseId).maybeSingle();
