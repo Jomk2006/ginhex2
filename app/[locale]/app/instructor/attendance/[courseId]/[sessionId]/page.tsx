@@ -2,6 +2,7 @@ import { notFound, redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { getSessionById, getSessionRoster } from "@/lib/data/attendance";
 import { AttendanceRoster } from "@/components/attendance/attendance-roster";
+import { AttendanceImportWizard } from "@/components/attendance/attendance-import-wizard";
 
 export default async function InstructorSessionRosterPage({
   params,
@@ -33,6 +34,7 @@ export default async function InstructorSessionRosterPage({
           {new Date(session.session_date).toLocaleDateString(locale === "ar" ? "ar-EG" : "en-US")}
         </p>
       </div>
+      <AttendanceImportWizard courseId={courseId} sessionId={sessionId} />
       <AttendanceRoster sessionId={sessionId} roster={roster} />
     </div>
   );
