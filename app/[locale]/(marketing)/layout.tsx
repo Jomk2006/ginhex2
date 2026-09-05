@@ -40,7 +40,10 @@ export default async function MarketingLayout({
             : null
         }
       />
-      <main className="flex-1">{children}</main>
+      {/* pt-20 keeps normal-page content clear of the now-fixed nav; the
+          homepage hero cancels it with -mt-20 so its dark background
+          bleeds up behind the nav (see hero-section.tsx). */}
+      <main className="flex-1 pt-20">{children}</main>
       <MarketingFooter />
     </div>
   );

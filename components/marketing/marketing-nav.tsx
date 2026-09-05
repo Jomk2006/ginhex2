@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useLocale } from "next-intl";
 import { Link, usePathname } from "@/i18n/navigation";
 import { Logo } from "@/components/shared/logo";
 import { LocaleSwitcher } from "@/components/shared/locale-switcher";
@@ -22,6 +23,8 @@ interface AccountInfo {
 export function MarketingNav({ theme, account }: { theme: Theme; account: AccountInfo | null }) {
   const [scrolled, setScrolled] = useState(false);
   const pathname = usePathname();
+  const locale = useLocale();
+  const isAr = locale === "ar";
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 8);
@@ -37,10 +40,15 @@ export function MarketingNav({ theme, account }: { theme: Theme; account: Accoun
   const isHomepage = pathname === "/";
   const onDarkHero = isHomepage && !scrolled;
 
+  const navLinkClass = cn(
+    "text-xs font-medium uppercase tracking-widest transition-colors",
+    onDarkHero ? "text-white/70 hover:text-white" : "text-muted-foreground hover:text-foreground"
+  );
+
   return (
     <header
       className={cn(
-        "sticky top-0 z-50 transition-colors duration-300",
+        "fixed inset-x-0 top-0 z-50 transition-colors duration-300",
         scrolled
           ? "border-b border-border/60 bg-background/70 backdrop-blur-xl"
           : "border-b border-transparent bg-transparent"
@@ -48,18 +56,17 @@ export function MarketingNav({ theme, account }: { theme: Theme; account: Accoun
     >
       <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-3">
         <Link href="/">
-          <Logo height={40} className="h-9 sm:h-10" />
+          <Logo height={44} />
         </Link>
         <div className="flex items-center gap-2">
-          <Link
-            href="/courses"
-            className={cn(
-              "me-2 hidden text-sm sm:inline",
-              onDarkHero ? "text-white/80 hover:text-white" : "text-muted-foreground hover:text-foreground"
-            )}
-          >
-            Courses
-          </Link>
+          <nav className="me-2 hidden items-center gap-6 sm:flex">
+            <Link href="/courses" className={navLinkClass}>
+              {isAr ? "الدورات" : "Courses"}
+            </Link>
+            <Link href="/about" className={navLinkClass}>
+              {isAr ? "من نحن" : "About"}
+            </Link>
+          </nav>
           <LocaleSwitcher />
           <ThemeToggle current={theme} />
           {account ? (

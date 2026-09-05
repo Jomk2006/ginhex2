@@ -1,6 +1,5 @@
 import { getLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
-import { Button } from "@/components/ui/button";
 import { GenhexCoreScene } from "@/components/marketing/genhex-core-scene";
 import { ArrowRight, ArrowLeft } from "lucide-react";
 
@@ -10,57 +9,88 @@ export async function HeroSection() {
   const Arrow = isAr ? ArrowLeft : ArrowRight;
 
   return (
-    <section className="relative overflow-hidden bg-[#0A0A0A] text-white">
-      {/* Hex-grid backdrop — brand board's own graphic motif, not decoration for its own sake */}
+    <section className="relative -mt-20 flex min-h-screen items-end overflow-hidden bg-[#0A0A0A]">
+      {/* Full-bleed 3D background -- the GENHEX Core, standing in for the
+          reference design's Spline embed */}
+      <div className="absolute inset-0">
+        <GenhexCoreScene />
+      </div>
+
+      {/* Hex-grid backdrop -- brand board's own graphic motif */}
       <div
-        className="pointer-events-none absolute inset-0 opacity-[0.07]"
+        className="pointer-events-none absolute inset-0 z-[1] opacity-[0.06]"
         style={{
           backgroundImage:
             "repeating-linear-gradient(120deg, transparent 0 46px, rgba(0,188,200,0.6) 46px 47px), repeating-linear-gradient(60deg, transparent 0 46px, rgba(0,188,200,0.6) 46px 47px)",
         }}
         aria-hidden="true"
       />
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-full bg-[radial-gradient(ellipse_at_top,_rgba(0,188,200,0.14),_transparent_60%)]" aria-hidden="true" />
 
-      <div className="relative mx-auto grid max-w-6xl grid-cols-1 items-center gap-12 px-6 py-20 sm:py-28 lg:grid-cols-2 lg:py-32">
-        <div className="flex flex-col items-start gap-6">
-          <span className="rounded-full border border-white/15 bg-white/5 px-3 py-1 text-xs font-medium tracking-wide text-[#00BCC8]">
-            {isAr ? "منصة تعليم تقني ثنائية اللغة" : "A bilingual technology education platform"}
-          </span>
-          <h1 className="text-4xl font-semibold leading-[1.05] tracking-tight sm:text-5xl lg:text-6xl">
-            {isAr ? (
-              <>
-                ابنِ <span className="text-[#00BCC8]">ما هو</span>{" "}
-                <span className="text-[#D0FF00]">قادم</span>.
-              </>
-            ) : (
-              <>
-                Build <span className="text-[#00BCC8]">what&apos;s</span>{" "}
-                <span className="text-[#D0FF00]">next</span>.
-              </>
-            )}
-          </h1>
-          <p className="max-w-md text-lg text-white/70">
-            {isAr
-              ? "GENHEX منصة تجمع الدورات والحضور والاختبارات والشهادات في نظام واحد — يتعلّم فيه الطلاب، ويبني فيه المدرّبون، بالعربي والإنجليزي."
-              : "GENHEX brings courses, attendance, exams, and certificates into one system — where students learn and instructors build, in Arabic and English."}
-          </p>
-          <div className="flex flex-wrap items-center gap-3 pt-2">
-            <Button asChild size="lg" className="bg-[#00BCC8] text-[#0A0A0A] hover:bg-[#00BCC8]/90">
-              <Link href="/courses">
-                {isAr ? "استكشف الدورات" : "Explore courses"}
-                <Arrow className="h-4 w-4" />
-              </Link>
-            </Button>
-            <Button asChild size="lg" variant="outline" className="border-white/20 bg-transparent text-white hover:bg-white/10">
-              <Link href="/sign-up">{isAr ? "أنشئ حسابًا" : "Create an account"}</Link>
-            </Button>
-          </div>
+      {/* Dark scrim so text stays legible over the 3D scene, same role as
+          the reference's bg-black/30 overlay */}
+      <div className="pointer-events-none absolute inset-0 z-[2] bg-gradient-to-t from-black/70 via-black/20 to-black/40" aria-hidden="true" />
+
+      {/* Content -- anchored bottom-left, pointer-events-none so drag/hover
+          on the 3D scene still works through the empty space around text;
+          buttons re-enable pointer-events individually */}
+      <div className="relative z-10 w-full max-w-[90%] px-6 pb-14 pt-32 pointer-events-none sm:max-w-md md:px-10 md:pb-16 lg:max-w-2xl">
+        <span
+          className="animate-fade-up-blur inline-block rounded-full border border-white/15 bg-white/5 px-3 py-1 text-xs font-medium tracking-wide text-[#00BCC8] opacity-0"
+          style={{ animationDelay: "0.2s" }}
+        >
+          {isAr ? "منصة تعليم تقني ثنائية اللغة" : "A bilingual technology education platform"}
+        </span>
+
+        <h1
+          className="animate-fade-up-blur mb-2 mt-4 text-[clamp(3rem,8vw,6rem)] font-bold uppercase leading-[1.05] tracking-[-0.03em] text-white opacity-0 md:mb-4"
+          style={{ animationDelay: "0.35s" }}
+        >
+          <span className="text-[#00BCC8]">GEN</span>
+          <span className="text-[#D0FF00]">HEX</span>
+        </h1>
+
+        <p
+          className="animate-fade-up-blur mb-3 text-[clamp(1.125rem,2.5vw,1.875rem)] font-light text-white/80 opacity-0 md:mb-6"
+          style={{ animationDelay: "0.5s" }}
+        >
+          {isAr ? "ابنِ ما هو قادم." : "Build what's next."}
+        </p>
+
+        <p
+          className="animate-fade-up-blur mb-4 text-[clamp(0.875rem,1.5vw,1.25rem)] font-light text-white/60 opacity-0 md:mb-8"
+          style={{ animationDelay: "0.65s" }}
+        >
+          {isAr
+            ? "GENHEX منصة تجمع الدورات والحضور والاختبارات والشهادات في نظام واحد — يتعلّم فيه الطلاب، ويبني فيه المدرّبون، بالعربي والإنجليزي."
+            : "GENHEX brings courses, attendance, exams, and certificates into one system — where students learn and instructors build, in Arabic and English."}
+        </p>
+
+        <div className="flex flex-wrap gap-3 font-bold" style={{ animationDelay: "0.8s" }}>
+          <Link
+            href="/courses"
+            className="animate-fade-up-blur pointer-events-auto cursor-pointer rounded-sm bg-[#00BCC8] px-6 py-3 text-sm text-[#0A0A0A] opacity-0 transition-all hover:brightness-110 active:scale-[0.97] md:px-8 md:py-4"
+            style={{ animationDelay: "0.8s" }}
+          >
+            <span className="inline-flex items-center gap-2">
+              {isAr ? "استكشف الدورات" : "Explore courses"}
+              <Arrow className="h-4 w-4" />
+            </span>
+          </Link>
+          <Link
+            href="/sign-up"
+            className="animate-fade-up-blur pointer-events-auto cursor-pointer rounded-sm bg-white px-6 py-3 text-sm text-[#0A0A0A] opacity-0 transition-all hover:brightness-90 active:scale-[0.97] md:px-8 md:py-4"
+            style={{ animationDelay: "0.9s" }}
+          >
+            {isAr ? "أنشئ حسابًا" : "Create an account"}
+          </Link>
         </div>
 
-        <div className="flex justify-center lg:justify-end">
-          <GenhexCoreScene />
-        </div>
+        <p
+          className="animate-fade-up-blur mt-4 text-xs font-light text-white/40 opacity-0 md:mt-6"
+          style={{ animationDelay: "1.05s" }}
+        >
+          {isAr ? "منصة تعليم تقني موثوقة." : "A trusted technology education platform."}
+        </p>
       </div>
     </section>
   );

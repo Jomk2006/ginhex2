@@ -45,7 +45,7 @@ export default async function AppLayout({
       <header className="border-b border-border">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-3">
           <Link href={ROLE_HOME_PATH[role]}>
-            <Logo height={40} className="h-9 sm:h-10" />
+            <Logo height={44} />
           </Link>
 
           <nav className="flex items-center gap-2">

@@ -2,19 +2,31 @@ import Image from "next/image";
 import { cn } from "@/lib/utils";
 
 /**
- * Renders the official GENHEX logo exactly as supplied — never
- * regenerated or redrawn. Drop the real exported file(s) at
- * public/brand/genhex-logo.png (see public/brand/README.md).
+ * Renders the official GENHEX logo exactly as supplied -- never
+ * regenerated, redrawn, or cropped. The source file is a square,
+ * icon-over-wordmark lockup on a white background (no alpha channel),
+ * so it's wrapped in a small white rounded plate rather than placed
+ * directly on the page background -- this keeps it reading cleanly on
+ * both dark and light surfaces without touching a single pixel of the
+ * actual asset. The plate is a container we own, not an edit to the logo.
  */
-export function Logo({ className, height = 32 }: { className?: string; height?: number }) {
+export function Logo({ className, height = 48 }: { className?: string; height?: number }) {
   return (
-    <Image
-      src="/brand/genhex-logo.png"
-      alt="GENHEX — Build What's Next."
-      width={height * 3.6}
-      height={height}
-      className={cn("h-8 w-auto object-contain", className)}
-      priority
-    />
+    <span
+      className={cn(
+        "inline-flex items-center justify-center rounded-lg bg-white p-1 shadow-sm ring-1 ring-black/5",
+        className
+      )}
+      style={{ height }}
+    >
+      <Image
+        src="/brand/genhex-logo.jpeg"
+        alt="GENHEX — Build What's Next."
+        width={height - 8}
+        height={height - 8}
+        className="h-full w-auto object-contain"
+        priority
+      />
+    </span>
   );
 }

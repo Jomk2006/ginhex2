@@ -50,6 +50,9 @@ export function CourseForm({
         <div className="flex flex-col gap-1.5">
           <Label htmlFor="title_ar">Title (Arabic)</Label>
           <Input id="title_ar" name="title_ar" dir="rtl" defaultValue={course?.title_ar} required />
+          {state.fieldErrors?.title_ar && (
+            <p className="text-xs text-destructive">{state.fieldErrors.title_ar[0]}</p>
+          )}
         </div>
       </div>
 

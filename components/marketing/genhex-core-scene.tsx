@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { useLocale } from "next-intl";
 import * as THREE from "three";
 
 type DeviceTier = "static" | "low" | "medium" | "high";
@@ -118,6 +119,8 @@ export function GenhexCoreScene() {
   const containerRef = useRef<HTMLDivElement>(null);
   const [tier, setTier] = useState<DeviceTier | null>(null);
   const [webglOk, setWebglOk] = useState(true);
+  const locale = useLocale();
+  const isRTL = locale === "ar";
 
   useEffect(() => {
     // Client-only capability detection (window/navigator), deliberately
@@ -145,6 +148,11 @@ export function GenhexCoreScene() {
     container.appendChild(renderer.domElement);
 
     const core = buildCore(NODE_COUNTS[tier]);
+    // Shifted toward the side opposite the text (which anchors bottom-end:
+    // bottom-left in LTR, bottom-right in RTL), so the composition mirrors
+    // correctly instead of the shape colliding with the heading in RTL.
+    // since the canvas is now a full-bleed background, not its own column.
+    core.position.x = isRTL ? -1.4 : 1.4;
     scene.add(core);
 
     let isDragging = false;
@@ -220,32 +228,34 @@ export function GenhexCoreScene() {
       renderer.dispose();
       container.removeChild(renderer.domElement);
     };
-  }, [tier, webglOk]);
+  }, [tier, webglOk, isRTL]);
 
   // Static/reduced-motion/no-WebGL fallback — same brand mood, no JS.
   if (tier === "static" || !webglOk) {
     return (
-      <div className="relative aspect-square w-full max-w-md">
-        <div className="absolute inset-0 rounded-full bg-[radial-gradient(circle,_rgba(0,188,200,0.35),_transparent_70%)] blur-2xl" />
-        <svg viewBox="0 0 200 200" className="relative h-full w-full" aria-hidden="true">
-          <polygon
-            points="100,10 173,55 173,145 100,190 27,145 27,55"
-            fill="none"
-            stroke="#00BCC8"
-            strokeWidth="1.5"
-            opacity="0.9"
-          />
-          <polygon
-            points="100,40 148,68 148,132 100,160 52,132 52,68"
-            fill="none"
-            stroke="#D0FF00"
-            strokeWidth="1"
-            opacity="0.6"
-          />
-        </svg>
+      <div className="absolute inset-0 flex items-center justify-end pe-[8%]">
+        <div className="relative aspect-square w-[60%] max-w-lg">
+          <div className="absolute inset-0 rounded-full bg-[radial-gradient(circle,_rgba(0,188,200,0.35),_transparent_70%)] blur-2xl" />
+          <svg viewBox="0 0 200 200" className="relative h-full w-full" aria-hidden="true">
+            <polygon
+              points="100,10 173,55 173,145 100,190 27,145 27,55"
+              fill="none"
+              stroke="#00BCC8"
+              strokeWidth="1.5"
+              opacity="0.9"
+            />
+            <polygon
+              points="100,40 148,68 148,132 100,160 52,132 52,68"
+              fill="none"
+              stroke="#D0FF00"
+              strokeWidth="1"
+              opacity="0.6"
+            />
+          </svg>
+        </div>
       </div>
     );
   }
 
-  return <div ref={containerRef} className="aspect-square w-full max-w-md" aria-hidden="true" />;
+  return <div ref={containerRef} className="h-full w-full" aria-hidden="true" />;
 }
