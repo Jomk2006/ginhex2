@@ -64,7 +64,35 @@ export async function createCourseAction(
     .single();
 
   if (error) {
+    // Logged server-side (Vercel function logs), not shown to the user —
+    // "generic" on screen stays generic, but this line is what turns a
+    // guess into a fact next time something fails here.
+    console.error("createCourseAction: courses insert failed", {
+      code: error.code,
+      message: error.message,
+      details: error.details,
+      hint: error.hint,
+    });
     return { error: error.code === "23505" ? "slugTaken" : "generic" };
+  }
+
+  // Explicitly record the creator as an instructor-of-record for this
+  // course. courses.instructor_id already marks ownership, but RLS's
+  // is_instructor_of() may check course_instructors instead of (or in
+  // addition to) that column depending on how it was implemented live —
+  // this insert makes the creator recognized either way, so the
+  // immediate SELECT-back above (and every future admin/instructor page
+  // load for this course) can't fail an RLS check that only looks at
+  // the join table. Failure here is logged but not fatal to course
+  // creation — the course row itself already exists and is usable.
+  const { error: coInstructorError } = await supabase
+    .from("course_instructors")
+    .insert({ course_id: course.id, instructor_id: user.id, is_primary: true });
+  if (coInstructorError) {
+    console.error("createCourseAction: course_instructors insert failed", {
+      code: coInstructorError.code,
+      message: coInstructorError.message,
+    });
   }
 
   // Redirect to the creator's own role-scoped edit page — an admin who
@@ -108,6 +136,12 @@ export async function updateCourseAction(
     .eq("id", courseId);
 
   if (error) {
+    console.error("updateCourseAction: courses update failed", {
+      code: error.code,
+      message: error.message,
+      details: error.details,
+      hint: error.hint,
+    });
     return { error: error.code === "23505" ? "slugTaken" : "generic" };
   }
 
