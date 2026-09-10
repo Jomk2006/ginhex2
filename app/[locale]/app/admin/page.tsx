@@ -1,7 +1,6 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { getPlatformStats } from "@/lib/data/admin";
-import { AdminTabs } from "@/components/admin/admin-tabs";
 import { Card, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Link } from "@/i18n/navigation";
@@ -43,8 +42,6 @@ export default async function AdminDashboardPage({
           {isAr ? "لوحة تحكم إدارة منصة GENHEX." : "GENHEX platform administration."}
         </p>
       </div>
-
-      <AdminTabs />
 
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
         {cards.map((card) => (

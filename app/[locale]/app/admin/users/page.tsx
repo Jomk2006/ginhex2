@@ -1,7 +1,6 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { getAllProfiles } from "@/lib/data/admin";
-import { AdminTabs } from "@/components/admin/admin-tabs";
 import { UsersTable } from "@/components/admin/users-table";
 
 export default async function AdminUsersPage({
@@ -27,7 +26,6 @@ export default async function AdminUsersPage({
   return (
     <div className="flex flex-col gap-6">
       <h1 className="text-2xl font-semibold">{isAr ? "إدارة المستخدمين" : "User management"}</h1>
-      <AdminTabs />
       <p className="text-sm text-muted-foreground">
         {isAr ? `${profiles.length} مستخدم على المنصة` : `${profiles.length} users on the platform`}
       </p>

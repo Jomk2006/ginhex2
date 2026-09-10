@@ -3,7 +3,6 @@ import { createClient } from "@/lib/supabase/server";
 import { getInstructorCourseById } from "@/lib/data/instructor";
 import { CourseForm } from "@/components/instructor/course-form";
 import { ModuleManager } from "@/components/instructor/module-manager";
-import { AdminTabs } from "@/components/admin/admin-tabs";
 import { updateCourseAction } from "@/actions/courses-admin";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 
@@ -37,7 +36,6 @@ export default async function AdminEditCoursePage({
   return (
     <div className="flex flex-col gap-6">
       <h1 className="text-2xl font-semibold">{course.title_en}</h1>
-      <AdminTabs />
 
       <div className="mx-auto flex w-full max-w-3xl flex-col gap-8">
         <Card>

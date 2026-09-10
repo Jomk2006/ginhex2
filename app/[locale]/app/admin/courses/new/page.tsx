@@ -2,7 +2,6 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { CourseForm } from "@/components/instructor/course-form";
 import { createCourseAction } from "@/actions/courses-admin";
-import { AdminTabs } from "@/components/admin/admin-tabs";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 
 export default async function AdminNewCoursePage({
@@ -26,7 +25,6 @@ export default async function AdminNewCoursePage({
   return (
     <div className="flex flex-col gap-6">
       <h1 className="text-2xl font-semibold">{isAr ? "دورة جديدة" : "New course"}</h1>
-      <AdminTabs />
       <div className="mx-auto w-full max-w-3xl">
         <Card>
           <CardHeader>

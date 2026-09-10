@@ -2,7 +2,6 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { getAllCoursesAdmin } from "@/lib/data/admin";
 import { InstructorCourseCard } from "@/components/instructor/instructor-course-card";
-import { AdminTabs } from "@/components/admin/admin-tabs";
 import { Card, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Link } from "@/i18n/navigation";
@@ -30,7 +29,6 @@ export default async function AdminCoursesPage({
   return (
     <div className="flex flex-col gap-6">
       <h1 className="text-2xl font-semibold">{isAr ? "إدارة الدورات" : "Course management"}</h1>
-      <AdminTabs />
 
       <div className="flex items-center justify-between">
         <p className="text-sm text-muted-foreground">

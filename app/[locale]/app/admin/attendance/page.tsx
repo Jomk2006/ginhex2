@@ -1,7 +1,6 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { getAllCoursesAdmin } from "@/lib/data/admin";
-import { AdminTabs } from "@/components/admin/admin-tabs";
 import { Card, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Link } from "@/i18n/navigation";
 
@@ -28,7 +27,6 @@ export default async function AdminAttendanceCoursesPage({
   return (
     <div className="flex flex-col gap-6">
       <h1 className="text-2xl font-semibold">{isAr ? "الحضور" : "Attendance"}</h1>
-      <AdminTabs />
       <p className="text-muted-foreground">
         {isAr ? "اختر دورة لإدارة جلسات الحضور الخاصة بها." : "Choose a course to manage its attendance sessions."}
       </p>

@@ -2,7 +2,6 @@ import { notFound, redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { getCourseSessions } from "@/lib/data/attendance";
 import { SessionList } from "@/components/attendance/session-list";
-import { AdminTabs } from "@/components/admin/admin-tabs";
 
 export default async function AdminCourseAttendancePage({
   params,
@@ -29,7 +28,6 @@ export default async function AdminCourseAttendancePage({
   return (
     <div className="flex flex-col gap-6">
       <h1 className="text-2xl font-semibold">{course.title_en}</h1>
-      <AdminTabs />
       <SessionList courseId={courseId} sessions={sessions} attendanceBasePath="/app/admin/attendance" />
     </div>
   );

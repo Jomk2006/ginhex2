@@ -56,7 +56,7 @@ export function MarketingNav({ theme, account }: { theme: Theme; account: Accoun
     >
       <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-3">
         <Link href="/">
-          <Logo height={44} />
+          <Logo height={60} />
         </Link>
         <div className="flex items-center gap-2">
           <nav className="me-2 hidden items-center gap-6 sm:flex">

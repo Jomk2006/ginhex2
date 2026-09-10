@@ -40,10 +40,11 @@ export default async function MarketingLayout({
             : null
         }
       />
-      {/* pt-20 keeps normal-page content clear of the now-fixed nav; the
-          homepage hero cancels it with -mt-20 so its dark background
-          bleeds up behind the nav (see hero-section.tsx). */}
-      <main className="flex-1 pt-20">{children}</main>
+      {/* pt-24 keeps normal-page content clear of the now-fixed nav; the
+          homepage hero cancels it with -mt-24 so its dark background
+          bleeds up behind the nav (see hero-section.tsx). Matches the
+          nav's actual height (60px logo + py-3 padding ≈ 84px). */}
+      <main className="flex-1 pt-24">{children}</main>
       <MarketingFooter />
     </div>
   );

@@ -9,7 +9,7 @@ export async function HeroSection() {
   const Arrow = isAr ? ArrowLeft : ArrowRight;
 
   return (
-    <section className="relative -mt-20 flex min-h-screen items-end overflow-hidden bg-[#0A0A0A]">
+    <section className="relative -mt-24 flex min-h-screen items-end overflow-hidden bg-[#0A0A0A]">
       {/* Full-bleed 3D background -- the GENHEX Core, standing in for the
           reference design's Spline embed */}
       <div className="absolute inset-0">
@@ -45,8 +45,8 @@ export async function HeroSection() {
           className="animate-fade-up-blur mb-2 mt-4 text-[clamp(3rem,8vw,6rem)] font-bold uppercase leading-[1.05] tracking-[-0.03em] text-white opacity-0 md:mb-4"
           style={{ animationDelay: "0.35s" }}
         >
-          <span className="text-[#00BCC8]">GEN</span>
-          <span className="text-[#D0FF00]">HEX</span>
+          <span className="text-white">GEN</span>
+          <span className="text-[#00B6BF]">HEX</span>
         </h1>
 
         <p

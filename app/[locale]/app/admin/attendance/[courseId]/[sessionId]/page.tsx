@@ -3,7 +3,6 @@ import { createClient } from "@/lib/supabase/server";
 import { getSessionById, getSessionRoster } from "@/lib/data/attendance";
 import { AttendanceRoster } from "@/components/attendance/attendance-roster";
 import { AttendanceImportWizard } from "@/components/attendance/attendance-import-wizard";
-import { AdminTabs } from "@/components/admin/admin-tabs";
 
 export default async function AdminSessionRosterPage({
   params,
@@ -35,7 +34,6 @@ export default async function AdminSessionRosterPage({
           {new Date(session.session_date).toLocaleDateString(locale === "ar" ? "ar-EG" : "en-US")}
         </p>
       </div>
-      <AdminTabs />
       <AttendanceImportWizard courseId={courseId} sessionId={sessionId} />
       <AttendanceRoster sessionId={sessionId} roster={roster} />
     </div>
