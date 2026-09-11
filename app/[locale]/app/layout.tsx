@@ -2,7 +2,6 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { AppShell } from "@/components/shared/app-shell";
-import { getAppNavItems } from "@/lib/nav-items";
 import { THEME_COOKIE, DEFAULT_THEME } from "@/lib/theme";
 
 export default async function AppLayout({
@@ -39,7 +38,6 @@ export default async function AppLayout({
   return (
     <AppShell
       role={role}
-      navItems={getAppNavItems(role)}
       displayName={displayName}
       email={user.email ?? ""}
       genhexId={profile?.genhex_id ?? ""}

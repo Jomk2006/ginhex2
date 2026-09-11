@@ -9,7 +9,7 @@ import { LocaleSwitcher } from "@/components/shared/locale-switcher";
 import { ThemeToggle } from "@/components/shared/theme-toggle";
 import { AccountMenu } from "@/components/shared/account-menu";
 import { cn } from "@/lib/utils";
-import type { NavItem } from "@/lib/nav-items";
+import { getAppNavItems, type NavItem } from "@/lib/nav-items";
 import type { Theme } from "@/lib/theme";
 import type { UserRole } from "@/types/domain";
 import { ROLE_HOME_PATH } from "@/types/domain";
@@ -47,7 +47,6 @@ function NavLinks({ items, onNavigate }: { items: NavItem[]; onNavigate?: () => 
 
 export function AppShell({
   role,
-  navItems,
   displayName,
   email,
   genhexId,
@@ -56,7 +55,6 @@ export function AppShell({
   children,
 }: {
   role: UserRole;
-  navItems: NavItem[];
   displayName: string;
   email: string;
   genhexId: string;
@@ -65,6 +63,13 @@ export function AppShell({
   children: React.ReactNode;
 }) {
   const [mobileOpen, setMobileOpen] = useState(false);
+  // Computed here (client-side) from the plain role string, not received
+  // as a prop -- NavItem.icon holds actual component references, and
+  // function/component values can't be passed from a Server Component
+  // into a Client Component's props. That was the real bug: the layout
+  // (a Server Component) was calling getAppNavItems() and passing the
+  // result in as a prop, which crashed at runtime on every /app/* page.
+  const navItems = getAppNavItems(role);
 
   return (
     <div className="flex min-h-screen flex-col">
