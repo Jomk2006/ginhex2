@@ -9,7 +9,7 @@ export async function HeroSection() {
   const Arrow = isAr ? ArrowLeft : ArrowRight;
 
   return (
-    <section className="relative -mt-24 flex min-h-screen items-end overflow-hidden bg-[#0A0A0A]">
+    <section className="hero-min-h relative -mt-24 flex items-end overflow-hidden bg-[#0A0A0A]">
       {/* Full-bleed 3D background -- the GENHEX Core, standing in for the
           reference design's Spline embed */}
       <div className="absolute inset-0">
@@ -33,7 +33,7 @@ export async function HeroSection() {
       {/* Content -- anchored bottom-left, pointer-events-none so drag/hover
           on the 3D scene still works through the empty space around text;
           buttons re-enable pointer-events individually */}
-      <div className="relative z-10 w-full max-w-[90%] px-6 pb-14 pt-32 pointer-events-none sm:max-w-md md:px-10 md:pb-16 lg:max-w-2xl">
+      <div className="relative z-10 w-full max-w-[90%] px-6 pb-8 pt-24 pointer-events-none sm:max-w-md sm:pb-14 sm:pt-32 md:px-10 md:pb-16 lg:max-w-2xl">
         <span
           className="animate-fade-up-blur inline-block rounded-full border border-white/15 bg-white/5 px-3 py-1 text-xs font-medium tracking-wide text-[#00BCC8] opacity-0"
           style={{ animationDelay: "0.2s" }}

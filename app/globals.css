@@ -112,3 +112,15 @@ h1, h2, h3, h4, h5, h6 {
     filter: none;
   }
 }
+
+/* Mobile browsers' address bar makes 100vh measure the viewport as if
+   the bar were hidden, so content anchored to the bottom of a 100vh
+   box can end up partly below the actually-visible area on first
+   load. 100dvh tracks the real visible viewport and updates as the
+   browser chrome shows/hides; 100vh stays first as a fallback for
+   browsers that don't support dvh (unknown units are ignored, not
+   an error, so the second declaration simply never overrides there). */
+.hero-min-h {
+  min-height: 100vh;
+  min-height: 100dvh;
+}
