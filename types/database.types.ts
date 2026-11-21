@@ -116,7 +116,13 @@ export interface Database {
         };
         // Rows are created only via the start_exam_attempt() RPC
         // (service-role), never via a direct table insert.
-        Insert: never;
+        Insert: {
+          id?: string;
+          exam_id: string;
+          student_id: string;
+          attempt_number: number;
+          attendance_percent_at_start: number;
+        };
         Update: Partial<{
           status: Database["public"]["Enums"]["attempt_status"];
           submitted_at: string;
@@ -550,8 +556,103 @@ export interface Database {
         ];
       };
 
-      // ...remaining 12 tables (exams, exam_questions, exam_answers,
-      // certificate_templates, certificates, events, event_registrations,
+
+      exams: {
+        Row: {
+          id: string;
+          course_id: string;
+          title_en: string;
+          title_ar: string;
+          duration_minutes: number;
+          passing_score_percent: number;
+          attendance_requirement_percent: number;
+          max_attempts: number;
+          counts_toward_certification: boolean;
+          available_from: string | null;
+          available_to: string | null;
+          status: Database["public"]["Enums"]["exam_status"];
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          course_id: string;
+          title_en: string;
+          title_ar: string;
+          duration_minutes: number;
+          passing_score_percent: number;
+          attendance_requirement_percent?: number;
+          max_attempts?: number;
+          counts_toward_certification?: boolean;
+          available_from?: string | null;
+          available_to?: string | null;
+          status?: Database["public"]["Enums"]["exam_status"];
+        };
+        Update: Partial<{
+          title_en: string;
+          title_ar: string;
+          duration_minutes: number;
+          passing_score_percent: number;
+          attendance_requirement_percent: number;
+          max_attempts: number;
+          counts_toward_certification: boolean;
+          status: Database["public"]["Enums"]["exam_status"];
+        }>;
+        Relationships: [];
+      };
+
+      exam_questions: {
+        Row: {
+          id: string;
+          exam_id: string;
+          type: Database["public"]["Enums"]["question_type"];
+          prompt_en: string;
+          prompt_ar: string;
+          options: string[] | null;
+          correct_answer: string | null;
+          points: number;
+          order_index: number;
+        };
+        Insert: {
+          id?: string;
+          exam_id: string;
+          type: Database["public"]["Enums"]["question_type"];
+          prompt_en: string;
+          prompt_ar: string;
+          options?: string[] | null;
+          correct_answer?: string | null;
+          points?: number;
+          order_index: number;
+        };
+        Update: Partial<{ prompt_en: string; prompt_ar: string; options: string[] | null; correct_answer: string | null; points: number; order_index: number }>;
+        Relationships: [];
+      };
+
+      exam_answers: {
+        Row: {
+          id: string;
+          attempt_id: string;
+          question_id: string;
+          student_answer: string | null;
+          is_correct: boolean | null;
+          points_awarded: number | null;
+          graded_by: string | null;
+          graded_at: string | null;
+        };
+        Insert: {
+          id?: string;
+          attempt_id: string;
+          question_id: string;
+          student_answer?: string | null;
+          is_correct?: boolean | null;
+          points_awarded?: number | null;
+          graded_at?: string | null;
+        };
+        Update: Partial<{ student_answer: string | null; is_correct: boolean | null; points_awarded: number | null }>;
+        Relationships: [];
+      };
+
+      // ...remaining tables (certificate_templates, certificates, events, event_registrations,
       // labs_projects, labs_collaborators, notifications,
       // audit_logs, background_jobs) follow the identical pattern —
       // generate the full file rather than hand-extending this stub once

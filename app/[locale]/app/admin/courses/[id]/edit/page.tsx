@@ -4,6 +4,7 @@ import { getInstructorCourseById } from "@/lib/data/instructor";
 import { CourseForm } from "@/components/instructor/course-form";
 import { ModuleManager } from "@/components/instructor/module-manager";
 import { updateCourseAction } from "@/actions/courses-admin";
+import { Link } from "@/i18n/navigation";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 
 export default async function AdminEditCoursePage({
@@ -35,7 +36,12 @@ export default async function AdminEditCoursePage({
 
   return (
     <div className="flex flex-col gap-6">
-      <h1 className="text-2xl font-semibold">{course.title_en}</h1>
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <h1 className="text-2xl font-semibold">{course.title_en}</h1>
+        <Link href={`/app/admin/courses/${course.id}/exams`} className="rounded-md border border-border px-3 py-2 text-sm hover:bg-muted">
+          {isAr ? "الامتحانات" : "Exams"}
+        </Link>
+      </div>
 
       <div className="mx-auto flex w-full max-w-3xl flex-col gap-8">
         <Card>

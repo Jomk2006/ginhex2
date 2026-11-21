@@ -3,6 +3,7 @@ import { getLocale } from "next-intl/server";
 import { createClient } from "@/lib/supabase/server";
 import { getCourseCurriculum, getEnrollmentProgressMap } from "@/lib/data/learn";
 import { getLessonResources } from "@/lib/data/resources";
+import { Link } from "@/i18n/navigation";
 import { CoursePlayer } from "@/components/learn/course-player";
 import type { ResolvedResource } from "@/components/learn/materials-list";
 
@@ -82,6 +83,11 @@ export default async function CourseLearnPage({
 
   return (
     <div className="mx-auto max-w-6xl px-6 py-8">
+      <div className="mb-4 flex justify-end">
+        <Link href={`/app/student/courses/${slug}/exam`} className="rounded-md border border-border px-3 py-2 text-sm hover:bg-muted">
+          {locale === "ar" ? "امتحانات الدورة" : "Course exams"}
+        </Link>
+      </div>
       <CoursePlayer
         enrollmentId={enrollment.id}
         courseSlug={slug}
