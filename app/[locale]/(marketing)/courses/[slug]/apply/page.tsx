@@ -13,7 +13,10 @@ export default async function CourseApplyPage({ params }: { params: Promise<{ sl
   const locale = await getLocale();
   const isAr = locale === "ar";
 
-  const result = await getCourseBySlug(slug);
+  const result = await getCourseBySlug(slug).catch((err) => {
+    console.error("ApplyPage: getCourseBySlug failed", err);
+    return null;
+  });
   if (!result) notFound();
   const { course } = result;
 

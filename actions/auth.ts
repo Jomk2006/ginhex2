@@ -22,6 +22,16 @@ function localePrefix(formData: FormData) {
   return locale === "ar" ? "/ar" : "/en";
 }
 
+/** Only same-site, same-locale relative paths are honored (blocks open redirects). */
+function safeRedirectTarget(formData: FormData): string | null {
+  const raw = String(formData.get("redirect_to") ?? "");
+  const prefix = localePrefix(formData);
+  if (!raw.startsWith(`${prefix}/`) || raw.startsWith("//") || raw.includes("\\") || raw.includes("://")) {
+    return null;
+  }
+  return raw;
+}
+
 export async function signInAction(
   _prevState: AuthActionState,
   formData: FormData
@@ -42,7 +52,8 @@ export async function signInAction(
 
   const claims = decodeJwtClaims(data.session.access_token);
   const role = claims.user_role ?? "student";
-  redirect(`${localePrefix(formData)}${ROLE_HOME_PATH[role]}`);
+  const target = safeRedirectTarget(formData);
+  redirect(target ?? `${localePrefix(formData)}${ROLE_HOME_PATH[role]}`);
 }
 
 export async function signUpAction(

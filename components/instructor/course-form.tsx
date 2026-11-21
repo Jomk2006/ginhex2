@@ -16,6 +16,7 @@ const ERROR_MESSAGES: Record<string, string> = {
   invalidInput: "Please check the highlighted fields.",
   slugTaken: "That URL slug is already in use — pick another.",
   signInRequired: "Your session expired — please sign in again.",
+  notAllowed: "Only admins and instructors can create courses.",
   generic: "Something went wrong. Please try again.",
 };
 
@@ -37,7 +38,12 @@ export function CourseForm({
     <form action={formAction} className="flex flex-col gap-5">
       <input type="hidden" name="locale" value={locale} />
 
-      {state.error && <Alert variant="destructive">{ERROR_MESSAGES[state.error] ?? state.error}</Alert>}
+      {state.error && (
+        <Alert variant="destructive">
+          {ERROR_MESSAGES[state.error] ?? state.error}
+          {state.errorCode ? ` (code: ${state.errorCode})` : ""}
+        </Alert>
+      )}
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <div className="flex flex-col gap-1.5">

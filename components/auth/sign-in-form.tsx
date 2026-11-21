@@ -60,6 +60,7 @@ export function SignInForm() {
 
         <form action={formAction} className="flex flex-col gap-4">
           <input type="hidden" name="locale" value={locale} />
+          <input type="hidden" name="redirect_to" value={searchParams.get("redirect_to") ?? ""} />
 
           {state.error && <Alert variant="destructive">{tErrors(state.error as never)}</Alert>}
 

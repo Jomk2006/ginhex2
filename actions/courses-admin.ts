@@ -3,10 +3,13 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { createServiceRoleClient } from "@/lib/supabase/service-role";
 import { courseSchema, moduleSchema, lessonSchema } from "@/lib/validation/courses";
 
 export interface FormActionState {
   error?: string;
+  /** Short Postgres/PostgREST code shown to the user so a failure is diagnosable. */
+  errorCode?: string;
   fieldErrors?: Record<string, string[]>;
 }
 
@@ -43,7 +46,26 @@ export async function createCourseAction(
   } = await supabase.auth.getUser();
   if (!user) return { error: "signInRequired" };
 
-  const { data: course, error } = await supabase
+  // Authorization is decided HERE, on the server, from the profiles table —
+  // not from the JWT claim (which can be stale or missing if the Auth Hook is
+  // off) and not from RLS side effects. Only admins and instructors may create.
+  const { data: creatorProfile } = await supabase
+    .from("profiles")
+    .select("role")
+    .eq("id", user.id)
+    .maybeSingle();
+  if (!creatorProfile || (creatorProfile.role !== "admin" && creatorProfile.role !== "instructor")) {
+    return { error: "notAllowed" };
+  }
+
+  // Why the service-role client: `INSERT ... RETURNING` needs the SELECT
+  // policy to pass, and a draft course is only visible to is_instructor_of()
+  // — which needs a course_instructors row that cannot exist before the
+  // course does (and which only admins may insert). Through the user's own
+  // session this made every instructor-created course fail. The role check
+  // above is the gate; the two writes below happen as one logical unit.
+  const admin = createServiceRoleClient();
+  const { data: course, error } = await admin
     .from("courses")
     .insert({
       slug: parsed.data.slug,
@@ -63,45 +85,33 @@ export async function createCourseAction(
     .select("id")
     .single();
 
-  if (error) {
-    // Logged server-side (Vercel function logs), not shown to the user —
-    // "generic" on screen stays generic, but this line is what turns a
-    // guess into a fact next time something fails here.
+  if (error || !course) {
     console.error("createCourseAction: courses insert failed", {
-      code: error.code,
-      message: error.message,
-      details: error.details,
-      hint: error.hint,
+      code: error?.code,
+      message: error?.message,
+      details: error?.details,
+      hint: error?.hint,
     });
-    return { error: error.code === "23505" ? "slugTaken" : "generic" };
+    return {
+      error: error?.code === "23505" ? "slugTaken" : "generic",
+      errorCode: error?.code || "no_row",
+    };
   }
 
-  // Explicitly record the creator as an instructor-of-record for this
-  // course. courses.instructor_id already marks ownership, but RLS's
-  // is_instructor_of() may check course_instructors instead of (or in
-  // addition to) that column depending on how it was implemented live —
-  // this insert makes the creator recognized either way, so the
-  // immediate SELECT-back above (and every future admin/instructor page
-  // load for this course) can't fail an RLS check that only looks at
-  // the join table. Failure here is logged but not fatal to course
-  // creation — the course row itself already exists and is usable.
-  const { error: coInstructorError } = await supabase
+  const { error: coInstructorError } = await admin
     .from("course_instructors")
     .insert({ course_id: course.id, instructor_id: user.id, is_primary: true });
   if (coInstructorError) {
+    // Roll back so we never leave a course nobody can see or edit.
     console.error("createCourseAction: course_instructors insert failed", {
       code: coInstructorError.code,
       message: coInstructorError.message,
     });
+    await admin.from("courses").delete().eq("id", course.id);
+    return { error: "generic", errorCode: coInstructorError.code || "ci_insert" };
   }
 
-  // Redirect to the creator's own role-scoped edit page — an admin who
-  // creates a course must land on /app/admin/..., not /app/instructor/...,
-  // since that route immediately bounces non-instructors back to their
-  // own dashboard.
-  const { data: creatorProfile } = await supabase.from("profiles").select("role").eq("id", user.id).maybeSingle();
-  const editBase = creatorProfile?.role === "admin" ? "app/admin" : "app/instructor";
-
+  const editBase = creatorProfile.role === "admin" ? "app/admin" : "app/instructor";
   revalidatePath(`/${locale}/${editBase}`);
   redirect(`/${locale}/${editBase}/courses/${course.id}/edit`);
 }

@@ -13,14 +13,24 @@ export default async function CoursesPage({
   const locale = await getLocale();
   const isAr = locale === "ar";
 
-  const [courses, categories] = await Promise.all([
+  // Public page: never crash on a data error — log it and show a retry notice.
+  const [coursesResult, categories] = await Promise.all([
     getPublishedCourses({
       search: params.search,
       category: params.category,
       level: params.level as CourseLevel | undefined,
+    }).catch((err) => {
+      console.error("CoursesPage: getPublishedCourses failed", err);
+      return null;
     }),
-    getCourseCategories(),
+    getCourseCategories().catch((err) => {
+      console.error("CoursesPage: getCourseCategories failed", err);
+      return [] as string[];
+    }),
   ]);
+
+  const loadFailed = coursesResult === null;
+  const courses = coursesResult ?? [];
 
   return (
     <div className="mx-auto max-w-6xl px-6 py-12">
@@ -35,7 +45,13 @@ export default async function CoursesPage({
         <CourseFilters categories={categories} />
       </div>
 
-      {courses.length === 0 ? (
+      {loadFailed ? (
+        <p role="alert" className="py-16 text-center text-muted-foreground">
+          {isAr
+            ? "تعذّر تحميل الدورات الآن. حدّث الصفحة بعد قليل."
+            : "We couldn't load courses right now. Please refresh in a moment."}
+        </p>
+      ) : courses.length === 0 ? (
         <p className="py-16 text-center text-muted-foreground">
           {isAr ? "لا توجد دورات مطابقة." : "No courses match your filters."}
         </p>

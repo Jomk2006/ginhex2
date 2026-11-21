@@ -19,7 +19,10 @@ export default async function CourseDetailPage({
   const locale = await getLocale();
   const isAr = locale === "ar";
 
-  const result = await getCourseBySlug(slug);
+  const result = await getCourseBySlug(slug).catch((err) => {
+    console.error("CoursePage: getCourseBySlug failed", err);
+    return null;
+  });
   if (!result) notFound();
   const { course, instructor, modules } = result;
 
