@@ -34,7 +34,7 @@ export function CourseThumbnail({
         <polygon
           points="50,24 73,37 73,63 50,76 27,63 27,37"
           fill="none"
-          stroke="#D0FF00"
+          stroke="#00B6BF"
           strokeWidth="1.5"
           opacity="0.7"
         />

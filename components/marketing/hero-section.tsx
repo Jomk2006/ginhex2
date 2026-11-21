@@ -33,7 +33,8 @@ export async function HeroSection() {
       {/* Content -- anchored bottom-left, pointer-events-none so drag/hover
           on the 3D scene still works through the empty space around text;
           buttons re-enable pointer-events individually */}
-      <div className="relative z-10 w-full max-w-[90%] px-6 pb-8 pt-24 pointer-events-none sm:max-w-md sm:pb-14 sm:pt-32 md:px-10 md:pb-16 lg:max-w-2xl">
+      <div className="relative z-10 mx-auto w-full max-w-6xl px-6 pb-8 pt-24 pointer-events-none sm:pb-14 sm:pt-32 md:pb-16">
+        <div className="max-w-[92%] sm:max-w-lg lg:max-w-2xl">
         <span
           className="animate-fade-up-blur inline-block rounded-full border border-white/15 bg-white/5 px-3 py-1 text-xs font-medium tracking-wide text-[#00BCC8] opacity-0"
           style={{ animationDelay: "0.2s" }}
@@ -42,7 +43,7 @@ export async function HeroSection() {
         </span>
 
         <h1
-          className="animate-fade-up-blur mb-2 mt-4 text-[clamp(3rem,8vw,6rem)] font-bold uppercase leading-[1.05] tracking-[-0.03em] text-white opacity-0 md:mb-4"
+          className="brand-wordmark animate-fade-up-blur mb-3 mt-5 text-[clamp(3.5rem,11vw,8rem)] font-bold uppercase text-white opacity-0 md:mb-5"
           style={{ animationDelay: "0.35s" }}
         >
           <span className="text-white">GEN</span>
@@ -50,14 +51,14 @@ export async function HeroSection() {
         </h1>
 
         <p
-          className="animate-fade-up-blur mb-3 text-[clamp(1.125rem,2.5vw,1.875rem)] font-light text-white/80 opacity-0 md:mb-6"
+          className="animate-fade-up-blur mb-3 text-[clamp(1.25rem,2.8vw,2rem)] font-medium text-white opacity-0 md:mb-5"
           style={{ animationDelay: "0.5s" }}
         >
           {isAr ? "ابنِ ما هو قادم." : "Build what's next."}
         </p>
 
         <p
-          className="animate-fade-up-blur mb-4 text-[clamp(0.875rem,1.5vw,1.25rem)] font-light text-white/60 opacity-0 md:mb-8"
+          className="animate-fade-up-blur mb-5 max-w-prose text-[clamp(0.9375rem,1.5vw,1.125rem)] font-normal text-white/70 opacity-0 md:mb-8"
           style={{ animationDelay: "0.65s" }}
         >
           {isAr
@@ -85,12 +86,29 @@ export async function HeroSection() {
           </Link>
         </div>
 
-        <p
-          className="animate-fade-up-blur mt-4 text-xs font-light text-white/40 opacity-0 md:mt-6"
+        <dl
+          className="animate-fade-up-blur mt-6 grid grid-cols-3 gap-4 border-t border-white/15 pt-4 opacity-0 md:mt-8"
           style={{ animationDelay: "1.05s" }}
         >
-          {isAr ? "منصة تعليم تقني موثوقة." : "A trusted technology education platform."}
-        </p>
+          {(isAr
+            ? [
+                ["مجانًا", "كل الدورات"],
+                ["لايف + مسجّل", "تعلّم بطريقتك"],
+                ["شهادة", "عند النجاح"],
+              ]
+            : [
+                ["Free", "every course"],
+                ["Live + recorded", "learn your way"],
+                ["Certificate", "when you pass"],
+              ]
+          ).map(([k, v]) => (
+            <div key={k}>
+              <dt className="text-sm font-semibold text-[#00B6BF] sm:text-base">{k}</dt>
+              <dd className="text-xs text-white/60 sm:text-sm">{v}</dd>
+            </div>
+          ))}
+        </dl>
+        </div>
       </div>
     </section>
   );

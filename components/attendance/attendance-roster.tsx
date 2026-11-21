@@ -22,7 +22,7 @@ const STATUS_OPTIONS: AttendanceStatus[] = ["present", "absent", "late", "excuse
 const STATUS_COLORS: Record<AttendanceStatus, string> = {
   present: "bg-[#00BCC8] text-[#0A0A0A]",
   absent: "bg-destructive text-destructive-foreground",
-  late: "bg-[#D0FF00] text-[#0A0A0A]",
+  late: "bg-amber-400 text-[#0A0A0A]",
   excused: "bg-muted text-muted-foreground",
 };
 

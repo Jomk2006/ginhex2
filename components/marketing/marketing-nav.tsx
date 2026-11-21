@@ -41,7 +41,7 @@ export function MarketingNav({ theme, account }: { theme: Theme; account: Accoun
   const onDarkHero = isHomepage && !scrolled;
 
   const navLinkClass = cn(
-    "text-xs font-medium uppercase tracking-widest transition-colors",
+    "text-xs font-medium uppercase tracking-widest transition-colors [html[lang=ar]_&]:text-sm",
     onDarkHero ? "text-white/70 hover:text-white" : "text-muted-foreground hover:text-foreground"
   );
 
@@ -80,7 +80,7 @@ export function MarketingNav({ theme, account }: { theme: Theme; account: Accoun
             />
           ) : (
             <Button asChild size="sm" variant="outline">
-              <Link href="/sign-in">Sign in</Link>
+              <Link href="/sign-in">{isAr ? "تسجيل الدخول" : "Sign in"}</Link>
             </Button>
           )}
         </div>

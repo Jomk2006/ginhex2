@@ -22,7 +22,7 @@ export function SignUpForm() {
     return (
       <Card>
         <CardHeader>
-          <CardTitle>{t("title")}</CardTitle>
+          <CardTitle as="h1">{t("title")}</CardTitle>
         </CardHeader>
         <CardContent>
           <Alert variant="success">Check your email to confirm your account.</Alert>
@@ -34,7 +34,7 @@ export function SignUpForm() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>{t("title")}</CardTitle>
+        <CardTitle as="h1">{t("title")}</CardTitle>
         <CardDescription>{t("subtitle")}</CardDescription>
       </CardHeader>
       <CardContent>

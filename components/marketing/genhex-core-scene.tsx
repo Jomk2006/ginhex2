@@ -30,7 +30,7 @@ function hasWebGL(): boolean {
 const NODE_COUNTS: Record<DeviceTier, number> = { static: 0, low: 60, medium: 140, high: 260 };
 
 const CYAN = 0x00bcc8;
-const LIME = 0xd0ff00;
+const LIME = 0xffffff; // brand has no green — white nodes against cyan rings
 
 /** Builds the GENHEX Core: nested hex-prism wireframe rings + a scattered
  *  node/connection field, echoing the brand board's own "hex grid /
@@ -247,7 +247,7 @@ export function GenhexCoreScene() {
             <polygon
               points="100,40 148,68 148,132 100,160 52,132 52,68"
               fill="none"
-              stroke="#D0FF00"
+              stroke="#FFFFFF"
               strokeWidth="1"
               opacity="0.6"
             />

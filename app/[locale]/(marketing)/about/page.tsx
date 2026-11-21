@@ -85,7 +85,7 @@ export default async function AboutPage() {
 
       <Reveal delay={200} className="mt-16">
         <div className="rounded-xl border border-border bg-card p-8">
-          <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-lg bg-[#D0FF00]/10 text-[#0A0A0A] dark:text-[#D0FF00]">
+          <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-lg bg-[#00B6BF]/10 text-[#00B6BF]">
             <Users className="h-5 w-5" />
           </div>
           <h2 className="mb-3 text-xl font-semibold">{isAr ? "الفريق" : "The team"}</h2>
