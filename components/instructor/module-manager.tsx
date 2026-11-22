@@ -1,3 +1,4 @@
+import { useLocale } from "next-intl";
 import { Trash2, ChevronUp, ChevronDown } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -33,6 +34,8 @@ export function ModuleManager({
   courseId: string;
   modules: Array<CourseModule & { lessons: LessonWithResources[] }>;
 }) {
+  const isAr = useLocale() === "ar";
+  const t = (en: string, ar: string) => (isAr ? ar : en);
   return (
     <div className="flex flex-col gap-6">
       {modules.map((module, moduleIndex) => (
@@ -43,7 +46,7 @@ export function ModuleManager({
             </CardTitle>
             <div className="flex items-center gap-1">
               <form action={moveModuleAction.bind(null, module.id, "up")}>
-                <Button type="submit" variant="ghost" size="sm" disabled={moduleIndex === 0} aria-label="Move module up">
+                <Button type="submit" variant="ghost" size="sm" disabled={moduleIndex === 0} aria-label={t("Move module up", "نقل الوحدة للأعلى")}>
                   <ChevronUp className="h-4 w-4" />
                 </Button>
               </form>
@@ -53,13 +56,13 @@ export function ModuleManager({
                   variant="ghost"
                   size="sm"
                   disabled={moduleIndex === modules.length - 1}
-                  aria-label="Move module down"
+                  aria-label={t("Move module down", "نقل الوحدة للأسفل")}
                 >
                   <ChevronDown className="h-4 w-4" />
                 </Button>
               </form>
               <form action={deleteModuleAction.bind(null, module.id)}>
-                <Button type="submit" variant="ghost" size="sm" aria-label="Delete module">
+                <Button type="submit" variant="ghost" size="sm" aria-label={t("Delete module", "حذف الوحدة")}>
                   <Trash2 className="h-4 w-4 text-destructive" />
                 </Button>
               </form>
@@ -72,9 +75,10 @@ export function ModuleManager({
                   <div key={lesson.id} className="flex flex-col gap-3 px-3 py-3">
                     <div className="flex items-center justify-between gap-3 text-sm">
                       <span>
-                        {lesson.order_index}. {lesson.title_en} —{" "}
+                        {lesson.order_index}. {isAr ? lesson.title_ar : lesson.title_en} —{" "}
                         {lesson.video_source === "google_drive" ? "Drive" : lesson.youtube_video_id} (
-                        {Math.round(lesson.duration_seconds / 60)}m){lesson.is_preview ? " · preview" : ""}
+                        {Math.round(lesson.duration_seconds / 60)}
+                        {t("m", " د")}){lesson.is_preview ? ` · ${t("preview", "معاينة")}` : ""}
                       </span>
                       <div className="flex items-center gap-1">
                         <form action={moveLessonAction.bind(null, lesson.id, "up")}>
@@ -83,7 +87,7 @@ export function ModuleManager({
                             variant="ghost"
                             size="sm"
                             disabled={lessonIndex === 0}
-                            aria-label="Move lesson up"
+                            aria-label={t("Move lesson up", "نقل الدرس للأعلى")}
                           >
                             <ChevronUp className="h-3.5 w-3.5" />
                           </Button>
@@ -94,20 +98,20 @@ export function ModuleManager({
                             variant="ghost"
                             size="sm"
                             disabled={lessonIndex === module.lessons.length - 1}
-                            aria-label="Move lesson down"
+                            aria-label={t("Move lesson down", "نقل الدرس للأسفل")}
                           >
                             <ChevronDown className="h-3.5 w-3.5" />
                           </Button>
                         </form>
                         <form action={deleteLessonAction.bind(null, lesson.id)}>
-                          <Button type="submit" variant="ghost" size="sm" aria-label="Delete lesson">
+                          <Button type="submit" variant="ghost" size="sm" aria-label={t("Delete lesson", "حذف الدرس")}>
                             <Trash2 className="h-3.5 w-3.5 text-destructive" />
                           </Button>
                         </form>
                       </div>
                     </div>
                     <details>
-                      <summary className="cursor-pointer text-xs text-muted-foreground">Materials ({lesson.resources.length})</summary>
+                      <summary className="cursor-pointer text-xs text-muted-foreground">{t("Materials", "المواد")} ({lesson.resources.length})</summary>
                       <div className="mt-2">
                         <MaterialsManager courseId={courseId} lessonId={lesson.id} existing={lesson.resources} />
                       </div>
@@ -118,40 +122,40 @@ export function ModuleManager({
             )}
 
             <details className="rounded-md border border-dashed border-border p-3">
-              <summary className="cursor-pointer text-sm font-medium">+ Add lesson</summary>
+              <summary className="cursor-pointer text-sm font-medium">{t("+ Add lesson", "+ إضافة درس")}</summary>
               <form
                 action={createLessonAction.bind(null, module.id)}
                 className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2"
               >
                 <div className="flex flex-col gap-1">
-                  <Label htmlFor={`lesson-title-en-${module.id}`}>Title (English)</Label>
+                  <Label htmlFor={`lesson-title-en-${module.id}`}>{t("Title (English)", "العنوان (بالإنجليزية)")}</Label>
                   <Input id={`lesson-title-en-${module.id}`} name="title_en" required />
                 </div>
                 <div className="flex flex-col gap-1">
-                  <Label htmlFor={`lesson-title-ar-${module.id}`}>Title (Arabic)</Label>
+                  <Label htmlFor={`lesson-title-ar-${module.id}`}>{t("Title (Arabic)", "العنوان (بالعربية)")}</Label>
                   <Input id={`lesson-title-ar-${module.id}`} name="title_ar" dir="rtl" required />
                 </div>
                 <div className="flex flex-col gap-1">
-                  <Label htmlFor={`lesson-source-${module.id}`}>Video source</Label>
+                  <Label htmlFor={`lesson-source-${module.id}`}>{t("Video source", "مصدر الفيديو")}</Label>
                   <Select id={`lesson-source-${module.id}`} name="video_source" defaultValue="youtube">
-                    <option value="youtube">YouTube</option>
-                    <option value="google_drive">Google Drive</option>
+                    <option value="youtube">{t("YouTube", "يوتيوب")}</option>
+                    <option value="google_drive">{t("Google Drive", "جوجل درايف")}</option>
                   </Select>
                 </div>
                 <div className="flex flex-col gap-1">
-                  <Label htmlFor={`lesson-duration-${module.id}`}>Duration (seconds)</Label>
+                  <Label htmlFor={`lesson-duration-${module.id}`}>{t("Duration (seconds)", "المدة (بالثواني)")}</Label>
                   <Input id={`lesson-duration-${module.id}`} name="duration_seconds" type="number" min={1} required />
                 </div>
                 <div className="flex flex-col gap-1">
-                  <Label htmlFor={`lesson-yt-${module.id}`}>YouTube video ID (if YouTube)</Label>
+                  <Label htmlFor={`lesson-yt-${module.id}`}>{t("YouTube video ID (if YouTube)", "معرّف فيديو يوتيوب (إن كان المصدر يوتيوب)")}</Label>
                   <Input id={`lesson-yt-${module.id}`} name="youtube_video_id" placeholder="dQw4w9WgXcQ" />
                 </div>
                 <div className="flex flex-col gap-1">
-                  <Label htmlFor={`lesson-drive-${module.id}`}>Google Drive link (if Drive)</Label>
+                  <Label htmlFor={`lesson-drive-${module.id}`}>{t("Google Drive link (if Drive)", "رابط جوجل درايف (إن كان المصدر درايف)")}</Label>
                   <Input id={`lesson-drive-${module.id}`} name="drive_url" placeholder="https://drive.google.com/file/d/.../view" />
                 </div>
                 <div className="flex flex-col gap-1">
-                  <Label htmlFor={`lesson-order-${module.id}`}>Order</Label>
+                  <Label htmlFor={`lesson-order-${module.id}`}>{t("Order", "الترتيب")}</Label>
                   <Input
                     id={`lesson-order-${module.id}`}
                     name="order_index"
@@ -163,10 +167,10 @@ export function ModuleManager({
                 </div>
                 <label className="flex items-center gap-2 self-end text-sm">
                   <input type="checkbox" name="is_preview" className="h-4 w-4" />
-                  Free preview
+                  {t("Free preview", "معاينة مجانية")}
                 </label>
                 <Button type="submit" size="sm" className="w-fit sm:col-span-2">
-                  Add lesson
+                  {t("Add lesson", "إضافة درس")}
                 </Button>
               </form>
             </details>
@@ -176,7 +180,7 @@ export function ModuleManager({
 
       <Card>
         <CardHeader>
-          <CardTitle className="text-base">+ Add module</CardTitle>
+          <CardTitle className="text-base">{t("+ Add module", "+ إضافة وحدة")}</CardTitle>
         </CardHeader>
         <CardContent>
           <form
@@ -184,19 +188,19 @@ export function ModuleManager({
             className="grid grid-cols-1 gap-3 sm:grid-cols-3"
           >
             <div className="flex flex-col gap-1">
-              <Label htmlFor="module-title-en">Title (English)</Label>
+              <Label htmlFor="module-title-en">{t("Title (English)", "العنوان (بالإنجليزية)")}</Label>
               <Input id="module-title-en" name="title_en" required />
             </div>
             <div className="flex flex-col gap-1">
-              <Label htmlFor="module-title-ar">Title (Arabic)</Label>
+              <Label htmlFor="module-title-ar">{t("Title (Arabic)", "العنوان (بالعربية)")}</Label>
               <Input id="module-title-ar" name="title_ar" dir="rtl" required />
             </div>
             <div className="flex flex-col gap-1">
-              <Label htmlFor="module-order">Order</Label>
+              <Label htmlFor="module-order">{t("Order", "الترتيب")}</Label>
               <Input id="module-order" name="order_index" type="number" min={0} defaultValue={modules.length} required />
             </div>
             <Button type="submit" size="sm" className="w-fit sm:col-span-3">
-              Add module
+              {t("Add module", "إضافة وحدة")}
             </Button>
           </form>
         </CardContent>

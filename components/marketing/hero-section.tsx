@@ -1,6 +1,6 @@
 import { getLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
-import { GenhexCoreScene } from "@/components/marketing/genhex-core-scene";
+import { FieldsHoneycomb } from "@/components/marketing/fields-honeycomb";
 import { ArrowRight, ArrowLeft } from "lucide-react";
 
 export async function HeroSection() {
@@ -9,12 +9,16 @@ export async function HeroSection() {
   const Arrow = isAr ? ArrowLeft : ArrowRight;
 
   return (
-    <section className="hero-min-h relative -mt-24 flex items-end overflow-hidden bg-[#0A0A0A]">
-      {/* Full-bleed 3D background -- the GENHEX Core, standing in for the
-          reference design's Spline embed */}
-      <div className="absolute inset-0">
-        <GenhexCoreScene />
-      </div>
+    <section className="lg:min-h-dvh relative -mt-24 flex items-center overflow-hidden bg-[#313A43]">
+      {/* Soft brand glow behind the honeycomb (static, no motion) */}
+      <div
+        className="pointer-events-none absolute inset-0"
+        style={{
+          background:
+            "radial-gradient(60% 60% at 80% 45%, rgba(0,182,191,0.20), transparent 70%), linear-gradient(180deg, #313A43 0%, #272E35 100%)",
+        }}
+        aria-hidden="true"
+      />
 
       {/* Hex-grid backdrop -- brand board's own graphic motif */}
       <div
@@ -26,24 +30,20 @@ export async function HeroSection() {
         aria-hidden="true"
       />
 
-      {/* Dark scrim so text stays legible over the 3D scene, same role as
-          the reference's bg-black/30 overlay */}
-      <div className="pointer-events-none absolute inset-0 z-[2] bg-gradient-to-t from-black/70 via-black/20 to-black/40" aria-hidden="true" />
-
       {/* Content -- anchored bottom-left, pointer-events-none so drag/hover
           on the 3D scene still works through the empty space around text;
           buttons re-enable pointer-events individually */}
-      <div className="relative z-10 mx-auto w-full max-w-6xl px-6 pb-8 pt-24 pointer-events-none sm:pb-14 sm:pt-32 md:pb-16">
-        <div className="max-w-[92%] sm:max-w-lg lg:max-w-2xl">
+      <div className="relative z-10 mx-auto grid w-full max-w-6xl items-center gap-10 px-6 pb-12 pt-28 sm:pt-32 lg:grid-cols-[1.1fr_0.9fr] lg:gap-6 lg:pb-16">
+        <div>
         <span
-          className="animate-fade-up-blur inline-block rounded-full border border-white/15 bg-white/5 px-3 py-1 text-xs font-medium tracking-wide text-[#00BCC8] opacity-0"
+          className="animate-fade-up-blur inline-block rounded-full border border-white/15 bg-white/5 px-3 py-1 text-xs font-medium text-[#00B6BF] opacity-0"
           style={{ animationDelay: "0.2s" }}
         >
           {isAr ? "منصة تعليم تقني ثنائية اللغة" : "A bilingual technology education platform"}
         </span>
 
         <h1
-          className="brand-wordmark animate-fade-up-blur mb-3 mt-5 text-[clamp(3.5rem,11vw,8rem)] font-bold uppercase text-white opacity-0 md:mb-5"
+          className="brand-wordmark animate-fade-up-blur mb-3 mt-5 text-[clamp(3.25rem,10vw,7rem)] font-bold uppercase text-white opacity-0 md:mb-5"
           style={{ animationDelay: "0.35s" }}
         >
           <span className="text-white">GEN</span>
@@ -69,7 +69,7 @@ export async function HeroSection() {
         <div className="flex flex-wrap gap-3 font-bold" style={{ animationDelay: "0.8s" }}>
           <Link
             href="/courses"
-            className="animate-fade-up-blur pointer-events-auto cursor-pointer rounded-sm bg-[#00BCC8] px-6 py-3 text-sm text-[#0A0A0A] opacity-0 transition-all hover:brightness-110 active:scale-[0.97] md:px-8 md:py-4"
+            className="animate-fade-up-blur cursor-pointer rounded-sm bg-[#00B6BF] px-6 py-3 text-sm text-[#0A0A0A] opacity-0 transition-all hover:brightness-110 active:scale-[0.97] md:px-8 md:py-4"
             style={{ animationDelay: "0.8s" }}
           >
             <span className="inline-flex items-center gap-2">
@@ -79,7 +79,7 @@ export async function HeroSection() {
           </Link>
           <Link
             href="/sign-up"
-            className="animate-fade-up-blur pointer-events-auto cursor-pointer rounded-sm bg-white px-6 py-3 text-sm text-[#0A0A0A] opacity-0 transition-all hover:brightness-90 active:scale-[0.97] md:px-8 md:py-4"
+            className="animate-fade-up-blur cursor-pointer rounded-sm bg-white px-6 py-3 text-sm text-[#0A0A0A] opacity-0 transition-all hover:brightness-90 active:scale-[0.97] md:px-8 md:py-4"
             style={{ animationDelay: "0.9s" }}
           >
             {isAr ? "أنشئ حسابًا" : "Create an account"}
@@ -108,6 +108,10 @@ export async function HeroSection() {
             </div>
           ))}
         </dl>
+        </div>
+
+        <div className="mx-auto w-full max-w-[22rem] lg:max-w-none lg:justify-self-end">
+          <FieldsHoneycomb isAr={isAr} />
         </div>
       </div>
     </section>

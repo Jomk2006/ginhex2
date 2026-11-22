@@ -652,6 +652,30 @@ export interface Database {
         Relationships: [];
       };
 
+      certificates: {
+        Row: {
+          id: string;
+          certificate_number: string;
+          verification_slug: string;
+          student_id: string;
+          course_id: string;
+          template_id: string;
+          issued_by: string;
+          final_score_percent: number | null;
+          status: Database["public"]["Enums"]["certificate_status"];
+          revoked_at: string | null;
+          revoked_by: string | null;
+          revoked_reason: string | null;
+          pdf_url: string | null;
+          qr_code_url: string | null;
+          issued_at: string;
+          created_at: string;
+        };
+        Insert: never;
+        Update: never;
+        Relationships: [];
+      };
+
       // ...remaining tables (certificate_templates, certificates, events, event_registrations,
       // labs_projects, labs_collaborators, notifications,
       // audit_logs, background_jobs) follow the identical pattern —
@@ -666,7 +690,24 @@ export interface Database {
       };
       certificate_eligibility: {
         Args: { student_id: string; course_id: string };
-        Returns: { eligible: boolean; qualifying_score: number | null };
+        Returns: { eligible: boolean; qualifying_score: number | null }[];
+      };
+      reorder_module: { Args: { p_module_id: string; p_direction: string }; Returns: undefined };
+      reorder_lesson: { Args: { p_lesson_id: string; p_direction: string }; Returns: undefined };
+      issue_certificate: { Args: { p_student_id: string; p_course_id: string }; Returns: string };
+      revoke_certificate: { Args: { p_certificate_id: string; p_reason: string }; Returns: undefined };
+      verify_certificate: {
+        Args: { p_slug: string };
+        Returns: {
+          certificate_number: string;
+          status: Database["public"]["Enums"]["certificate_status"];
+          issued_at: string;
+          student_name_en: string;
+          student_name_ar: string;
+          course_title_en: string;
+          course_title_ar: string;
+          final_score_percent: number | null;
+        }[];
       };
     };
     Enums: {

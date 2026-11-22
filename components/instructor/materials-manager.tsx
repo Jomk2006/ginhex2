@@ -105,6 +105,8 @@ export function MaterialsManager({
                 type="button"
                 variant="ghost"
                 size="sm"
+                aria-label={isAr ? "حذف المادة" : "Delete material"}
+                title={isAr ? "حذف المادة" : "Delete material"}
                 onClick={() => deleteResourceAction(r.id, r.file_url)}
               >
                 <Trash2 className="h-3.5 w-3.5 text-destructive" />

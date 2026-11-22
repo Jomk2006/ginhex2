@@ -3,7 +3,6 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import { createServiceRoleClient } from "@/lib/supabase/service-role";
 import { courseSchema, moduleSchema, lessonSchema } from "@/lib/validation/courses";
 
 export interface FormActionState {
@@ -58,14 +57,9 @@ export async function createCourseAction(
     return { error: "notAllowed" };
   }
 
-  // Why the service-role client: `INSERT ... RETURNING` needs the SELECT
-  // policy to pass, and a draft course is only visible to is_instructor_of()
-  // — which needs a course_instructors row that cannot exist before the
-  // course does (and which only admins may insert). Through the user's own
-  // session this made every instructor-created course fail. The role check
-  // above is the gate; the two writes below happen as one logical unit.
-  const admin = createServiceRoleClient();
-  const { data: course, error } = await admin
+  // RLS (courses_insert / courses_select) authorizes this insert; the DB trigger
+  // sync_primary_instructor adds the course_instructors row automatically.
+  const { data: course, error } = await supabase
     .from("courses")
     .insert({
       slug: parsed.data.slug,
@@ -96,19 +90,6 @@ export async function createCourseAction(
       error: error?.code === "23505" ? "slugTaken" : "generic",
       errorCode: error?.code || "no_row",
     };
-  }
-
-  const { error: coInstructorError } = await admin
-    .from("course_instructors")
-    .insert({ course_id: course.id, instructor_id: user.id, is_primary: true });
-  if (coInstructorError) {
-    // Roll back so we never leave a course nobody can see or edit.
-    console.error("createCourseAction: course_instructors insert failed", {
-      code: coInstructorError.code,
-      message: coInstructorError.message,
-    });
-    await admin.from("courses").delete().eq("id", course.id);
-    return { error: "generic", errorCode: coInstructorError.code || "ci_insert" };
   }
 
   const editBase = creatorProfile.role === "admin" ? "app/admin" : "app/instructor";
@@ -213,50 +194,21 @@ export async function deleteLessonAction(lessonId: string) {
 }
 
 /**
- * Swaps order_index with the sibling immediately before/after. Both
- * rows are read fresh and written in sequence rather than trusting
- * client-supplied indices, so a stale UI can't corrupt ordering.
+ * Reordering runs inside Postgres (reorder_module / reorder_lesson): one
+ * statement swaps the two rows, which the deferrable unique constraint allows.
+ * Two separate client UPDATEs would collide on (course_id, order_index) and
+ * silently leave the order unchanged. RLS still applies (SECURITY INVOKER).
  */
 export async function moveModuleAction(moduleId: string, direction: "up" | "down") {
   const supabase = await createClient();
-  const { data: current } = await supabase.from("modules").select("*").eq("id", moduleId).maybeSingle();
-  if (!current) return;
-
-  const { data: siblings } = await supabase
-    .from("modules")
-    .select("id, order_index")
-    .eq("course_id", current.course_id)
-    .order("order_index", { ascending: true });
-  if (!siblings) return;
-
-  const index = siblings.findIndex((s) => s.id === moduleId);
-  const swapIndex = direction === "up" ? index - 1 : index + 1;
-  if (swapIndex < 0 || swapIndex >= siblings.length) return;
-
-  const target = siblings[swapIndex];
-  await supabase.from("modules").update({ order_index: target.order_index }).eq("id", moduleId);
-  await supabase.from("modules").update({ order_index: current.order_index }).eq("id", target.id);
+  const { error } = await supabase.rpc("reorder_module", { p_module_id: moduleId, p_direction: direction });
+  if (error) console.error("moveModuleAction failed", { code: error.code, message: error.message });
   revalidatePath("/[locale]/app", "layout");
 }
 
 export async function moveLessonAction(lessonId: string, direction: "up" | "down") {
   const supabase = await createClient();
-  const { data: current } = await supabase.from("lessons").select("*").eq("id", lessonId).maybeSingle();
-  if (!current) return;
-
-  const { data: siblings } = await supabase
-    .from("lessons")
-    .select("id, order_index")
-    .eq("module_id", current.module_id)
-    .order("order_index", { ascending: true });
-  if (!siblings) return;
-
-  const index = siblings.findIndex((s) => s.id === lessonId);
-  const swapIndex = direction === "up" ? index - 1 : index + 1;
-  if (swapIndex < 0 || swapIndex >= siblings.length) return;
-
-  const target = siblings[swapIndex];
-  await supabase.from("lessons").update({ order_index: target.order_index }).eq("id", lessonId);
-  await supabase.from("lessons").update({ order_index: current.order_index }).eq("id", target.id);
+  const { error } = await supabase.rpc("reorder_lesson", { p_lesson_id: lessonId, p_direction: direction });
+  if (error) console.error("moveLessonAction failed", { code: error.code, message: error.message });
   revalidatePath("/[locale]/app", "layout");
 }

@@ -11,6 +11,7 @@ import {
 } from "@/lib/validation/auth";
 import { ROLE_HOME_PATH } from "@/types/domain";
 import { decodeJwtClaims } from "@/lib/auth/decode-claims";
+import type { UserRole } from "@/types/domain";
 
 export interface AuthActionState {
   error?: string;
@@ -20,6 +21,19 @@ export interface AuthActionState {
 function localePrefix(formData: FormData) {
   const locale = String(formData.get("locale") ?? "en");
   return locale === "ar" ? "/ar" : "/en";
+}
+
+/** Role comes from the profiles table (source of truth); the JWT claim is only a fallback. */
+async function resolveRole(
+  supabase: Awaited<ReturnType<typeof createClient>>,
+  userId: string | undefined,
+  accessToken: string | undefined
+): Promise<UserRole> {
+  if (userId) {
+    const { data } = await supabase.from("profiles").select("role").eq("id", userId).maybeSingle();
+    if (data?.role) return data.role;
+  }
+  return decodeJwtClaims(accessToken ?? "").user_role ?? "student";
 }
 
 /** Only same-site, same-locale relative paths are honored (blocks open redirects). */
@@ -50,8 +64,7 @@ export async function signInAction(
     return { error: "invalidCredentials" };
   }
 
-  const claims = decodeJwtClaims(data.session.access_token);
-  const role = claims.user_role ?? "student";
+  const role = await resolveRole(supabase, data.user?.id, data.session.access_token);
   const target = safeRedirectTarget(formData);
   redirect(target ?? `${localePrefix(formData)}${ROLE_HOME_PATH[role]}`);
 }
@@ -96,8 +109,7 @@ export async function signUpAction(
     return { success: "confirmEmail" };
   }
 
-  const claims = decodeJwtClaims(data.session.access_token);
-  const role = claims.user_role ?? "student";
+  const role = await resolveRole(supabase, data.user?.id, data.session.access_token);
   redirect(`${localePrefix(formData)}${ROLE_HOME_PATH[role]}`);
 }
 
@@ -149,8 +161,7 @@ export async function updatePasswordAction(
   const {
     data: { session },
   } = await supabase.auth.getSession();
-  const claims = decodeJwtClaims(session?.access_token ?? "");
-  const role = claims.user_role ?? "student";
+  const role = await resolveRole(supabase, user?.id, session?.access_token);
 
   if (!user) {
     redirect(`${localePrefix(formData)}/sign-in`);

@@ -1,5 +1,7 @@
 "use client";
 
+import { useLocale } from "next-intl";
+
 /**
  * Renders a Google Drive-hosted video via Drive's own preview embed.
  * Accepts either a raw file ID or a full Drive URL (share link or
@@ -11,12 +13,13 @@
  * disclosed limitation, not something quietly skipped.
  */
 export function GoogleDrivePlayer({ url }: { url: string }) {
+  const isAr = useLocale() === "ar";
   const embedUrl = toDrivePreviewUrl(url);
 
   if (!embedUrl) {
     return (
       <div className="flex aspect-video w-full items-center justify-center rounded-lg bg-black text-sm text-white/60">
-        Invalid Google Drive link
+        {isAr ? "رابط Google Drive غير صالح" : "Invalid Google Drive link"}
       </div>
     );
   }
@@ -28,7 +31,7 @@ export function GoogleDrivePlayer({ url }: { url: string }) {
         className="h-full w-full"
         allow="autoplay"
         allowFullScreen
-        title="Lesson video"
+        title={isAr ? "فيديو الدرس" : "Lesson video"}
       />
     </div>
   );

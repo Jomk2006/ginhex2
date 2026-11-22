@@ -5,6 +5,7 @@ import {
   ClipboardCheck,
   User,
   FlaskConical,
+  Award,
   type LucideIcon,
 } from "lucide-react";
 import type { UserRole } from "@/types/domain";
@@ -23,6 +24,7 @@ export function getAppNavItems(role: UserRole): NavItem[] {
     return [
       { href: "/app/student", labelEn: "Dashboard", labelAr: "لوحة التحكم", icon: LayoutDashboard },
       { href: "/app/student/attendance", labelEn: "Attendance", labelAr: "الحضور", icon: ClipboardCheck },
+      { href: "/app/student/certificates", labelEn: "Certificates", labelAr: "شهاداتي", icon: Award },
       { href: "/app/labs", labelEn: "Labs", labelAr: "Labs", icon: FlaskConical },
       ...common,
     ];
@@ -43,6 +45,7 @@ export function getAppNavItems(role: UserRole): NavItem[] {
     { href: "/app/admin/courses", labelEn: "Courses", labelAr: "الدورات", icon: BookOpen },
     { href: "/app/admin/users", labelEn: "Users", labelAr: "المستخدمون", icon: Users },
     { href: "/app/admin/attendance", labelEn: "Attendance", labelAr: "الحضور", icon: ClipboardCheck },
+    { href: "/app/admin/certificates", labelEn: "Certificates", labelAr: "الشهادات", icon: Award },
     { href: "/app/labs", labelEn: "Labs", labelAr: "Labs", icon: FlaskConical },
     ...common,
   ];

@@ -146,3 +146,16 @@ html[lang="ar"] [class*="tracking-"] { letter-spacing: normal; }
 .brand-wordmark { font-family: var(--font-display), system-ui, sans-serif !important; letter-spacing: -0.03em !important; line-height: 1 !important; }
 
 :focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; }
+
+/* Hero honeycomb: one entrance per cell, hover/focus lights a cell. */
+@keyframes hex-in { from { opacity: 0; transform: scale(0.86); } to { opacity: 1; transform: scale(1); } }
+.hex-cell { animation: hex-in 0.6s cubic-bezier(0.22, 1, 0.36, 1) both; transform-box: fill-box; transform-origin: center; }
+.hex-shape { fill: #374049; stroke: rgba(0, 182, 191, 0.55); stroke-width: 1.5; transition: fill 0.2s ease, stroke 0.2s ease; }
+.hex-ink { fill: none; stroke: #ffffff; color: #ffffff; transition: stroke 0.2s ease, fill 0.2s ease; }
+text.hex-ink { fill: #ffffff; stroke: none; }
+.hex-label { font-size: 12.5px; font-weight: 600; font-family: inherit; }
+.hex-link { cursor: pointer; }
+a:hover .hex-shape, a:focus-visible .hex-shape { fill: #00b6bf; stroke: #00b6bf; }
+a:hover .hex-ink, a:focus-visible .hex-ink { stroke: #0a0a0a; }
+a:hover text.hex-ink, a:focus-visible text.hex-ink { fill: #0a0a0a; stroke: none; }
+@media (prefers-reduced-motion: reduce) { .hex-cell { animation: none; } }
