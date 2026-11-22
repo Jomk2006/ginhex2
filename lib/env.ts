@@ -3,7 +3,9 @@ import { z } from "zod";
 const serverEnvSchema = z.object({
   NEXT_PUBLIC_SUPABASE_URL: z.string().url(),
   NEXT_PUBLIC_SUPABASE_ANON_KEY: z.string().min(1),
-  SUPABASE_SERVICE_ROLE_KEY: z.string().min(1),
+  // Optional at build time: validated lazily where it is actually used
+  // (createServiceRoleClient), so the site can build/deploy before it is set.
+  SUPABASE_SERVICE_ROLE_KEY: z.string().min(1).optional(),
   NEXT_PUBLIC_SITE_URL: z.string().url(),
 });
 

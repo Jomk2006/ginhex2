@@ -18,9 +18,13 @@ import { serverEnv } from "@/lib/env";
  * runtime surprise.
  */
 export function createServiceRoleClient() {
+  const key = serverEnv.SUPABASE_SERVICE_ROLE_KEY;
+  if (!key) {
+    throw new Error("SUPABASE_SERVICE_ROLE_KEY is not configured on the server");
+  }
   return createSupabaseClient<Database>(
     serverEnv.NEXT_PUBLIC_SUPABASE_URL,
-    serverEnv.SUPABASE_SERVICE_ROLE_KEY,
+    key,
     {
       auth: {
         autoRefreshToken: false,
