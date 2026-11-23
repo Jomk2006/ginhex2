@@ -61,7 +61,7 @@ export function MaterialsManager({
 
       const { error: uploadError } = await supabase.storage.from("course-materials").upload(path, file);
       if (uploadError) {
-        setError(isAr ? "فشل رفع الملف." : "File upload failed.");
+        setError(isAr ? "تعذّر رفع الملف. حاول مرة أخرى." : "We couldn't upload that file. Try again.");
         return;
       }
 
@@ -72,7 +72,7 @@ export function MaterialsManager({
 
       const result = await recordUploadedResourceAction(courseId, lessonId, recordData);
       if (result.error) {
-        setError(isAr ? "تم رفع الملف لكن حدث خطأ في الحفظ." : "File uploaded but saving the record failed.");
+        setError(isAr ? "اكتمل رفع الملف، لكن تعذّر حفظه. حاول مرة أخرى." : "The file uploaded, but we couldn't save it. Please try again.");
         return;
       }
       if (fileInputRef.current) fileInputRef.current.value = "";

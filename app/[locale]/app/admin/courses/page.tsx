@@ -44,7 +44,7 @@ export default async function AdminCoursesPage({
           <CardHeader>
             <CardTitle>{isAr ? "لا توجد دورات بعد" : "No courses yet"}</CardTitle>
             <CardDescription>
-              {isAr ? "ابدأ بإنشاء أول دورة على المنصة." : "Start by creating the platform's first course."}
+              {isAr ? "أنشئ أول دورة لتنطلق المنصة." : "Create the first course to get the platform going."}
             </CardDescription>
           </CardHeader>
         </Card>

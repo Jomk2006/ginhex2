@@ -78,9 +78,9 @@ export default async function InstructorDashboardPage() {
       {courses.length === 0 ? (
         <Card>
           <CardHeader>
-            <CardTitle>{isAr ? "لم تُنشئ أي دورة بعد" : "You haven't created a course yet"}</CardTitle>
+            <CardTitle>{isAr ? "انشر أول دورة لك" : "Publish your first course"}</CardTitle>
             <CardDescription>
-              {isAr ? "ابدأ ببناء أول دورة لك على GENHEX." : "Start building your first course on GENHEX."}
+              {isAr ? "أضف الوحدات والدروس، وانشر حين تكون جاهزًا." : "Add modules and lessons, then publish when you're ready."}
             </CardDescription>
           </CardHeader>
         </Card>

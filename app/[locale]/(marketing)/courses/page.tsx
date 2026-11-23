@@ -37,7 +37,7 @@ export default async function CoursesPage({
       <div className="mb-8 flex flex-col gap-2">
         <h1 className="text-3xl font-semibold tracking-tight">{isAr ? "الدورات" : "Courses"}</h1>
         <p className="text-muted-foreground">
-          {isAr ? "تعلّم التقنيات التي تحوّل الأفكار إلى أنظمة." : "Learn the technologies that turn ideas into systems."}
+          {isAr ? "اختر دورتك، وتعلّم بسرعتك، وابنِ مهارات حقيقية." : "Pick a course, learn at your own pace, and build real skills."}
         </p>
       </div>
 
@@ -53,7 +53,7 @@ export default async function CoursesPage({
         </p>
       ) : courses.length === 0 ? (
         <p className="py-16 text-center text-muted-foreground">
-          {isAr ? "لا توجد دورات مطابقة." : "No courses match your filters."}
+          {isAr ? "لا توجد دورات مطابقة. جرّب تغيير الفلاتر." : "No courses match those filters. Try changing them."}
         </p>
       ) : (
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">

@@ -16,14 +16,14 @@ export async function MarketingFooter() {
   const isAr = locale === "ar";
 
   return (
-    <footer className="border-t border-border">
-      <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 px-6 py-8 text-sm text-muted-foreground sm:flex-row">
+    <footer className="border-t border-border bg-canvas">
+      <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-6 px-6 py-10 text-sm text-muted-foreground sm:flex-row">
         <Logo height={40} />
         <nav className="flex items-center gap-6">
-          <Link href="/courses" className="hover:text-foreground">
+          <Link href="/courses" className="rounded-sm transition-colors hover:text-foreground">
             {isAr ? "الدورات" : "Courses"}
           </Link>
-          <Link href="/sign-in" className="hover:text-foreground">
+          <Link href="/sign-in" className="rounded-sm transition-colors hover:text-foreground">
             {isAr ? "تسجيل الدخول" : "Sign in"}
           </Link>
         </nav>
@@ -35,7 +35,7 @@ export async function MarketingFooter() {
               target="_blank"
               rel="noopener noreferrer"
               aria-label={name}
-              className="text-muted-foreground transition-colors hover:text-[#00BCC8]"
+              className="flex h-9 w-9 items-center justify-center rounded-full border border-border bg-card text-muted-foreground transition-[color,border-color,transform] duration-150 hover:-translate-y-px hover:border-[color-mix(in_srgb,var(--genhex-cyan)_50%,var(--border))] hover:text-link"
             >
               <Icon className="h-4 w-4" />
             </a>

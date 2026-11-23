@@ -33,7 +33,7 @@ export default async function AdminCertificatesPage({ params }: { params: Promis
         </p>
       </div>
 
-      {rows === null && <p role="alert" className="text-destructive">{isAr ? "تعذّر تحميل البيانات." : "Couldn't load the data."}</p>}
+      {rows === null && <p role="alert" className="text-destructive">{isAr ? "تعذّر تحميل البيانات. حدّث الصفحة وحاول مرة أخرى." : "We couldn't load this data. Refresh to try again."}</p>}
       {rows?.length === 0 && <p className="text-sm text-muted-foreground">{isAr ? "لا يوجد طلاب مسجّلون بعد." : "No enrolled students yet."}</p>}
 
       <ul className="flex flex-col gap-2">

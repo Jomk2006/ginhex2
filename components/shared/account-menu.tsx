@@ -53,7 +53,7 @@ export function AccountMenu({ displayName, email, role, genhexId, avatarUrl, onD
         aria-haspopup="menu"
         aria-expanded={open}
         className={cn(
-          "flex items-center gap-2 rounded-full py-1 pe-2 ps-1 text-sm transition-colors",
+          "flex items-center gap-2 rounded-full border border-transparent py-1 pe-2.5 ps-1 text-sm transition-colors duration-150 hover:border-border",
           onDark ? "text-white hover:bg-white/10" : "text-foreground hover:bg-muted"
         )}
       >
@@ -61,7 +61,7 @@ export function AccountMenu({ displayName, email, role, genhexId, avatarUrl, onD
           // eslint-disable-next-line @next/next/no-img-element -- small avatar from a user-supplied URL, not worth Next/Image's remote-pattern config for this
           <img src={avatarUrl} alt="" className="h-8 w-8 rounded-full object-cover" />
         ) : (
-          <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[#00BCC8] text-sm font-semibold text-[#0A0A0A]">
+          <span className="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-sm font-semibold text-primary-foreground shadow-xs">
             {initial}
           </span>
         )}
@@ -73,14 +73,14 @@ export function AccountMenu({ displayName, email, role, genhexId, avatarUrl, onD
         <div
           role="menu"
           className={cn(
-            "absolute end-0 z-50 mt-2 w-56 overflow-hidden rounded-lg border border-border bg-card text-card-foreground shadow-lg"
+            "absolute end-0 z-50 mt-2 w-56 overflow-hidden rounded-xl border border-border bg-popover text-card-foreground shadow-lg"
           )}
         >
           <div className="border-b border-border px-4 py-3">
             <p className="truncate text-sm font-medium">{displayName}</p>
             <p className="truncate text-xs text-muted-foreground">{email}</p>
             <p className="mt-0.5 font-mono text-xs text-muted-foreground">{genhexId}</p>
-            <span className="mt-1 inline-block rounded-full bg-muted px-2 py-0.5 text-xs text-muted-foreground">
+            <span className="mt-1 inline-block rounded-full bg-accent px-2.5 py-0.5 text-xs font-medium text-accent-foreground">
               {ROLE_LABELS[role][isAr ? "ar" : "en"]}
             </span>
           </div>
@@ -88,7 +88,7 @@ export function AccountMenu({ displayName, email, role, genhexId, avatarUrl, onD
             <Link
               href="/app/profile"
               onClick={() => setOpen(false)}
-              className="flex items-center gap-2 px-4 py-2 text-sm hover:bg-muted"
+              className="flex items-center gap-2 mx-1 rounded-md px-3 py-2 text-sm transition-colors hover:bg-muted"
             >
               <User className="h-4 w-4" />
               {isAr ? "الملف الشخصي" : "Profile"}
@@ -96,7 +96,7 @@ export function AccountMenu({ displayName, email, role, genhexId, avatarUrl, onD
             <Link
               href={dashboardPath}
               onClick={() => setOpen(false)}
-              className="flex items-center gap-2 px-4 py-2 text-sm hover:bg-muted"
+              className="flex items-center gap-2 mx-1 rounded-md px-3 py-2 text-sm transition-colors hover:bg-muted"
             >
               <LayoutDashboard className="h-4 w-4" />
               {isAr ? "لوحة التحكم" : "Dashboard"}
@@ -106,7 +106,7 @@ export function AccountMenu({ displayName, email, role, genhexId, avatarUrl, onD
             <input type="hidden" name="locale" value={locale} />
             <button
               type="submit"
-              className="flex w-full items-center gap-2 px-4 py-2 text-sm text-destructive hover:bg-muted"
+              className="mx-1 flex w-[calc(100%-0.5rem)] items-center gap-2 rounded-md px-3 py-2 text-sm text-destructive transition-colors hover:bg-muted"
             >
               <LogOut className="h-4 w-4" />
               {isAr ? "تسجيل الخروج" : "Sign out"}

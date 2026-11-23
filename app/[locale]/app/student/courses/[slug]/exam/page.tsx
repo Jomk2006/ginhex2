@@ -65,7 +65,7 @@ export default async function StudentExamPage({ params }: { params: Promise<{ sl
       </div>
 
       {exams.length === 0 && (
-        <p className="text-sm text-muted-foreground">{isAr ? "لا توجد امتحانات منشورة لهذه الدورة بعد." : "No exams are published for this course yet."}</p>
+        <p className="text-sm text-muted-foreground">{isAr ? "لم يُنشر امتحان لهذه الدورة بعد." : "No exam has been published for this course yet."}</p>
       )}
 
       {exams.map((exam) => {
@@ -115,7 +115,7 @@ export default async function StudentExamPage({ params }: { params: Promise<{ sl
                     : `Your attendance is ${Math.round(attendancePct)}% — ${exam.attendance_requirement_percent}% is required.`}
                 </p>
               )}
-              {!open && <p className="text-muted-foreground">{isAr ? "الامتحان غير متاح في هذا الوقت." : "This exam isn't open right now."}</p>}
+              {!open && <p className="text-muted-foreground">{isAr ? "الامتحان غير متاح حاليًا." : "This exam isn't open at the moment."}</p>}
               <StartExamButton examId={exam.id} locale={locale} disabled={!attendanceOk || !open || attemptsLeft <= 0} />
             </CardContent>
           </Card>

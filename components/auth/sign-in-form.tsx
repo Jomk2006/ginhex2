@@ -48,7 +48,7 @@ export function SignInForm() {
         {oauthError && (
           <Alert variant="destructive">
             {OAUTH_ERROR_MESSAGES[oauthError]?.[isAr ? "ar" : "en"] ??
-              (isAr ? "حدث خطأ أثناء تسجيل الدخول." : "Something went wrong signing in.")}
+              (isAr ? "تعذّر تسجيل دخولك. حاول مرة أخرى." : "We couldn't sign you in. Please try again.")}
           </Alert>
         )}
 

@@ -19,7 +19,7 @@ export function Logo({ className, height = 56 }: { className?: string; height?: 
   return (
     <span
       className={cn(
-        "inline-flex items-center justify-center rounded-lg bg-white shadow-sm ring-1 ring-black/5",
+        "inline-flex items-center justify-center rounded-md bg-white shadow-sm ring-1 ring-[#343D46]/10",
         className
       )}
       style={{ height, padding: inset }}

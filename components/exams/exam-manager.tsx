@@ -168,7 +168,7 @@ export function ExamManager({ courseId, exams, isAr }: { courseId: string; exams
       </Card>
 
       {exams.length === 0 && (
-        <p className="text-sm text-muted-foreground">{isAr ? "لا توجد امتحانات بعد." : "No exams yet."}</p>
+        <p className="text-sm text-muted-foreground">{isAr ? "لا توجد امتحانات بعد. أنشئ أول امتحان." : "No exams yet. Create one to get started."}</p>
       )}
 
       {exams.map((exam) => (

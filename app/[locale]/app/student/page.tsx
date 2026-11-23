@@ -43,9 +43,9 @@ export default async function StudentDashboardPage() {
       {enrollments.length === 0 ? (
         <Card>
           <CardHeader>
-            <CardTitle>{isAr ? "لست مسجَّلاً في أي دورة بعد" : "You're not enrolled in any course yet"}</CardTitle>
+            <CardTitle>{isAr ? "أول دورة لك في انتظارك" : "Your first course is waiting"}</CardTitle>
             <CardDescription>
-              {isAr ? "استكشف الدورات المتاحة وابدأ التعلّم." : "Explore available courses and start learning."}
+              {isAr ? "تصفّح الدورات وسجّل مجانًا وابدأ أول درس." : "Browse the catalog, enroll for free, and start your first lesson."}
             </CardDescription>
           </CardHeader>
           <div className="px-6 pb-6">

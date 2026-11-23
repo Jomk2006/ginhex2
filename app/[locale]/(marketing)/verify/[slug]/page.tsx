@@ -19,7 +19,7 @@ export default async function VerifyCertificatePage({ params }: { params: Promis
       <div className="mx-auto max-w-xl px-6 py-24 text-center">
         <h1 className="text-2xl font-semibold">{isAr ? "الشهادة غير موجودة" : "Certificate not found"}</h1>
         <p className="mt-3 text-muted-foreground">
-          {isAr ? "تأكد من الرابط أو رمز التحقق وحاول مرة أخرى." : "Check the link or verification code and try again."}
+          {isAr ? "تأكد من الرابط أو رمز التحقق وحاول مرة أخرى." : "Check the link or the verification code and try again."}
         </p>
       </div>
     );
@@ -36,7 +36,7 @@ export default async function VerifyCertificatePage({ params }: { params: Promis
       >
         {revoked
           ? isAr ? "هذه الشهادة أُلغيت ولم تعد صالحة." : "This certificate has been revoked and is no longer valid."
-          : isAr ? "شهادة أصلية ومُتحقَّق منها." : "Authentic, verified certificate."}
+          : isAr ? "تم التحقق. هذه الشهادة أصلية." : "Verified. This certificate is authentic."}
       </div>
 
       <article className="rounded-lg border-2 border-[#00B6BF] bg-white p-10 text-center text-[#313A43] shadow-sm print:shadow-none sm:p-14">

@@ -30,7 +30,7 @@ export default async function AdminNewCoursePage({
           <CardHeader>
             <CardTitle>{isAr ? "بيانات الدورة" : "Course details"}</CardTitle>
             <CardDescription>
-              {isAr ? "تبدأ الدورة كمسودة — انشرها لما تجهّز الوحدات والدروس." : "Starts as a draft — publish it once modules and lessons are ready."}
+              {isAr ? "تبدأ الدورة كمسودة. انشرها حين تجهّز الوحدات والدروس." : "Your course starts as a draft. Publish it once the modules and lessons are ready."}
             </CardDescription>
           </CardHeader>
           <CardContent>

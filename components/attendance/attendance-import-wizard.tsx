@@ -38,7 +38,7 @@ export function AttendanceImportWizard({ courseId, sessionId }: { courseId: stri
       formData.set("file", file);
       const result = await stageAttendanceImportAction(courseId, sessionId, formData);
       if (result.error || !result.batchId || !result.rows || !result.summary) {
-        setError(isAr ? "تعذّرت معالجة الملف." : "Couldn't process that file.");
+        setError(isAr ? "تعذّرت قراءة الملف. راجع الأعمدة وحاول مرة أخرى." : "We couldn't read that file. Check its columns and try again.");
         return;
       }
       setStaged({ batchId: result.batchId, rows: result.rows, summary: result.summary });
@@ -50,7 +50,7 @@ export function AttendanceImportWizard({ courseId, sessionId }: { courseId: stri
     startTransition(async () => {
       const result = await commitAttendanceImportAction(staged.batchId);
       if (result.error || result.imported === undefined) {
-        setError(isAr ? "فشل حفظ الحضور." : "Failed to save attendance.");
+        setError(isAr ? "تعذّر حفظ الحضور. حاول مرة أخرى." : "We couldn't save attendance. Try again.");
         return;
       }
       setCommitted(result.imported);

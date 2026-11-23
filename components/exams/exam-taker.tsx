@@ -9,7 +9,7 @@ import { startAttemptAction, submitAttemptAction } from "@/actions/exams";
 import type { StudentExam } from "@/lib/data/exams";
 
 const START_ERRORS: Record<string, [string, string]> = {
-  notAvailable: ["This exam isn't open right now.", "هذا الامتحان غير متاح حاليًا."],
+  notAvailable: ["This exam isn't open at the moment.", "هذا الامتحان غير متاح حاليًا."],
   notEnrolled: ["You must be enrolled in this course.", "يجب أن تكون مسجّلًا في هذه الدورة."],
   noAttemptsLeft: ["You've used all your attempts.", "استنفدت كل محاولاتك."],
   attendanceTooLow: ["Your attendance is below the required minimum.", "نسبة حضورك أقل من الحد المطلوب."],
@@ -105,7 +105,7 @@ export function ExamTaker({
         </span>
       </div>
 
-      {error && <Alert variant="destructive">{isAr ? "تعذّر التسليم. حاول مرة أخرى." : "Couldn't submit. Try again."}</Alert>}
+      {error && <Alert variant="destructive">{isAr ? "لم يصل تسليمك. حاول مرة أخرى." : "Your answers didn't go through. Try submitting again."}</Alert>}
 
       {exam.questions.map((q, i) => {
         const choices = q.type === "true_false" ? ["true", "false"] : (q.options ?? []);

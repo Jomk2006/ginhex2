@@ -66,7 +66,7 @@ export function SessionList({
 
       <div className="flex flex-col gap-2">
         {sessions.length === 0 ? (
-          <p className="text-sm text-muted-foreground">{isAr ? "لا توجد جلسات بعد." : "No sessions yet."}</p>
+          <p className="text-sm text-muted-foreground">{isAr ? "لا توجد جلسات بعد. أنشئ جلسة لتبدأ تسجيل الحضور." : "No sessions yet. Create one to start taking attendance."}</p>
         ) : (
           sessions.map((session) => (
             <Link

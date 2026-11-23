@@ -41,25 +41,25 @@ export function MarketingNav({ theme, account }: { theme: Theme; account: Accoun
   const onDarkHero = isHomepage && !scrolled;
 
   const navLinkClass = cn(
-    "text-xs font-medium uppercase tracking-widest transition-colors [html[lang=ar]_&]:text-sm",
+    "rounded-md px-3 py-2 text-sm font-medium transition-colors duration-150",
     onDarkHero ? "text-white/70 hover:text-white" : "text-muted-foreground hover:text-foreground"
   );
 
   return (
     <header
       className={cn(
-        "fixed inset-x-0 top-0 z-50 transition-colors duration-300",
+        "fixed inset-x-0 top-0 z-50 transition-[background-color,border-color,box-shadow] duration-300",
         scrolled
-          ? "border-b border-border/60 bg-background/70 backdrop-blur-xl"
+          ? "border-b border-border bg-background/75 shadow-sm backdrop-blur-xl backdrop-saturate-150"
           : "border-b border-transparent bg-transparent"
       )}
     >
-      <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-3">
+      <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-2.5 sm:px-6">
         <Link href="/">
-          <Logo height={60} />
+          <Logo height={48} />
         </Link>
         <div className="flex items-center gap-2">
-          <nav className="me-2 hidden items-center gap-6 sm:flex">
+          <nav className="me-2 hidden items-center gap-1 sm:flex">
             <Link href="/courses" className={navLinkClass}>
               {isAr ? "الدورات" : "Courses"}
             </Link>

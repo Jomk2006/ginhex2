@@ -86,7 +86,7 @@ export function CodePlayground() {
               <pre className="flex-1 overflow-auto whitespace-pre-wrap p-4 font-mono text-sm">
                 {isRunningPython && !pythonOutput && !pythonError ? (
                   <span className="text-muted-foreground">
-                    {isAr ? "جارٍ تحميل بيئة Python (أول مرة بس)..." : "Loading the Python runtime (first run only)..."}
+                    {isAr ? "جارٍ تجهيز Python. يحدث هذا في أول تشغيل فقط..." : "Getting Python ready. This only happens on your first run..."}
                   </span>
                 ) : (
                   <>
@@ -94,7 +94,7 @@ export function CodePlayground() {
                     {pythonError && <span className="text-destructive">{pythonError}</span>}
                     {!pythonOutput && !pythonError && (
                       <span className="text-muted-foreground">
-                        {isAr ? "اضغط تشغيل عشان تشوف النتيجة." : "Press Run to see the output."}
+                        {isAr ? "اضغط «تشغيل» لترى النتيجة هنا." : "Press Run and your output appears here."}
                       </span>
                     )}
                   </>

@@ -46,7 +46,7 @@ export function CoverImageField({ defaultValue }: { defaultValue?: string }) {
         data: { user },
       } = await supabase.auth.getUser();
       if (!user) {
-        setError(isAr ? "انتهت الجلسة." : "Session expired.");
+        setError(isAr ? "انتهت جلستك. سجّل دخولك مرة أخرى." : "Your session has ended. Sign in again.");
         return;
       }
 
@@ -57,7 +57,7 @@ export function CoverImageField({ defaultValue }: { defaultValue?: string }) {
         upsert: false,
       });
       if (uploadError) {
-        setError(isAr ? "فشل رفع الصورة." : "Image upload failed.");
+        setError(isAr ? "تعذّر رفع الصورة. حاول مرة أخرى." : "We couldn't upload that image. Try again.");
         return;
       }
 

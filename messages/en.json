@@ -1,54 +1,74 @@
 {
   "auth": {
     "signIn": {
-      "title": "Sign in",
-      "subtitle": "Welcome back to GENHEX.",
+      "title": "Welcome back",
+      "subtitle": "Sign in and pick up where you left off.",
       "email": "Email",
       "password": "Password",
       "submit": "Sign in",
       "forgotPassword": "Forgot your password?",
-      "noAccount": "Don't have an account?",
-      "signUpLink": "Create one",
-      "orContinueWith": "Or continue with",
-      "google": "Continue with Google"
+      "noAccount": "New to GENHEX?",
+      "signUpLink": "Create your free account",
+      "orContinueWith": "or",
+      "google": "Continue with Google",
+      "emailPlaceholder": "you@example.com"
     },
     "signUp": {
-      "title": "Create your account",
-      "subtitle": "Join GENHEX and start building what's next.",
+      "title": "Create your free account",
+      "subtitle": "Free courses, live sessions and certificates anyone can verify. Setting up takes about a minute.",
       "fullNameEn": "Full name (English)",
       "fullNameAr": "Full name (Arabic)",
       "email": "Email",
       "password": "Password",
-      "submit": "Create account",
+      "submit": "Create my free account",
       "haveAccount": "Already have an account?",
-      "signInLink": "Sign in"
+      "signInLink": "Sign in",
+      "passwordHint": "At least 8 characters.",
+      "nameHint": "Write it the way you want it printed on your certificates.",
+      "emailPlaceholder": "you@example.com",
+      "confirmEmail": "Almost there. We sent a confirmation link to your email. Open it and you're in."
     },
     "resetPassword": {
       "title": "Reset your password",
-      "subtitle": "We'll email you a link to set a new password.",
+      "subtitle": "Enter your email and we'll send you a link to choose a new one.",
       "email": "Email",
-      "submit": "Send reset link",
+      "submit": "Send me a reset link",
       "backToSignIn": "Back to sign in",
-      "success": "Check your email for a reset link."
+      "success": "Check your inbox. If there's an account with that email, a reset link is on its way."
     },
     "updatePassword": {
-      "title": "Set a new password",
-      "subtitle": "Choose a new password for your account.",
+      "title": "Choose a new password",
+      "subtitle": "Use at least 8 characters, and something you haven't used before.",
       "password": "New password",
       "confirmPassword": "Confirm new password",
-      "submit": "Update password"
+      "submit": "Save new password"
     },
     "errors": {
-      "invalidCredentials": "Incorrect email or password.",
-      "emailInUse": "An account with this email already exists.",
-      "generic": "Something went wrong. Please try again.",
-      "weakPassword": "Password must be at least 8 characters.",
-      "passwordMismatch": "Passwords don't match."
+      "invalidCredentials": "That email or password isn't right. Check them and try again.",
+      "emailInUse": "There's already an account with this email. Try signing in instead.",
+      "generic": "Something went wrong on our side. Please try again.",
+      "weakPassword": "Use at least 8 characters for your password.",
+      "passwordMismatch": "The two passwords don't match.",
+      "emailNotConfirmed": "Confirm your email first. We've sent you a link.",
+      "tooManyAttempts": "Too many attempts. Wait a minute, then try again."
     }
   },
   "nav": {
     "signOut": "Sign out",
-    "dashboard": "Dashboard"
+    "dashboard": "Dashboard",
+    "courses": "Courses",
+    "labs": "Labs",
+    "events": "Events",
+    "verify": "Verify a certificate",
+    "about": "About",
+    "signIn": "Sign in",
+    "signUp": "Join free",
+    "getStarted": "Start learning free",
+    "profile": "Profile",
+    "language": "العربية",
+    "skipToContent": "Skip to content",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu"
   },
   "roles": {
     "student": "Student",
@@ -56,14 +76,274 @@
     "admin": "Admin"
   },
   "dashboard": {
-    "welcome": "Welcome, {name}",
-    "studentOverview": "Your courses, attendance, exams, and certificates will appear here.",
-    "instructorOverview": "Your courses, attendance sessions, and grading queue will appear here.",
-    "adminOverview": "Platform-wide management will appear here."
+    "welcome": "Welcome back, {name}",
+    "studentOverview": "Your courses, attendance, exams and certificates, all in one place.",
+    "instructorOverview": "Your courses, live sessions and students, all in one place.",
+    "adminOverview": "Courses, people and certificates across the whole platform.",
+    "studentEmptyTitle": "Your first course is one click away",
+    "studentEmptyBody": "Pick a course and enroll for free. Your progress will start building right here.",
+    "instructorEmptyTitle": "Publish your first course",
+    "instructorEmptyBody": "Add modules and lessons, then publish when you're ready. Students can enroll right away.",
+    "continueLearning": "Pick up where you left off",
+    "completedCourses": "Completed courses"
+  },
+  "errors": {
+    "generic": "Something went wrong. Please try again.",
+    "network": "We can't reach the server. Check your connection and try again.",
+    "notFound": {
+      "title": "We couldn't find that page",
+      "body": "The link may be old or mistyped. Head back home and start from there."
+    },
+    "forbidden": {
+      "title": "This page isn't available to your account",
+      "body": "If you think that's a mistake, contact the GENHEX team and we'll sort it out."
+    },
+    "server": {
+      "title": "That one's on us",
+      "body": "Something broke on our side. Give it a moment and try again."
+    },
+    "tryAgain": "Try again",
+    "goHome": "Back to home",
+    "sessionExpired": "Your session has ended. Sign in again to continue."
+  },
+  "common": {
+    "save": "Save changes",
+    "saving": "Saving...",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "back": "Back",
+    "next": "Next",
+    "previous": "Previous",
+    "loading": "Loading...",
+    "search": "Search",
+    "viewAll": "View all",
+    "free": "Free",
+    "required": "Required",
+    "optional": "Optional",
+    "continue": "Continue",
+    "done": "Done",
+    "close": "Close",
+    "confirm": "Confirm",
+    "retry": "Try again",
+    "browseCourses": "Explore courses",
+    "noResults": "Nothing matches your search. Try different words."
+  },
+  "forms": {
+    "required": "This field is required.",
+    "invalidEmail": "Enter a valid email, like name@example.com.",
+    "tooShort": "That's a bit short. Add a few more characters.",
+    "checkFields": "Check the highlighted fields and try again.",
+    "passwordTooShort": "Use at least 8 characters.",
+    "passwordsMismatch": "The two passwords don't match.",
+    "invalidUrl": "Paste a full link that starts with https://.",
+    "fileTooLarge": "That file is too large. Choose a smaller one.",
+    "unsupportedFile": "That file type isn't supported."
+  },
+  "toasts": {
+    "saved": "Saved.",
+    "created": "Created. You're all set.",
+    "deleted": "Deleted.",
+    "copied": "Copied to your clipboard.",
+    "signedOut": "You're signed out. See you soon.",
+    "enrolled": "You're in. Happy learning!",
+    "error": "Something went wrong. Please try again.",
+    "passwordUpdated": "Password updated. You're all set.",
+    "resetSent": "Reset link sent. Check your inbox.",
+    "certificateIssued": "Certificate issued.",
+    "examSubmitted": "Submitted. Your score is ready.",
+    "attendanceSaved": "Attendance saved."
+  },
+  "empty": {
+    "courses": {
+      "title": "No courses here yet",
+      "body": "Try a different filter, or check back soon. New courses are added regularly."
+    },
+    "enrollments": {
+      "title": "You haven't enrolled in a course yet",
+      "body": "Browse the catalog and pick your first one. It's free."
+    },
+    "certificates": {
+      "title": "No certificates yet",
+      "body": "Finish the lessons and pass the exam, and your certificate will show up here."
+    },
+    "attendance": {
+      "title": "No attendance records yet",
+      "body": "Join a live session and your attendance will be tracked here."
+    },
+    "sessions": {
+      "title": "No sessions yet",
+      "body": "Create a session to start taking attendance."
+    },
+    "exams": {
+      "title": "No exams yet",
+      "body": "Create an exam, add your questions, then publish it to your students."
+    },
+    "lessons": {
+      "title": "No lessons yet",
+      "body": "Lessons will appear here as soon as they're added."
+    },
+    "events": {
+      "title": "No upcoming events",
+      "body": "Nothing is scheduled right now. Check back soon."
+    },
+    "students": {
+      "title": "No students yet",
+      "body": "Students will show up here once they enroll in your course."
+    },
+    "users": {
+      "title": "No users found",
+      "body": "Try a different filter or search term."
+    },
+    "materials": {
+      "title": "No materials yet",
+      "body": "Add files or links your students can use alongside the lessons."
+    },
+    "questions": {
+      "title": "No questions yet",
+      "body": "Add your first question below. You can publish once the exam has questions."
+    },
+    "matchingStudents": {
+      "title": "No matching students",
+      "body": "Check the spelling, or search by GENHEX ID instead."
+    }
+  },
+  "footer": {
+    "tagline": "Build what's next.",
+    "blurb": "Free courses, live sessions and labs, in Arabic and English.",
+    "platform": "Platform",
+    "courses": "Courses",
+    "labs": "Labs",
+    "verify": "Verify a certificate",
+    "about": "About",
+    "account": "Account",
+    "signIn": "Sign in",
+    "signUp": "Join free",
+    "rights": "© {year} GENHEX. Learning should be free."
   },
   "marketing": {
     "tagline": "Build what's next.",
-    "description": "GENHEX is a bilingual platform for learning the technologies that turn ideas into systems.",
-    "cta": "Explore GENHEX"
+    "description": "Free courses in Arabic and English with live sessions, labs that run in your browser, exams that grade themselves, and certificates anyone can verify.",
+    "cta": "Start learning free"
+  },
+  "landing": {
+    "hero": {
+      "eyebrow": "Free learning, in Arabic and English",
+      "titleLine1": "Learn it. Prove it.",
+      "titleLine2": "Build what's next.",
+      "subtitle": "Free courses with recorded lessons and live sessions, labs that run in your browser, and exams that grade themselves. Finish with a certificate anyone can verify.",
+      "ctaPrimary": "Start learning free",
+      "ctaSecondary": "Explore courses",
+      "facts": [
+        "Completely free",
+        "Arabic + English",
+        "Verifiable certificates"
+      ]
+    },
+    "journey": {
+      "eyebrow": "How it works",
+      "title": "Four steps from curious to certified",
+      "steps": [
+        {
+          "title": "Learn",
+          "body": "Watch recorded lessons at your own pace, or join a live session and ask your questions as they come up."
+        },
+        {
+          "title": "Practice",
+          "body": "Write Python or HTML and run it right in your browser. Nothing to install, nothing to set up."
+        },
+        {
+          "title": "Prove it",
+          "body": "Take a timed exam and see your score the moment you submit. Grading is automatic."
+        },
+        {
+          "title": "Get certified",
+          "body": "Every certificate has its own link and QR code, so anyone can confirm it's real in seconds."
+        }
+      ]
+    },
+    "fields": {
+      "eyebrow": "What you can learn",
+      "title": "Pick a field and start today",
+      "subtitle": "Choose where you want to grow, then take your first lesson.",
+      "items": [
+        {
+          "name": "Programming",
+          "description": "Write your first program, then build projects you're proud of."
+        },
+        {
+          "name": "Design",
+          "description": "Turn ideas into screens and products people enjoy using."
+        },
+        {
+          "name": "Data",
+          "description": "Turn raw numbers into answers you can explain."
+        },
+        {
+          "name": "Languages",
+          "description": "Build the language skills that school and work ask for."
+        },
+        {
+          "name": "Business",
+          "description": "See how an idea becomes a product, and a product becomes a business."
+        },
+        {
+          "name": "Labs",
+          "description": "Run Python and HTML in your browser and experiment without fear of breaking anything."
+        }
+      ]
+    },
+    "stats": {
+      "items": [
+        {
+          "value": "Free",
+          "label": "No fees to learn here"
+        },
+        {
+          "value": "2",
+          "label": "Languages: Arabic and English"
+        },
+        {
+          "value": "QR",
+          "label": "On every certificate, for instant verification"
+        }
+      ]
+    },
+    "features": {
+      "eyebrow": "Why GENHEX",
+      "title": "Everything you need to learn, practice and prove it",
+      "items": [
+        {
+          "title": "Arabic and English",
+          "body": "Use the platform in the language you're most comfortable with, and switch whenever you like."
+        },
+        {
+          "title": "Recorded and live",
+          "body": "Learn at your own pace, then join live sessions to ask questions and talk it through."
+        },
+        {
+          "title": "Labs in your browser",
+          "body": "Run Python and preview HTML in seconds. No setup, no installs."
+        },
+        {
+          "title": "Exams that grade themselves",
+          "body": "Timed exams, scored automatically the moment you submit. No waiting, no guessing."
+        },
+        {
+          "title": "Attendance and progress",
+          "body": "See your attendance and lesson progress in every course, always up to date."
+        },
+        {
+          "title": "Certificates anyone can verify",
+          "body": "Each certificate has a unique link and QR code that confirms it's genuine."
+        }
+      ]
+    },
+    "cta": {
+      "title": "Your next skill starts here",
+      "body": "Create a free account, pick a course, and take your first lesson today.",
+      "button": "Create my free account",
+      "secondary": "Explore courses first"
+    }
   }
 }

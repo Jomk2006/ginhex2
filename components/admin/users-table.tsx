@@ -58,7 +58,7 @@ export function UsersTable({ profiles, currentUserId }: { profiles: ProfileWithE
     <div className="flex flex-col gap-4">
       {error && (
         <Alert variant="destructive">
-          {isAr ? "حدث خطأ أثناء التحديث. حاول مرة أخرى." : "Something went wrong updating that user. Please try again."}
+          {isAr ? "تعذّر تحديث المستخدم. حاول مرة أخرى." : "We couldn't update that user. Please try again."}
         </Alert>
       )}
 
