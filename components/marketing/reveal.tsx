@@ -1,8 +1,14 @@
 "use client";
+import "./landing.css";
 
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
+/**
+ * Scroll-in reveal (opacity + lift). Uses one IntersectionObserver per block and
+ * unobserves after the first reveal. Under prefers-reduced-motion the CSS in
+ * landing.css shows the content immediately with no transition.
+ */
 export function Reveal({
   children,
   delay = 0,
@@ -16,15 +22,6 @@ export function Reveal({
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
-    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (reducedMotion) {
-      // Client-only check, deferred to an effect for the same SSR-safety
-      // reason as above — reduced-motion users see content immediately
-      // with no animation, which is the correct behavior, not a mismatch.
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setIsVisible(true);
-      return;
-    }
     const el = ref.current;
     if (!el) return;
     const observer = new IntersectionObserver(
@@ -34,7 +31,7 @@ export function Reveal({
           observer.disconnect();
         }
       },
-      { threshold: 0.15 }
+      { threshold: 0.12, rootMargin: "0px 0px -6% 0px" }
     );
     observer.observe(el);
     return () => observer.disconnect();
@@ -43,11 +40,7 @@ export function Reveal({
   return (
     <div
       ref={ref}
-      className={cn(
-        "transition-all duration-700 ease-out",
-        isVisible ? "translate-y-0 opacity-100" : "translate-y-6 opacity-0",
-        className
-      )}
+      className={cn("lp-reveal", isVisible && "is-in", className)}
       style={{ transitionDelay: `${delay}ms` }}
     >
       {children}

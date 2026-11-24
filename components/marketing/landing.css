@@ -1,0 +1,217 @@
+/* Landing page styles. Palette: #FFFFFF #343D46 #00B6BF #374049 #313A43 only (+ alphas). */
+
+/* ---------- shared ---------- */
+.lp-dark { background: #313a43; color: #fff; }
+
+.lp-eyebrow {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  padding: 0.375rem 0.875rem; border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.16); background: rgba(255, 255, 255, 0.06);
+  color: #00b6bf; font-size: 0.8125rem; font-weight: 600;
+  -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+}
+.lp-eyebrow::before { content: ""; width: 0.375rem; height: 0.375rem; border-radius: 999px; background: #00b6bf; box-shadow: 0 0 10px #00b6bf; }
+.lp-eyebrow-light { border-color: var(--border-strong); background: var(--accent); color: var(--accent-foreground); box-shadow: none; }
+
+.lp-gradient-text {
+  background: linear-gradient(100deg, #00b6bf 10%, #ffffff 95%);
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+  padding-bottom: 0.08em;
+}
+.lp-gradient-text-ink {
+  background: linear-gradient(100deg, var(--genhex-cyan-ink), var(--genhex-cyan));
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+:root[data-theme="dark"] .lp-gradient-text-ink, .dark .lp-gradient-text-ink {
+  background: linear-gradient(100deg, #00b6bf, #ffffff);
+  -webkit-background-clip: text; background-clip: text;
+}
+
+.lp-glass-dark {
+  background: rgba(49, 58, 67, 0.62);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  -webkit-backdrop-filter: blur(18px) saturate(1.4); backdrop-filter: blur(18px) saturate(1.4);
+  box-shadow: 0 24px 60px -24px rgba(0, 0, 0, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  border-radius: 1.5rem;
+}
+
+.lp-card {
+  display: block; position: relative; border-radius: 1.5rem;
+  border: 1px solid var(--border); background: var(--card);
+  box-shadow: var(--sh-sm);
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s, border-color 0.35s;
+}
+.lp-card:hover, .lp-card:focus-visible {
+  transform: translateY(-4px); box-shadow: var(--sh-lg);
+  border-color: color-mix(in srgb, var(--genhex-cyan) 50%, var(--border));
+}
+.lp-icon-chip {
+  display: inline-flex; height: 2.75rem; width: 2.75rem; align-items: center; justify-content: center;
+  border-radius: 1rem; background: var(--accent); color: var(--accent-foreground);
+  transition: background-color 0.25s, color 0.25s, transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.lp-card:hover .lp-icon-chip { background: var(--genhex-cyan); color: #313a43; transform: rotate(-6deg) scale(1.06); }
+
+.lp-hex-panel {
+  width: 100%; max-width: 30rem; padding: 1.5rem; border-radius: 2rem;
+  background: radial-gradient(70% 70% at 50% 40%, rgba(0, 182, 191, 0.18), transparent 70%), #313a43;
+  border: 1px solid rgba(255, 255, 255, 0.08); box-shadow: var(--sh-lg);
+}
+.lp-stat { box-shadow: var(--sh-md); }
+
+/* reveal */
+.lp-reveal {
+  opacity: 0; transform: translateY(24px) scale(0.985);
+  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.lp-reveal.is-in { opacity: 1; transform: none; }
+
+/* ---------- scene layers ---------- */
+.scene-layer { position: absolute; inset: 0; overflow: hidden; }
+.scene-fallback { position: absolute; inset: 0; transition: opacity 0.9s ease; }
+.scene-fallback.is-hidden { opacity: 0; pointer-events: none; }
+.scene-canvas {
+  position: absolute; inset: 0; width: 100%; height: 100%; display: block;
+  opacity: 0; transition: opacity 0.9s ease;
+  touch-action: pan-y; /* vertical swipes always scroll the page */
+}
+.scene-canvas.is-ready { opacity: 1; }
+
+/* ---------- hero ---------- */
+.lp-hero { isolation: isolate; }
+.lp-hero-bg {
+  position: absolute; inset: 0; z-index: -1;
+  background:
+    radial-gradient(55% 60% at 78% 42%, rgba(0, 182, 191, 0.22), transparent 70%),
+    radial-gradient(40% 40% at 10% 100%, rgba(55, 64, 73, 0.9), transparent 70%),
+    linear-gradient(180deg, #313a43 0%, #2b333b 100%);
+}
+[dir="rtl"] .lp-hero-bg {
+  background:
+    radial-gradient(55% 60% at 22% 42%, rgba(0, 182, 191, 0.22), transparent 70%),
+    radial-gradient(40% 40% at 90% 100%, rgba(55, 64, 73, 0.9), transparent 70%),
+    linear-gradient(180deg, #313a43 0%, #2b333b 100%);
+}
+.lp-hero .scene-layer { z-index: 0; }
+.lp-hero-fallback { position: absolute; width: min(34rem, 92vw); top: 18%; inset-inline-end: -4%; opacity: 0.9; }
+.lp-hero-shade {
+  position: absolute; inset: 0; z-index: 1; pointer-events: none;
+  background: linear-gradient(180deg, rgba(49, 58, 67, 0.15) 0%, rgba(49, 58, 67, 0.55) 55%, rgba(49, 58, 67, 0.92) 100%);
+}
+@media (min-width: 1024px) {
+  .lp-hero-shade { background: linear-gradient(90deg, rgba(49, 58, 67, 0.88) 0%, rgba(49, 58, 67, 0.45) 45%, transparent 75%), linear-gradient(0deg, rgba(49, 58, 67, 0.7), transparent 25%); }
+  [dir="rtl"] .lp-hero-shade { background: linear-gradient(270deg, rgba(49, 58, 67, 0.88) 0%, rgba(49, 58, 67, 0.45) 45%, transparent 75%), linear-gradient(0deg, rgba(49, 58, 67, 0.7), transparent 25%); }
+  .lp-hero-fallback { top: 50%; transform: translateY(-50%); inset-inline-end: 2%; width: 40rem; }
+}
+.lp-hero-title {
+  font-size: clamp(2.375rem, 1.4rem + 3.9vw, 4.5rem); font-weight: 700; line-height: 1.04; letter-spacing: -0.035em;
+}
+.lp-chip {
+  display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.4rem 0.875rem; border-radius: 999px;
+  font-size: 0.8125rem; color: rgba(255, 255, 255, 0.85);
+  background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.12);
+  -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+}
+.lp-chip-dot { width: 0.5rem; height: 0.5rem; background: #00b6bf; clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%); }
+@keyframes lp-rise { from { opacity: 0; transform: translateY(22px); filter: blur(4px); } to { opacity: 1; transform: none; filter: none; } }
+.lp-rise { opacity: 0; animation: lp-rise 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+.lp-scroll-cue {
+  position: absolute; z-index: 2; bottom: 1rem; inset-inline-start: 50%; width: 1px; height: 2.5rem;
+  background: linear-gradient(#00b6bf, transparent); transform-origin: top; animation: lp-cue 2.4s ease-in-out infinite;
+  display: none;
+}
+@media (min-width: 1024px) { .lp-scroll-cue { display: block; } }
+@keyframes lp-cue { 0%, 100% { transform: scaleY(0.3); opacity: 0.4; } 50% { transform: scaleY(1); opacity: 1; } }
+
+/* ---------- journey (sticky, progress-driven) ---------- */
+.journey { position: relative; z-index: 1; }
+.journey-track { position: relative; height: 440vh; }
+.journey-stage { position: sticky; top: 0; height: 100vh; height: 100dvh; overflow: hidden; }
+.journey-stage::before {
+  content: ""; position: absolute; inset: 0; z-index: 0;
+  background:
+    radial-gradient(50% 55% at 72% 45%, rgba(0, 182, 191, 0.20), transparent 70%),
+    linear-gradient(180deg, #313a43, #2b333b);
+}
+[dir="rtl"] .journey-stage::before {
+  background:
+    radial-gradient(50% 55% at 28% 45%, rgba(0, 182, 191, 0.20), transparent 70%),
+    linear-gradient(180deg, #313a43, #2b333b);
+}
+.journey-canvas { z-index: 1; }
+.journey-shade {
+  position: absolute; inset: 0; z-index: 2; pointer-events: none;
+  background: linear-gradient(180deg, rgba(49, 58, 67, 0.6) 0%, transparent 22%, transparent 45%, rgba(49, 58, 67, 0.75) 100%);
+}
+.journey-ui {
+  position: relative; z-index: 3; height: 100%; width: 100%; max-width: 72rem; margin-inline: auto;
+  display: flex; flex-direction: column; justify-content: space-between; gap: 1rem;
+  padding: 5.5rem 1rem 1.25rem; pointer-events: none;
+}
+.journey-ui > * { pointer-events: auto; }
+.journey-head { display: flex; flex-direction: column; align-items: flex-start; gap: 0.75rem; max-width: 34rem; }
+.journey-title { color: #fff; font-size: clamp(1.375rem, 1rem + 1.6vw, 2.5rem); line-height: 1.15; }
+.journey-panel { padding: 1.25rem; width: 100%; }
+.journey-cards { display: grid; list-style: none; margin: 0; padding: 0; }
+.journey-card {
+  grid-area: 1 / 1; opacity: 0; transform: translateY(14px); pointer-events: none;
+  transition: opacity 0.5s ease, transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.journey-card[data-active="true"] { opacity: 1; transform: none; pointer-events: auto; transition-delay: 0.1s; }
+.journey-card-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.75rem; }
+.journey-icon { display: inline-flex; width: 2.5rem; height: 2.5rem; align-items: center; justify-content: center; border-radius: 0.875rem; background: #00b6bf; color: #313a43; }
+.journey-num { font-family: "Space Grotesk", var(--font-display), system-ui, sans-serif; font-size: 2.25rem; font-weight: 700; line-height: 1; color: rgba(255, 255, 255, 0.14); }
+.journey-card-title { color: #fff; font-size: clamp(1.25rem, 1.1rem + 0.6vw, 1.75rem); }
+.journey-card-body { margin-top: 0.5rem; color: rgba(255, 255, 255, 0.78); font-size: 0.9375rem; }
+.journey-rail { position: relative; display: flex; align-items: center; justify-content: space-between; margin-top: 1.25rem; padding-top: 1rem; }
+.journey-dot {
+  position: relative; z-index: 1; width: 0.875rem; height: 0.875rem; padding: 0; border-radius: 999px;
+  border: 2px solid rgba(255, 255, 255, 0.35); background: #313a43; cursor: pointer;
+  transition: background-color 0.3s, border-color 0.3s, transform 0.3s;
+}
+.journey-dot::after { content: ""; position: absolute; inset: -0.75rem; } /* 44px touch target */
+.journey-dot[data-on="true"] { background: #00b6bf; border-color: #00b6bf; }
+.journey-dot[aria-current="step"] { transform: scale(1.35); box-shadow: 0 0 14px rgba(0, 182, 191, 0.7); }
+.journey-bar { position: absolute; inset-inline: 0.4rem; top: calc(1rem + 0.4375rem - 1px); height: 2px; background: rgba(255, 255, 255, 0.14); border-radius: 2px; }
+.journey-bar-fill { display: block; height: 100%; width: calc(var(--p, 0) * 100%); background: #00b6bf; border-radius: 2px; transform-origin: left; }
+[dir="rtl"] .journey-bar-fill { margin-inline-start: auto; }
+
+@media (min-width: 900px) {
+  .journey-ui { justify-content: center; gap: 2rem; padding: 6rem 2rem 2rem; }
+  .journey-panel { max-width: 29rem; padding: 1.75rem; }
+}
+
+/* fallback visual (no WebGL): lit cells follow the active step */
+.journey-fb { position: absolute; width: min(36rem, 96vw); top: 16%; inset-inline-end: 50%; transform: translateX(50%); }
+[dir="rtl"] .journey-fb { transform: translateX(-50%); }
+@media (min-width: 900px) { .journey-fb { top: 50%; transform: translateY(-50%); inset-inline-end: 3%; width: 38rem; } [dir="rtl"] .journey-fb { transform: translateY(-50%); } }
+.fb-cell { fill: #374049; stroke: rgba(0, 182, 191, 0.4); stroke-width: 1.2; transition: fill 0.5s, stroke 0.5s; }
+.journey[data-step="0"] .fb-cell[data-lit~="0"],
+.journey[data-step="1"] .fb-cell[data-lit~="1"],
+.journey[data-step="2"] .fb-cell[data-lit~="2"],
+.journey[data-step="3"] .fb-cell[data-lit~="3"] { fill: #00b6bf; stroke: #00b6bf; }
+
+/* ---------- CTA ---------- */
+.lp-cta { background: radial-gradient(60% 90% at 50% 0%, rgba(0, 182, 191, 0.26), transparent 70%), #313a43; box-shadow: var(--sh-xl); }
+.lp-cta-hex {
+  position: absolute; inset: 0; opacity: 0.07; pointer-events: none;
+  background-image:
+    repeating-linear-gradient(120deg, transparent 0 46px, #00b6bf 46px 47px),
+    repeating-linear-gradient(60deg, transparent 0 46px, #00b6bf 46px 47px);
+}
+
+/* ---------- reduced motion: stack the journey, no sticky, no transitions ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .lp-rise { animation: none; opacity: 1; filter: none; transform: none; }
+  .lp-reveal { opacity: 1; transform: none; transition: none; }
+  .lp-scroll-cue { animation: none; }
+  .journey-track { height: auto; }
+  .journey-stage { position: relative; height: auto; overflow: visible; }
+  .journey-ui { height: auto; padding-block: 5rem; gap: 2rem; }
+  .journey-fb { opacity: 0.18; }
+  .journey-cards { display: flex; flex-direction: column; gap: 1.5rem; }
+  .journey-card { grid-area: auto; opacity: 1; transform: none; transition: none; pointer-events: auto; }
+  .journey-rail { display: none; }
+  .journey-panel { max-width: 36rem; }
+  .lp-card, .lp-icon-chip { transition: none; }
+}

@@ -1,25 +1,28 @@
-import { getLocale } from "next-intl/server";
+import { getTranslations } from "next-intl/server";
 import { Reveal } from "@/components/marketing/reveal";
 
-const STATS = [
-  { value: "24", labelEn: "Projects shipped", labelAr: "مشروع منجَز" },
-  { value: "13", labelEn: "Prototypes in Labs", labelAr: "نموذج أولي في Labs" },
-  { value: "07", labelEn: "Systems in production", labelAr: "نظام قيد التشغيل" },
-  { value: "09", labelEn: "Events run", labelAr: "فعالية أُقيمت" },
-];
+interface Stat {
+  value: string;
+  label: string;
+}
 
 export async function StatsStrip() {
-  const locale = await getLocale();
-  const isAr = locale === "ar";
+  const t = await getTranslations("landing.stats");
+  const raw = t.raw("items") as unknown;
+  const stats: Stat[] = Array.isArray(raw)
+    ? raw.filter((s): s is Stat => !!s && typeof (s as Stat).value === "string")
+    : [];
 
   return (
-    <section className="border-b border-border">
-      <div className="mx-auto grid max-w-6xl grid-cols-2 gap-8 px-6 py-12 sm:grid-cols-4">
-        {STATS.map((stat, i) => (
-          <Reveal key={stat.value} delay={i * 80}>
-            <div className="flex flex-col gap-1">
-              <span className="font-display text-3xl font-semibold tracking-tight sm:text-4xl">{stat.value}</span>
-              <span className="text-sm text-muted-foreground">{isAr ? stat.labelAr : stat.labelEn}</span>
+    <section className="bg-ambient border-y border-border">
+      <div className="mx-auto grid max-w-6xl gap-4 px-4 py-12 sm:grid-cols-3 sm:px-6 lg:py-16">
+        {stats.map((s, i) => (
+          <Reveal key={s.value + i} delay={i * 90} className="h-full">
+            <div className="glass lp-stat h-full rounded-3xl p-6 text-center sm:p-8">
+              <span className="lp-gradient-text-ink font-display block text-[clamp(2.5rem,2rem+2.4vw,4rem)] font-bold leading-none">
+                {s.value}
+              </span>
+              <span className="mt-3 block text-sm text-muted-foreground">{s.label}</span>
             </div>
           </Reveal>
         ))}

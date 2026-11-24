@@ -1,25 +1,24 @@
-import { Code2, Palette, BarChart3, Languages, Briefcase, FlaskConical } from "lucide-react";
+import { Code2, Palette, BarChart3, Languages, Briefcase, FlaskConical, GraduationCap } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 
 /**
- * "Find your field" honeycomb — the hero's visual. Six hexagons are the
- * fields GENHEX teaches; the centre hex is the student's question. It is
- * static (no rotation): each cell fades in once, and hover/focus lights it
- * up. Pure SVG + CSS, so it costs no JavaScript and works without WebGL.
+ * Static SVG honeycomb (no JavaScript, no WebGL). It is both the interactive
+ * "fields" picture and the fallback for no-WebGL / low-power /
+ * prefers-reduced-motion. `HexCluster` is the decorative variant used as the
+ * 3D scenes' fallback.
  */
-const R = 62; // hex radius
+const R = 62;
 const W = Math.sqrt(3) * R;
-
-// axial (q, r) → pixel, pointy-top hexagons
 const cell = (q: number, r: number) => ({ x: W * (q + r / 2), y: 1.5 * R * r });
 
-const FIELDS = [
-  { q: 1, r: -1, Icon: Code2, en: "Programming", ar: "البرمجة" },
-  { q: 1, r: 0, Icon: Palette, en: "Design", ar: "التصميم" },
-  { q: 0, r: 1, Icon: BarChart3, en: "Data", ar: "البيانات" },
-  { q: -1, r: 1, Icon: Languages, en: "Languages", ar: "اللغات" },
-  { q: -1, r: 0, Icon: Briefcase, en: "Business", ar: "الأعمال" },
-  { q: 0, r: -1, Icon: FlaskConical, en: "Science", ar: "العلوم" },
+export const FIELD_ICONS = [Code2, Palette, BarChart3, Languages, Briefcase, FlaskConical];
+const FIELD_CELLS: Array<[number, number]> = [
+  [1, -1],
+  [1, 0],
+  [0, 1],
+  [-1, 1],
+  [-1, 0],
+  [0, -1],
 ];
 
 function hexPoints(cx: number, cy: number, radius: number) {
@@ -29,45 +28,77 @@ function hexPoints(cx: number, cy: number, radius: number) {
   }).join(" ");
 }
 
-export function FieldsHoneycomb({ isAr }: { isAr: boolean }) {
-  const pad = 14;
-  const half = W * 1.5 + R + pad;
-  const gap = 5; // visual gap between cells
-
+export function FieldsHoneycomb({
+  items,
+  label,
+  decorative = false,
+}: {
+  items: string[];
+  label?: string;
+  /** Hide from assistive tech and drop links (the cards beside it carry the links). */
+  decorative?: boolean;
+}) {
+  const half = W * 1.5 + R + 14;
+  const gap = 5;
   return (
     <svg
       viewBox={`${-half} ${-half} ${half * 2} ${half * 2}`}
       className="h-auto w-full max-w-[30rem]"
-      role="group"
-      aria-label={isAr ? "المجالات التي نُدرّسها" : "The fields we teach"}
+      {...(decorative ? { "aria-hidden": true } : { role: "group", "aria-label": label })}
     >
-      {FIELDS.map(({ q, r, Icon, en, ar }, i) => {
+      {FIELD_CELLS.map(([q, r], i) => {
         const { x, y } = cell(q, r);
+        const Icon = FIELD_ICONS[i];
+        const name = items[i] ?? "";
+        const inner = (
+          <g className="hex-link">
+            <polygon points={hexPoints(x, y, R - gap)} className="hex-shape" />
+            <Icon x={x - 11} y={y - 26} width={22} height={22} className="hex-ink" strokeWidth={1.75} aria-hidden="true" />
+            <text x={x} y={y + 24} textAnchor="middle" className="hex-label hex-ink">
+              {name}
+            </text>
+          </g>
+        );
         return (
-          <g key={en} className="hex-cell" style={{ animationDelay: `${0.25 + i * 0.09}s` }}>
-            <Link href="/courses" aria-label={isAr ? ar : en}>
-              <g className="hex-link">
-                <polygon points={hexPoints(x, y, R - gap)} className="hex-shape" />
-                <Icon x={x - 11} y={y - 26} width={22} height={22} className="hex-ink" strokeWidth={1.75} aria-hidden="true" />
-                <text x={x} y={y + 24} textAnchor="middle" className="hex-label hex-ink">
-                  {isAr ? ar : en}
-                </text>
-              </g>
-            </Link>
+          <g key={i} className="hex-cell" style={{ animationDelay: `${0.25 + i * 0.09}s` }}>
+            {decorative ? inner : <Link href="/courses" aria-label={name}>{inner}</Link>}
           </g>
         );
       })}
-
-      {/* centre: the student's question */}
       <g className="hex-cell" style={{ animationDelay: "0.1s" }}>
         <polygon points={hexPoints(0, 0, R - gap)} fill="#00B6BF" />
-        <text x={0} y={-4} textAnchor="middle" className="hex-label" fill="#0A0A0A" style={{ fontSize: 15, fontWeight: 700 }}>
-          {isAr ? "اختر" : "Find"}
-        </text>
-        <text x={0} y={16} textAnchor="middle" className="hex-label" fill="#0A0A0A" style={{ fontSize: 15, fontWeight: 700 }}>
-          {isAr ? "مجالك" : "your field"}
-        </text>
+        <GraduationCap x={-16} y={-16} width={32} height={32} stroke="#313A43" strokeWidth={1.75} fill="none" aria-hidden="true" />
       </g>
+    </svg>
+  );
+}
+
+/** Decorative 19-cell cluster: the static stand-in for the 3D hero scene. */
+export function HexCluster({ className = "" }: { className?: string }) {
+  const rr = 40;
+  const w = Math.sqrt(3) * rr;
+  const cells: Array<{ x: number; y: number; tone: number }> = [];
+  for (let q = -2; q <= 2; q++) {
+    for (let r = Math.max(-2, -q - 2); r <= Math.min(2, -q + 2); r++) {
+      const d = Math.max(Math.abs(q), Math.abs(r), Math.abs(q + r));
+      cells.push({ x: w * (q + r / 2), y: 1.5 * rr * r, tone: d === 0 ? 3 : d === 1 ? (q + r) % 2 === 0 ? 2 : 1 : 0 });
+    }
+  }
+  const fills = ["#313A43", "#343D46", "#374049", "#00B6BF"];
+  const half = w * 2.6;
+  return (
+    <svg viewBox={`${-half} ${-half} ${half * 2} ${half * 2}`} className={className} aria-hidden="true">
+      {cells.map((c, i) => (
+        <polygon
+          key={i}
+          points={hexPoints(c.x, c.y, rr - 3)}
+          fill={fills[c.tone]}
+          stroke="rgba(0,182,191,0.45)"
+          strokeWidth={1.2}
+          className="hex-cell"
+          style={{ animationDelay: `${0.05 * i}s`, opacity: c.tone === 3 ? 0.95 : 0.9 }}
+        />
+      ))}
     </svg>
   );
 }
