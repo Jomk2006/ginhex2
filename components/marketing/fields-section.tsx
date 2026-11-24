@@ -21,8 +21,9 @@ export async function FieldsSection() {
       <div className="mx-auto max-w-6xl px-4 py-20 sm:px-6 lg:py-28">
         <Reveal className="mx-auto max-w-2xl text-center">
           <span className="lp-eyebrow lp-eyebrow-light">{t("eyebrow")}</span>
-          <h2 className="mt-4 text-[clamp(1.75rem,1.3rem+1.8vw,2.75rem)]">{t("title")}</h2>
-          <p className="mt-3 text-muted-foreground">{t("subtitle")}</p>
+          <h2 className="lp-h2 mt-5">{t("title")}</h2>
+          <span className="lp-rule lp-rule-center" aria-hidden="true" />
+          <p className="mt-4 text-muted-foreground">{t("subtitle")}</p>
         </Reveal>
 
         <div className="mt-12 grid items-center gap-10 lg:grid-cols-[0.85fr_1.15fr]">

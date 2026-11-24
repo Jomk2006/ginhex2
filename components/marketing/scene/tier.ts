@@ -41,8 +41,8 @@ export function getTier(): SceneTier {
     canRun: reason === "ok",
     reason,
     mobile,
-    rings: mobile ? 5 : 8,
-    dpr: Math.min(window.devicePixelRatio || 1, mobile ? 1.5 : 2),
+    rings: mobile ? 3 : 5, // 37 / 91 instances
+    dpr: mobile ? 1 : Math.min(window.devicePixelRatio || 1, 1.5),
     antialias: !mobile,
   };
 }

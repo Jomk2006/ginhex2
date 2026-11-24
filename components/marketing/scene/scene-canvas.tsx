@@ -84,7 +84,7 @@ export default function SceneCanvas({ mode, progress, side, onReady }: Props) {
         if (near) void build();
         else teardown();
       },
-      { rootMargin: tier.mobile ? "35% 0px" : "70% 0px" }
+      { rootMargin: tier.mobile ? "20% 0px" : "40% 0px" }
     );
     const viewIO = new IntersectionObserver(
       ([e]) => {

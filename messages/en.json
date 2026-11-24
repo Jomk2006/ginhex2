@@ -210,7 +210,7 @@
   },
   "footer": {
     "tagline": "Build what's next.",
-    "blurb": "Free courses, live sessions and labs, in Arabic and English.",
+    "blurb": "Free courses, live sessions and labs, all in one place.",
     "platform": "Platform",
     "courses": "Courses",
     "labs": "Labs",
@@ -223,12 +223,12 @@
   },
   "marketing": {
     "tagline": "Build what's next.",
-    "description": "Free courses in Arabic and English with live sessions, labs that run in your browser, exams that grade themselves, and certificates anyone can verify.",
+    "description": "Free courses with live sessions, labs that run in your browser, exams that grade themselves, and certificates anyone can verify.",
     "cta": "Start learning free"
   },
   "landing": {
     "hero": {
-      "eyebrow": "Free learning, in Arabic and English",
+      "eyebrow": "Free learning, from first lesson to certificate",
       "titleLine1": "Learn it. Prove it.",
       "titleLine2": "Build what's next.",
       "subtitle": "Free courses with recorded lessons and live sessions, labs that run in your browser, and exams that grade themselves. Finish with a certificate anyone can verify.",
@@ -236,7 +236,7 @@
       "ctaSecondary": "Explore courses",
       "facts": [
         "Completely free",
-        "Arabic + English",
+        "Live + recorded lessons",
         "Verifiable certificates"
       ]
     },
@@ -300,8 +300,8 @@
           "label": "No fees to learn here"
         },
         {
-          "value": "2",
-          "label": "Languages: Arabic and English"
+          "value": "Live",
+          "label": "Sessions alongside recorded lessons"
         },
         {
           "value": "QR",
@@ -314,8 +314,8 @@
       "title": "Everything you need to learn, practice and prove it",
       "items": [
         {
-          "title": "Arabic and English",
-          "body": "Use the platform in the language you're most comfortable with, and switch whenever you like."
+          "title": "Free from start to finish",
+          "body": "No fees for courses, labs, exams or certificates. Create an account and start."
         },
         {
           "title": "Recorded and live",
