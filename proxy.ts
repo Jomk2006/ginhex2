@@ -39,15 +39,18 @@ export async function proxy(request: NextRequest) {
 
   if (user) {
     const claims = decodeJwtClaims(session?.access_token ?? "");
-    const role = claims.user_role ?? "student";
+    // The JWT claim only exists if the optional access-token hook is enabled.
+    // Without it we must NOT guess a role (that would bounce instructors and
+    // admins to the student area); /app resolves it server-side from profiles.
+    const role = claims.user_role;
 
     // 4. Signed-in users hitting sign-in/sign-up land on their dashboard.
     if (isAuthPage) {
-      return NextResponse.redirect(new URL(`/${locale}${ROLE_HOME_PATH[role]}`, request.url));
+      return NextResponse.redirect(new URL(`/${locale}${role ? ROLE_HOME_PATH[role] : "/app"}`, request.url));
     }
 
     // 5. Bare /app → redirect to the role's home dashboard.
-    if (pathWithoutLocale === "/app" || pathWithoutLocale === "/app/") {
+    if (role && (pathWithoutLocale === "/app" || pathWithoutLocale === "/app/")) {
       return NextResponse.redirect(new URL(`/${locale}${ROLE_HOME_PATH[role]}`, request.url));
     }
 
@@ -55,9 +58,9 @@ export async function proxy(request: NextRequest) {
     //    NOTE (per schema design): this is UX-level routing only. Every
     //    underlying table still enforces the real boundary via RLS, so
     //    this check being bypassed somehow would not leak data.
-    for (const guard of ROLE_SEGMENT_GUARDS) {
+    for (const guard of role ? ROLE_SEGMENT_GUARDS : []) {
       if (pathWithoutLocale.startsWith(guard.prefix) && role !== guard.role) {
-        return NextResponse.redirect(new URL(`/${locale}${ROLE_HOME_PATH[role]}`, request.url));
+        return NextResponse.redirect(new URL(`/${locale}${ROLE_HOME_PATH[role!]}`, request.url));
       }
     }
   }
