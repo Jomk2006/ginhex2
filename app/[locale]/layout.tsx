@@ -7,10 +7,23 @@ import { routing } from "@/i18n/routing";
 import { THEME_COOKIE, DEFAULT_THEME } from "@/lib/theme";
 import "../globals.css";
 
-export const metadata: Metadata = {
-  title: "GENHEX — Build What's Next.",
-  description: "GENHEX is a bilingual platform for learning the technologies that turn ideas into systems.",
-};
+const META = {
+  en: {
+    title: "GENHEX | Learn it. Prove it. Build what's next.",
+    description:
+      "Free courses with recorded and live lessons, labs that run in your browser, self-grading exams and certificates anyone can verify.",
+  },
+  ar: {
+    title: "GENHEX | تعلّم. وأثبت مستواك. ابنِ القادم.",
+    description:
+      "دورات مجانية بدروس مسجّلة وجلسات مباشرة، ومعامل تعمل من متصفحك، وامتحانات تُصحَّح تلقائيًا، وشهادات يستطيع أي شخص التأكد من صحتها.",
+  },
+} as const;
+
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
+  const { locale } = await params;
+  return META[locale === "ar" ? "ar" : "en"];
+}
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
