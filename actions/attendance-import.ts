@@ -65,7 +65,7 @@ export async function stageAttendanceImportAction(
   let parsedRows;
   try {
     const buffer = await file.arrayBuffer();
-    parsedRows = parseAttendanceFile(buffer);
+    parsedRows = await parseAttendanceFile(buffer);
   } catch {
     return { error: "parseFailed" };
   }

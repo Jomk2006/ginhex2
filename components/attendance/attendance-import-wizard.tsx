@@ -80,7 +80,7 @@ export function AttendanceImportWizard({ courseId, sessionId }: { courseId: stri
 
         {!staged ? (
           <div className="flex items-center gap-2">
-            <input ref={fileInputRef} type="file" accept=".csv,.xlsx,.xls" className="text-sm" />
+            <input ref={fileInputRef} type="file" accept=".csv,.xlsx" className="text-sm" />
             <Button size="sm" onClick={handleUpload} disabled={isPending}>
               <Upload className="h-3.5 w-3.5" />
               {isAr ? "معاينة" : "Preview"}
