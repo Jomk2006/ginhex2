@@ -42,7 +42,9 @@ export function buildCsp(nonce: string, opts: { isDev: boolean; secure: boolean 
     "worker-src": ["'self'", "blob:"],
     "object-src": ["'none'"],
     "base-uri": ["'self'"],
-    "form-action": ["'self'"],
+    // Chrome applies form-action to redirects after a form POST, so the Google
+    // OAuth hop (app -> Supabase -> accounts.google.com) must be allowed.
+    "form-action": ["'self'", supabaseHttps, "https://accounts.google.com"].filter(Boolean),
     "frame-ancestors": ["'none'"],
   };
 
