@@ -1,8 +1,23 @@
+import type { Metadata } from "next";
 import { getLocale } from "next-intl/server";
+import { buildPageMetadata } from "@/lib/seo";
 import { getPublishedCourses, getCourseCategories } from "@/lib/data/courses";
 import { CourseCard } from "@/components/courses/course-card";
 import { CourseFilters } from "@/components/courses/course-filters";
 import type { CourseLevel } from "@/types/domain";
+
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
+  const { locale } = await params;
+  const isAr = locale === "ar";
+  return buildPageMetadata({
+    locale,
+    path: "/courses",
+    title: isAr ? "الدورات | GENHEX" : "Courses | GENHEX",
+    description: isAr
+      ? "تصفّح الدورات المجانية على GENHEX: دروس مسجّلة وجلسات مباشرة وامتحانات وشهادات يمكن التحقق منها."
+      : "Browse free GENHEX courses with recorded and live lessons, exams and verifiable certificates.",
+  });
+}
 
 export default async function CoursesPage({
   searchParams,

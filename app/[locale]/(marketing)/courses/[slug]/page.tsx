@@ -1,4 +1,6 @@
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { buildPageMetadata, LOCALE_META } from "@/lib/seo";
 import { getLocale } from "next-intl/server";
 import { getCourseBySlug } from "@/lib/data/courses";
 import { getEnrollment } from "@/lib/data/enrollments";
@@ -9,6 +11,26 @@ import { CourseThumbnail } from "@/components/courses/course-thumbnail";
 import { Badge } from "@/components/ui/badge";
 import { COURSE_LEVEL_LABELS } from "@/types/domain";
 import type { CourseLevel } from "@/types/domain";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string; slug: string }>;
+}): Promise<Metadata> {
+  const { locale, slug } = await params;
+  const isAr = locale === "ar";
+  const result = await getCourseBySlug(slug).catch(() => null);
+  if (!result) return { robots: { index: false } };
+  const { course } = result;
+  const title = isAr ? course.title_ar : course.title_en;
+  const description = (isAr ? course.description_ar : course.description_en) || LOCALE_META[isAr ? "ar" : "en"].description;
+  return buildPageMetadata({
+    locale,
+    path: `/courses/${encodeURIComponent(slug)}`,
+    title: `${title} | GENHEX`,
+    description: description.slice(0, 200),
+  });
+}
 
 export default async function CourseDetailPage({
   params,

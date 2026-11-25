@@ -5,4 +5,5 @@ export const routing = defineRouting({
   locales: LOCALES,
   defaultLocale: DEFAULT_LOCALE,
   localePrefix: "always", // /en/... and /ar/... always explicit — no ambiguous default
+  alternateLinks: false, // hreflang is emitted once, via generateMetadata + sitemap
 });

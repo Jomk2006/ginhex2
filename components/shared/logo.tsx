@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
 
 /**
@@ -11,6 +12,7 @@ import { cn } from "@/lib/utils";
  * actual asset. The plate is a container we own, not an edit to the logo.
  */
 export function Logo({ className, height = 56 }: { className?: string; height?: number }) {
+  const t = useTranslations("brand");
   // Proportional inset (~12% each side) rather than a fixed pixel value,
   // so the plate keeps looking right at any requested size.
   const inset = Math.round(height * 0.12);
@@ -26,7 +28,7 @@ export function Logo({ className, height = 56 }: { className?: string; height?: 
     >
       <Image
         src="/brand/genhex-logo.jpeg"
-        alt="GENHEX — Build What's Next."
+        alt={t("logoAlt")}
         width={imageSize}
         height={imageSize}
         className="h-full w-auto object-contain"

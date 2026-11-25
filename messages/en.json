@@ -68,7 +68,8 @@
     "language": "العربية",
     "skipToContent": "Skip to content",
     "openMenu": "Open menu",
-    "closeMenu": "Close menu"
+    "closeMenu": "Close menu",
+    "toggleTheme": "Toggle theme"
   },
   "roles": {
     "student": "Student",
@@ -345,5 +346,8 @@
       "button": "Create my free account",
       "secondary": "Explore courses first"
     }
+  },
+  "brand": {
+    "logoAlt": "GENHEX — Build What's Next."
   }
 }

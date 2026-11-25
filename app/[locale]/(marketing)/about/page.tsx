@@ -1,8 +1,21 @@
+import type { Metadata } from "next";
 import { getLocale } from "next-intl/server";
+import { buildPageMetadata, LOCALE_META } from "@/lib/seo";
 import { GraduationCap, Video, Award, Users, Target } from "lucide-react";
 import { Reveal } from "@/components/marketing/reveal";
 import { Link } from "@/i18n/navigation";
 import { Button } from "@/components/ui/button";
+
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
+  const { locale } = await params;
+  const isAr = locale === "ar";
+  return buildPageMetadata({
+    locale,
+    path: "/about",
+    title: isAr ? "عن GENHEX | تعلّم. وأثبت مستواك." : "About GENHEX | Learn it. Prove it.",
+    description: LOCALE_META[isAr ? "ar" : "en"].description,
+  });
+}
 
 export default async function AboutPage() {
   const locale = await getLocale();

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { Menu, X } from "lucide-react";
 import { Link, usePathname } from "@/i18n/navigation";
 import { Logo } from "@/components/shared/logo";
@@ -69,6 +69,7 @@ export function AppShell({
   children: React.ReactNode;
 }) {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const tNav = useTranslations("nav");
   // Computed here (client-side) from the plain role string, not received
   // as a prop -- NavItem.icon holds actual component references, and
   // function/component values can't be passed from a Server Component
@@ -85,7 +86,7 @@ export function AppShell({
             <button
               type="button"
               onClick={() => setMobileOpen(true)}
-              aria-label="Open menu"
+              aria-label={tNav("openMenu")}
               className="flex h-10 w-10 items-center justify-center rounded-md border border-border bg-card/60 text-foreground transition-colors hover:bg-muted sm:hidden"
             >
               <Menu className="h-5 w-5" />
@@ -119,7 +120,7 @@ export function AppShell({
                 <button
                   type="button"
                   onClick={() => setMobileOpen(false)}
-                  aria-label="Close menu"
+                  aria-label={tNav("closeMenu")}
                   className="flex h-10 w-10 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-muted"
                 >
                   <X className="h-5 w-5" />

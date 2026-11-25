@@ -1,8 +1,9 @@
+import { notFound } from "next/navigation";
 import { getLocale } from "next-intl/server";
 import { createClient } from "@/lib/supabase/server";
 import { PrintButton } from "@/components/certificates/print-button";
 
-export const metadata = { robots: { index: false } };
+export const metadata = { robots: { index: false, follow: false } };
 
 /** Public: shows (and verifies) a certificate by its unguessable slug. Doubles as the printable certificate. */
 export default async function VerifyCertificatePage({ params }: { params: Promise<{ slug: string }> }) {
@@ -14,16 +15,8 @@ export default async function VerifyCertificatePage({ params }: { params: Promis
   const { data } = await supabase.rpc("verify_certificate", { p_slug: slug });
   const cert = Array.isArray(data) ? data[0] : null;
 
-  if (!cert) {
-    return (
-      <div className="mx-auto max-w-xl px-6 py-24 text-center">
-        <h1 className="text-2xl font-semibold">{isAr ? "الشهادة غير موجودة" : "Certificate not found"}</h1>
-        <p className="mt-3 text-muted-foreground">
-          {isAr ? "تأكد من الرابط أو رمز التحقق وحاول مرة أخرى." : "Check the link or the verification code and try again."}
-        </p>
-      </div>
-    );
-  }
+  // Unknown slug: real 404 (status 404 + noindex) rather than a 200 "not found" body.
+  if (!cert) notFound();
 
   const revoked = cert.status === "revoked";
   const date = new Date(cert.issued_at).toLocaleDateString(isAr ? "ar-EG" : "en-GB", { dateStyle: "long" });

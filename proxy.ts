@@ -3,6 +3,7 @@ import createIntlMiddleware from "next-intl/middleware";
 import { routing } from "@/i18n/routing";
 import { updateSession } from "@/lib/supabase/middleware";
 import { decodeJwtClaims } from "@/lib/auth/decode-claims";
+import { buildCsp } from "@/lib/csp";
 import { ROLE_HOME_PATH, ROLE_SEGMENT_GUARDS, DEFAULT_LOCALE } from "@/types/domain";
 
 const intlMiddleware = createIntlMiddleware(routing);
@@ -15,6 +16,21 @@ function stripLocale(pathname: string): string {
 }
 
 export async function proxy(request: NextRequest) {
+  // 0. CSP nonce. Set on the *request* headers so Next.js can read it while
+  //    rendering (and next-intl copies request headers when it rewrites).
+  const nonce = btoa(crypto.randomUUID());
+  const secure =
+    request.nextUrl.protocol === "https:" || request.headers.get("x-forwarded-proto") === "https";
+  const csp = buildCsp(nonce, { isDev: process.env.NODE_ENV === "development", secure });
+  request.headers.set("x-nonce", nonce);
+  request.headers.set("Content-Security-Policy", csp);
+
+  const res = await handle(request);
+  res.headers.set("Content-Security-Policy", csp);
+  return res;
+}
+
+async function handle(request: NextRequest) {
   // 1. Locale routing/rewriting first — this establishes the response
   //    next-intl owns (locale cookie, rewritten pathname).
   const intlResponse = intlMiddleware(request);
@@ -71,6 +87,6 @@ export async function proxy(request: NextRequest) {
 export const config = {
   matcher: [
     // Run on everything except static assets, images, and Next internals.
-    "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico)$).*)",
+    "/((?!_next/static|_next/image|favicon.ico|robots\\.txt|sitemap\\.xml|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico)$).*)",
   ],
 };

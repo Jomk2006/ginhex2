@@ -68,7 +68,8 @@
     "language": "English",
     "skipToContent": "انتقل إلى المحتوى",
     "openMenu": "فتح القائمة",
-    "closeMenu": "إغلاق القائمة"
+    "closeMenu": "إغلاق القائمة",
+    "toggleTheme": "تبديل المظهر"
   },
   "roles": {
     "student": "طالب",
@@ -345,5 +346,8 @@
       "button": "أنشئ حسابي المجاني",
       "secondary": "استكشف الدورات أولًا"
     }
+  },
+  "brand": {
+    "logoAlt": "GENHEX — ابنِ القادم."
   }
 }

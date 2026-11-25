@@ -5,24 +5,27 @@ import { notFound } from "next/navigation";
 import { cookies } from "next/headers";
 import { routing } from "@/i18n/routing";
 import { THEME_COOKIE, DEFAULT_THEME } from "@/lib/theme";
+import { getSiteUrl, OG_IMAGE, LOCALE_META } from "@/lib/seo";
 import "../globals.css";
-
-const META = {
-  en: {
-    title: "GENHEX | Learn it. Prove it. Build what's next.",
-    description:
-      "Free courses with recorded and live lessons, labs that run in your browser, self-grading exams and certificates anyone can verify.",
-  },
-  ar: {
-    title: "GENHEX | تعلّم. وأثبت مستواك. ابنِ القادم.",
-    description:
-      "دورات مجانية بدروس مسجّلة وجلسات مباشرة، ومعامل تعمل من متصفحك، وامتحانات تُصحَّح تلقائيًا، وشهادات يستطيع أي شخص التأكد من صحتها.",
-  },
-} as const;
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params;
-  return META[locale === "ar" ? "ar" : "en"];
+  const l = locale === "ar" ? "ar" : "en";
+  const { title, description } = LOCALE_META[l];
+  return {
+    metadataBase: new URL(getSiteUrl()),
+    title,
+    description,
+    openGraph: {
+      type: "website",
+      siteName: "GENHEX",
+      title,
+      description,
+      locale: l === "ar" ? "ar_AR" : "en_US",
+      images: [OG_IMAGE],
+    },
+    twitter: { card: "summary", title, description, images: [OG_IMAGE.url] },
+  };
 }
 
 export function generateStaticParams() {
