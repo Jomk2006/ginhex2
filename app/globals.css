@@ -287,14 +287,14 @@ a:hover text.hex-ink, a:focus-visible text.hex-ink { fill: #0a0a0a; stroke: none
    Lives in @layer components so Tailwind utilities can still override.
    ===================================================================== */
 :root {
-  --card-sheen: linear-gradient(180deg, color-mix(in srgb, var(--genhex-cyan) 4%, #fff) 0%, #fff 55%);
+  --card-sheen: linear-gradient(180deg, color-mix(in srgb, var(--genhex-cyan) 5%, transparent) 0%, transparent 55%);
   --mesh-a: color-mix(in srgb, var(--genhex-cyan) 14%, transparent);
   --mesh-b: color-mix(in srgb, var(--genhex-slate) 7%, transparent);
   --row-hover: color-mix(in srgb, var(--genhex-cyan) 7%, transparent);
   --th-bg: color-mix(in srgb, var(--genhex-slate) 5%, white);
 }
 .dark {
-  --card-sheen: linear-gradient(180deg, color-mix(in srgb, var(--genhex-white) 5%, var(--genhex-slate)) 0%, var(--genhex-slate) 60%);
+  --card-sheen: linear-gradient(180deg, color-mix(in srgb, var(--genhex-white) 5%, transparent) 0%, transparent 60%);
   --mesh-a: color-mix(in srgb, var(--genhex-cyan) 16%, transparent);
   --mesh-b: color-mix(in srgb, var(--genhex-white) 4%, transparent);
   --row-hover: color-mix(in srgb, var(--genhex-cyan) 9%, transparent);
@@ -464,10 +464,32 @@ a:hover text.hex-ink, a:focus-visible text.hex-ink { fill: #0a0a0a; stroke: none
   input:not([type="checkbox"]):not([type="radio"]):user-valid:not(:placeholder-shown) { border-color: color-mix(in srgb, var(--genhex-cyan) 70%, var(--border-strong)); }
   .gx-field-glow:focus-visible { box-shadow: 0 0 0 4px color-mix(in srgb, var(--ring) 20%, transparent), 0 10px 24px -12px var(--glow); }
 
-  /* ---- 14. Sidebar nav ---- */
+  /* ---- 14. Sidebar nav: active pill + cyan indicator, icon hover motion ---- */
+  .gx-nav-item { position: relative; transition: background-color 0.2s ease, color 0.2s ease, transform 0.25s var(--ease-out); }
   .gx-nav-item .gx-nav-icon { transition: transform 0.3s var(--ease-out); }
   .gx-nav-item:hover .gx-nav-icon { transform: translateY(-1px) scale(1.12) rotate(-6deg); }
-  .gx-nav-pill { transition: opacity 0.25s ease, transform 0.35s var(--ease-out); }
+  .gx-nav-item:hover { transform: translateX(2px); }
+  [dir="rtl"] .gx-nav-item:hover { transform: translateX(-2px); }
+  .gx-nav-item[aria-current="page"] {
+    background: linear-gradient(90deg, color-mix(in srgb, var(--genhex-cyan) 16%, transparent), color-mix(in srgb, var(--genhex-cyan) 5%, transparent));
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--genhex-cyan) 22%, transparent);
+  }
+  [dir="rtl"] .gx-nav-item[aria-current="page"] { background: linear-gradient(270deg, color-mix(in srgb, var(--genhex-cyan) 16%, transparent), color-mix(in srgb, var(--genhex-cyan) 5%, transparent)); }
+  .gx-nav-item[aria-current="page"]::before {
+    content: ""; position: absolute; inset-block: 0.5rem; inset-inline-start: 0; width: 3px; border-radius: 3px;
+    background: var(--genhex-cyan); box-shadow: 0 0 10px var(--glow);
+    animation: gx-pill-in 0.4s var(--ease-out) both;
+  }
+  @keyframes gx-pill-in { from { transform: scaleY(0); opacity: 0; } to { transform: none; opacity: 1; } }
+
+  /* ---- 14b. Mobile drawer: stays mounted, slides + fades; hidden from AT/tab order when closed ---- */
+  .gx-drawer { position: fixed; inset: 0; z-index: 50; visibility: hidden; transition: visibility 0s linear 0.3s; }
+  .gx-drawer[data-open="true"] { visibility: visible; transition-delay: 0s; }
+  .gx-drawer-scrim { position: absolute; inset: 0; background: rgb(49 58 67 / 0.55); -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px); opacity: 0; transition: opacity 0.3s ease; }
+  .gx-drawer[data-open="true"] .gx-drawer-scrim { opacity: 1; }
+  .gx-drawer-panel { position: absolute; inset-block: 0; inset-inline-start: 0; width: min(18rem, 86vw); transform: translateX(-100%); transition: transform 0.35s var(--ease-out); }
+  [dir="rtl"] .gx-drawer-panel { transform: translateX(100%); }
+  .gx-drawer[data-open="true"] .gx-drawer-panel { transform: none; }
 
   /* ---- 15. Auth decorative panel ---- */
   .gx-auth-panel {
@@ -497,7 +519,9 @@ button:not(:disabled):active, a[class*="inline-flex"]:active { transform: scale(
   .gx-enter, .gx-stagger > *, .gx-rule, .gx-bar, .gx-bar::after, .gx-ring-fg, .gx-hex-float, .gx-hex-in,
   .gx-hex-trace, .gx-breathe, .gx-skeleton::after, .gx-toast, .gx-mesh::before { animation: none !important; }
   .gx-bar::after, .gx-skeleton::after { display: none; }
-  .gx-seg-ind, .gx-nav-item .gx-nav-icon { transition: none; }
+  .gx-seg-ind, .gx-nav-item .gx-nav-icon, .gx-drawer-panel, .gx-drawer-scrim, .gx-link, .gx-nav-item { transition: none !important; }
+  .gx-nav-item:hover, [dir="rtl"] .gx-nav-item:hover, .gx-nav-item:hover .gx-nav-icon { transform: none; }
+  .gx-nav-item[aria-current="page"]::before { animation: none; }
   [data-slot="card"][data-interactive="true"]:hover, a:hover > [data-slot="card"] { transform: none; }
   button:not(:disabled):active, a[class*="inline-flex"]:active { transform: none; }
 }
