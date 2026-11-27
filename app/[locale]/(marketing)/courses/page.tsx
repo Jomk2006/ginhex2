@@ -50,7 +50,7 @@ export default async function CoursesPage({
   const courses = coursesResult ?? [];
 
   return (
-    <div className="bg-ambient">
+    <div className="gx-wash">
       <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6">
         <PageHeader
           className="mb-8"

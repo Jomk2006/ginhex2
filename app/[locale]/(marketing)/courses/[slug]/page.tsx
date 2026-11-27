@@ -61,7 +61,7 @@ export default async function CourseDetailPage({
   const instructorName = instructor ? (isAr ? instructor.full_name_ar : instructor.full_name_en) : null;
 
   return (
-    <div className="bg-ambient">
+    <div className="gx-wash">
     <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6">
       <div className="gx-enter grid grid-cols-1 gap-10 lg:grid-cols-3">
         <div className="flex flex-col gap-8 lg:col-span-2">

@@ -48,7 +48,7 @@ export default async function AboutPage() {
   ];
 
   return (
-    <div className="bg-ambient">
+    <div className="gx-wash">
     <div className="relative mx-auto max-w-4xl px-4 py-20 sm:px-6">
       <Reveal>
         <HexMotif className="pointer-events-none absolute end-4 top-14 hidden h-48 w-48 opacity-70 md:block" />

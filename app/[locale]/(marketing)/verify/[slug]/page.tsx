@@ -24,7 +24,7 @@ export default async function VerifyCertificatePage({ params }: { params: Promis
   const date = new Date(cert.issued_at).toLocaleDateString(isAr ? "ar-EG" : "en-GB", { dateStyle: "long" });
 
   return (
-    <div className="bg-ambient">
+    <div className="gx-wash">
     <div className="mx-auto max-w-3xl px-4 py-12 sm:px-6">
       <Card variant="glass" className="gx-enter mb-6 flex items-center gap-4 p-5" role="status">
         <span
