@@ -37,7 +37,13 @@ export function buildCsp(nonce: string, opts: { isDev: boolean; secure: boolean 
     "frame-src": [
       "https://www.youtube.com",
       "https://www.youtube-nocookie.com",
+      // Drive /preview redirects across Google-owned hosts (docs, drive.usercontent,
+      // *.googleusercontent), and frame-src is enforced on every redirect hop.
       "https://drive.google.com",
+      "https://docs.google.com",
+      "https://drive.usercontent.google.com",
+      "https://*.googleusercontent.com",
+      "https://accounts.google.com",
     ],
     "worker-src": ["'self'", "blob:"],
     "object-src": ["'none'"],
