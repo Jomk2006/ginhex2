@@ -77,7 +77,7 @@ export function SignUpForm() {
 
         <p className="mt-4 text-center text-sm text-muted-foreground">
           {t("haveAccount")}{" "}
-          <Link href="/sign-in" className="text-primary hover:underline">
+          <Link href="/sign-in" className="gx-link">
             {t("signInLink")}
           </Link>
         </p>
