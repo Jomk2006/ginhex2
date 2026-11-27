@@ -2,7 +2,7 @@ import * as React from "react";
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
-const alertVariants = cva("relative w-full rounded-md border px-4 py-3 text-sm leading-relaxed", {
+const alertVariants = cva("gx-toast relative w-full rounded-xl border px-4 py-3 text-sm leading-relaxed", {
   variants: {
     variant: {
       default: "border-border bg-muted text-foreground",
