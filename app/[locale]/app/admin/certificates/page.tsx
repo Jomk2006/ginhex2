@@ -4,6 +4,8 @@ import { getCertificateOverview } from "@/lib/data/certificates";
 import { issueCertificateAction, revokeCertificateAction } from "@/actions/certificates";
 import { Link } from "@/i18n/navigation";
 import { Button } from "@/components/ui/button";
+import { EmptyState } from "@/components/ui/empty-state";
+import { PageHeader } from "@/components/ui/page-header";
 import { Badge } from "@/components/ui/badge";
 
 export default async function AdminCertificatesPage({ params }: { params: Promise<{ locale: string }> }) {
@@ -24,21 +26,21 @@ export default async function AdminCertificatesPage({ params }: { params: Promis
 
   return (
     <div className="flex flex-col gap-6">
-      <div>
-        <h1 className="text-2xl font-semibold">{isAr ? "الشهادات" : "Certificates"}</h1>
-        <p className="mt-1 text-sm text-muted-foreground">
-          {isAr
+      <PageHeader
+        title={isAr ? "الشهادات" : "Certificates"}
+        description={
+          isAr
             ? "الأهلية: كل الدروس مكتملة، وتجاوز امتحان معتمد إذا كان مطلوبًا للدورة. الإصدار قرار الأدمن."
-            : "Eligible = every lesson complete and, if the course requires one, a passed certifying exam. Issuing is your decision."}
-        </p>
-      </div>
+            : "Eligible = every lesson complete and, if the course requires one, a passed certifying exam. Issuing is your decision."
+        }
+      />
 
       {rows === null && <p role="alert" className="text-destructive">{isAr ? "تعذّر تحميل البيانات. حدّث الصفحة وحاول مرة أخرى." : "We couldn't load this data. Refresh to try again."}</p>}
-      {rows?.length === 0 && <p className="text-sm text-muted-foreground">{isAr ? "لا يوجد طلاب مسجّلون بعد." : "No enrolled students yet."}</p>}
+      {rows?.length === 0 && <EmptyState compact title={isAr ? "لا يوجد طلاب مسجّلون بعد." : "No enrolled students yet."} />}
 
-      <ul className="flex flex-col gap-2">
+      <ul className="gx-stagger flex flex-col gap-2">
         {rows?.map((r) => (
-          <li key={`${r.studentId}:${r.courseId}`} className="flex flex-wrap items-center justify-between gap-3 rounded-md border border-border bg-card p-3 text-sm">
+          <li key={`${r.studentId}:${r.courseId}`} className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-border bg-card p-3.5 text-sm shadow-xs transition-colors hover:bg-[var(--row-hover)]">
             <div>
               <p className="font-medium">{r.studentName} <span className="text-xs text-muted-foreground">{r.genhexId}</span></p>
               <p className="text-xs text-muted-foreground">{isAr ? r.courseTitleAr : r.courseTitleEn}</p>
@@ -47,7 +49,7 @@ export default async function AdminCertificatesPage({ params }: { params: Promis
               {r.active ? (
                 <>
                   <Badge>{isAr ? "صادرة" : "Issued"}</Badge>
-                  <Link href={`/verify/${r.active.slug}`} className="text-primary hover:underline">{r.active.number}</Link>
+                  <Link href={`/verify/${r.active.slug}`} className="gx-link">{r.active.number}</Link>
                   <form action={revokeCertificateAction.bind(null, r.active.id)}>
                     <Button type="submit" size="sm" variant="outline">{isAr ? "إلغاء" : "Revoke"}</Button>
                   </form>

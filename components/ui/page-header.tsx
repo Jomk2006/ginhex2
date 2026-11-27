@@ -24,7 +24,7 @@ export function PageHeader({
             {eyebrow}
           </p>
         )}
-        <h1 className="text-2xl sm:text-3xl">{title}</h1>
+        <h1 className="gx-ph text-2xl sm:text-3xl">{title}</h1>
         <span className="gx-rule" aria-hidden="true" />
         {description && <p className="mt-3 max-w-2xl text-muted-foreground">{description}</p>}
       </div>

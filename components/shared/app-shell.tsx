@@ -133,7 +133,7 @@ export function AppShell({
           </div>
         </div>
 
-        <main id="main" className="mx-auto w-full min-w-0 max-w-6xl flex-1 px-4 py-8 sm:px-8 sm:py-10">
+        <main id="main" className="gx-app-main mx-auto w-full min-w-0 max-w-6xl flex-1 px-4 py-8 sm:px-8 sm:py-10">
           <div key={pathname} className="gx-enter">
             {children}
           </div>

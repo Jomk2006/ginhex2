@@ -7,7 +7,7 @@ import { Select } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Alert } from "@/components/ui/alert";
-import { cn } from "@/lib/utils";
+import { Segmented } from "@/components/ui/segmented";
 import { ROLE_LABELS, USER_ROLES } from "@/types/domain";
 import type { Profile, UserRole } from "@/types/domain";
 
@@ -62,29 +62,21 @@ export function UsersTable({ profiles, currentUserId }: { profiles: ProfileWithE
         </Alert>
       )}
 
-      <div className="flex flex-wrap gap-1">
-        {FILTERS.map((f) => {
-          const count = f.value === "all" ? rows.length : rows.filter((p) => p.role === f.value).length;
-          return (
-            <button
-              key={f.value}
-              type="button"
-              onClick={() => setRoleFilter(f.value)}
-              className={cn(
-                "rounded-full px-3 py-1 text-xs font-medium transition-colors",
-                roleFilter === f.value ? "bg-[#00BCC8] text-[#0A0A0A]" : "bg-muted text-muted-foreground hover:text-foreground"
-              )}
-            >
-              {isAr ? f.ar : f.en} ({count})
-            </button>
-          );
-        })}
-      </div>
+      <Segmented
+        label={isAr ? "تصفية حسب الدور" : "Filter by role"}
+        value={roleFilter}
+        onChange={(v) => setRoleFilter(v as UserRole | "all")}
+        className="w-full sm:max-w-xl"
+        options={FILTERS.map((f) => ({
+          value: f.value,
+          label: `${isAr ? f.ar : f.en} (${f.value === "all" ? rows.length : rows.filter((p) => p.role === f.value).length})`,
+        }))}
+      />
 
       {/* Table on larger screens */}
-      <div className="hidden overflow-x-auto rounded-lg border border-border sm:block">
+      <div className="gx-table-wrap hidden sm:block">
         <table className="w-full text-sm">
-          <thead className="border-b border-border bg-muted text-start text-muted-foreground">
+          <thead>
             <tr>
               <th className="px-4 py-3 text-start font-medium">{isAr ? "الاسم" : "Name"}</th>
               <th className="px-4 py-3 text-start font-medium">{isAr ? "البريد الإلكتروني" : "Email"}</th>
@@ -94,7 +86,7 @@ export function UsersTable({ profiles, currentUserId }: { profiles: ProfileWithE
               <th className="px-4 py-3 text-start font-medium">{isAr ? "الحالة" : "Status"}</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-border">
+          <tbody>
             {filteredRows.map((profile) => (
               <tr key={profile.id}>
                 <td className="px-4 py-3">
@@ -145,7 +137,7 @@ export function UsersTable({ profiles, currentUserId }: { profiles: ProfileWithE
       {/* Cards on mobile */}
       <div className="flex flex-col gap-3 sm:hidden">
         {filteredRows.map((profile) => (
-          <div key={profile.id} className="rounded-lg border border-border p-4">
+          <div key={profile.id} className="rounded-xl border border-border bg-card p-4 shadow-xs">
             <div className="mb-2 flex items-center justify-between">
               <span className="font-medium">{isAr ? profile.full_name_ar : profile.full_name_en}</span>
               <Badge variant={profile.is_active ? "default" : "muted"}>

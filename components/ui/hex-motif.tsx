@@ -23,20 +23,29 @@ function hexPoints(cx: number, cy: number, r: number) {
   }).join(" ");
 }
 
-export function HexMotif({ className, tone = "auto" }: { className?: string; tone?: "auto" | "dark" }) {
-  const stroke = tone === "dark" ? "rgb(255 255 255 / 0.28)" : "color-mix(in srgb, var(--foreground) 24%, transparent)";
-  const fill = tone === "dark" ? "rgb(255 255 255 / 0.04)" : "color-mix(in srgb, var(--foreground) 4%, transparent)";
+export function HexMotif({
+  className,
+  tone = "auto",
+  still = false,
+}: {
+  className?: string;
+  tone?: "auto" | "dark";
+  /** Render without any animation (for repeated use, e.g. course covers). */
+  still?: boolean;
+}) {
   return (
-    <svg viewBox="0 0 200 200" fill="none" aria-hidden="true" className={cn("overflow-visible", className)}>
+    <svg
+      viewBox="0 0 200 200"
+      fill="none"
+      aria-hidden="true"
+      data-tone={tone}
+      className={cn("gx-hex-svg overflow-visible", still && "gx-still", className)}
+    >
       {CELLS.map((c, i) => (
-        <g key={i} className="gx-hex-in" style={{ "--i": i } as React.CSSProperties}>
+        <g key={i} className="gx-hex-in">
           <polygon
             points={hexPoints(c.x, c.y, 31)}
-            fill={c.hot ? "rgb(0 182 191 / 0.18)" : fill}
-            stroke={c.hot ? "#00b6bf" : stroke}
-            strokeWidth={c.hot ? 2 : 1.25}
-            strokeLinejoin="round"
-            className={c.hot ? "gx-hex-trace gx-breathe" : undefined}
+            className={c.hot ? "gx-hex-cell gx-hex-hot gx-hex-trace gx-breathe" : "gx-hex-cell"}
             pathLength={c.hot ? 1 : undefined}
           />
         </g>

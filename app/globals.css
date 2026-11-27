@@ -403,7 +403,15 @@ a:hover text.hex-ink, a:focus-visible text.hex-ink { fill: #0a0a0a; stroke: none
 
   /* ---- 7. Empty state hex motif ---- */
   .gx-hex-float { animation: gx-float 6s ease-in-out infinite; }
-  .gx-hex-in { animation: gx-hex-in 0.6s var(--ease-out) both; animation-delay: calc(var(--i, 0) * 70ms); transform-box: fill-box; transform-origin: center; }
+  .gx-hex-svg { --hx-stroke: color-mix(in srgb, var(--foreground) 24%, transparent); --hx-fill: color-mix(in srgb, var(--foreground) 4%, transparent); }
+  .gx-hex-svg[data-tone="dark"] { --hx-stroke: rgb(255 255 255 / 0.28); --hx-fill: rgb(255 255 255 / 0.04); }
+  .gx-hex-cell { fill: var(--hx-fill); stroke: var(--hx-stroke); stroke-width: 1.25; stroke-linejoin: round; }
+  .gx-hex-hot { fill: rgb(0 182 191 / 0.18); stroke: #00b6bf; stroke-width: 2; }
+  .gx-hex-in { animation: gx-hex-in 0.6s var(--ease-out) both; transform-box: fill-box; transform-origin: center; }
+  .gx-hex-svg > g:nth-child(2) { animation-delay: 70ms; } .gx-hex-svg > g:nth-child(3) { animation-delay: 140ms; }
+  .gx-hex-svg > g:nth-child(4) { animation-delay: 210ms; } .gx-hex-svg > g:nth-child(5) { animation-delay: 280ms; }
+  .gx-hex-svg > g:nth-child(6) { animation-delay: 350ms; } .gx-hex-svg > g:nth-child(7) { animation-delay: 420ms; }
+  .gx-still, .gx-still * { animation: none !important; }
   .gx-hex-trace { stroke-dasharray: 1; stroke-dashoffset: 0; animation: gx-hex-draw 1.4s var(--ease-out) both; }
   .gx-breathe { animation: gx-breathe 4s ease-in-out infinite; }
 
@@ -525,3 +533,22 @@ button:not(:disabled):active, a[class*="inline-flex"]:active { transform: scale(
   [data-slot="card"][data-interactive="true"]:hover, a:hover > [data-slot="card"] { transform: none; }
   button:not(:disabled):active, a[class*="inline-flex"]:active { transform: none; }
 }
+
+@layer components {
+  .gx-cover-fallback {
+    background-image:
+      radial-gradient(70% 90% at 85% 0%, rgb(0 182 191 / 0.34), transparent 70%),
+      radial-gradient(60% 70% at 0% 100%, rgb(0 182 191 / 0.16), transparent 70%);
+  }
+}
+
+/* Plain <h1> on inner pages that don't use PageHeader still get the drawn rule. */
+@layer components {
+  .gx-app-main h1:not(.gx-ph)::after {
+    content: ""; display: block; height: 2px; width: 2.5rem; border-radius: 2px; margin-top: 0.5rem;
+    background: linear-gradient(90deg, var(--genhex-cyan), transparent);
+    transform-origin: left center; animation: gx-draw 0.7s var(--ease-out) 0.15s both;
+  }
+  [dir="rtl"] .gx-app-main h1:not(.gx-ph)::after { transform-origin: right center; background: linear-gradient(270deg, var(--genhex-cyan), transparent); }
+}
+@media (prefers-reduced-motion: reduce) { .gx-app-main h1:not(.gx-ph)::after { animation: none; } }

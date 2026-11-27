@@ -2,7 +2,8 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { getAllCoursesAdmin } from "@/lib/data/admin";
 import { InstructorCourseCard } from "@/components/instructor/instructor-course-card";
-import { Card, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { EmptyState } from "@/components/ui/empty-state";
+import { PageHeader } from "@/components/ui/page-header";
 import { Button } from "@/components/ui/button";
 import { Link } from "@/i18n/navigation";
 
@@ -28,7 +29,7 @@ export default async function AdminCoursesPage({
 
   return (
     <div className="flex flex-col gap-6">
-      <h1 className="text-2xl font-semibold">{isAr ? "إدارة الدورات" : "Course management"}</h1>
+      <PageHeader title={isAr ? "إدارة الدورات" : "Course management"} />
 
       <div className="flex items-center justify-between">
         <p className="text-sm text-muted-foreground">
@@ -40,16 +41,12 @@ export default async function AdminCoursesPage({
       </div>
 
       {courses.length === 0 ? (
-        <Card>
-          <CardHeader>
-            <CardTitle>{isAr ? "لا توجد دورات بعد" : "No courses yet"}</CardTitle>
-            <CardDescription>
-              {isAr ? "أنشئ أول دورة لتنطلق المنصة." : "Create the first course to get the platform going."}
-            </CardDescription>
-          </CardHeader>
-        </Card>
+        <EmptyState
+          title={isAr ? "لا توجد دورات بعد" : "No courses yet"}
+          description={isAr ? "أنشئ أول دورة لتنطلق المنصة." : "Create the first course to get the platform going."}
+        />
       ) : (
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="gx-stagger grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {courses.map((course) => (
             <InstructorCourseCard key={course.id} course={course} adminHref={`/app/admin/courses/${course.id}/edit`} />
           ))}

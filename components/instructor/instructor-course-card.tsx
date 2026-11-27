@@ -2,6 +2,7 @@ import { useLocale } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { CourseThumbnail } from "@/components/courses/course-thumbnail";
 import type { Course } from "@/types/domain";
 
 const STATUS_VARIANT: Record<Course["status"], "default" | "outline" | "muted"> = {
@@ -25,9 +26,12 @@ export function InstructorCourseCard({ course, adminHref }: { course: Course; ad
   const isAr = useLocale() === "ar";
   const l = isAr ? "ar" : "en";
   return (
-    <Link href={adminHref ?? `/app/instructor/courses/${course.id}/edit`}>
-      <Card className="h-full transition-shadow hover:shadow-md">
-        <CardHeader className="flex-row items-start justify-between space-y-0">
+    <Link href={adminHref ?? `/app/instructor/courses/${course.id}/edit`} className="block h-full rounded-xl">
+      <Card className="h-full overflow-hidden">
+        <div className="relative h-24 w-full">
+          <CourseThumbnail src={course.cover_image_url} alt="" />
+        </div>
+        <CardHeader className="flex-row items-start justify-between gap-3 space-y-0">
           <CardTitle className="text-lg">{isAr ? course.title_ar : course.title_en}</CardTitle>
           <Badge variant={STATUS_VARIANT[course.status]}>{STATUS_LABEL[course.status][l]}</Badge>
         </CardHeader>
