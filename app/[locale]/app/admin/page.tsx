@@ -1,8 +1,10 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { getPlatformStats } from "@/lib/data/admin";
-import { Card, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { BookOpen, Globe2, GraduationCap, UserCheck, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { PageHeader } from "@/components/ui/page-header";
+import { StatTile } from "@/components/ui/stat-tile";
 import { Link } from "@/i18n/navigation";
 
 export default async function AdminDashboardPage({
@@ -27,43 +29,37 @@ export default async function AdminDashboardPage({
   const name = isAr ? profile?.full_name_ar : profile?.full_name_en;
 
   const cards = [
-    { label: isAr ? "إجمالي الطلاب" : "Total students", value: stats.totalStudents },
-    { label: isAr ? "إجمالي المدرّبين" : "Total instructors", value: stats.totalInstructors },
-    { label: isAr ? "إجمالي الدورات" : "Total courses", value: stats.totalCourses },
-    { label: isAr ? "الدورات المنشورة" : "Published courses", value: stats.publishedCourses },
-    { label: isAr ? "إجمالي التسجيلات" : "Total enrollments", value: stats.totalEnrollments },
+    { label: isAr ? "إجمالي الطلاب" : "Total students", value: stats.totalStudents, icon: GraduationCap },
+    { label: isAr ? "إجمالي المدرّبين" : "Total instructors", value: stats.totalInstructors, icon: UserCheck },
+    { label: isAr ? "إجمالي الدورات" : "Total courses", value: stats.totalCourses, icon: BookOpen },
+    { label: isAr ? "الدورات المنشورة" : "Published courses", value: stats.publishedCourses, icon: Globe2 },
+    { label: isAr ? "إجمالي التسجيلات" : "Total enrollments", value: stats.totalEnrollments, icon: Users },
   ];
 
   return (
-    <div className="flex flex-col gap-6">
-      <div>
-        <h1 className="text-2xl font-semibold">{isAr ? `مرحبًا، ${name ?? user.email}` : `Welcome, ${name ?? user.email}`}</h1>
-        <p className="text-muted-foreground">
-          {isAr ? "لوحة تحكم إدارة منصة GENHEX." : "GENHEX platform administration."}
-        </p>
-      </div>
+    <div className="flex flex-col gap-8">
+      <PageHeader
+        title={isAr ? `مرحبًا، ${name ?? user.email}` : `Welcome, ${name ?? user.email}`}
+        description={isAr ? "لوحة تحكم إدارة منصة GENHEX." : "GENHEX platform administration."}
+        actions={
+          <>
+            <Button asChild size="sm">
+              <Link href="/app/admin/courses/new">{isAr ? "إنشاء دورة" : "Create course"}</Link>
+            </Button>
+            <Button asChild size="sm" variant="outline">
+              <Link href="/app/admin/courses">{isAr ? "إدارة الدورات" : "Manage courses"}</Link>
+            </Button>
+            <Button asChild size="sm" variant="outline">
+              <Link href="/app/admin/users">{isAr ? "إدارة المستخدمين" : "Manage users"}</Link>
+            </Button>
+          </>
+        }
+      />
 
-      <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
+      <div className="gx-stagger grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
         {cards.map((card) => (
-          <Card key={card.label}>
-            <CardHeader>
-              <CardDescription>{card.label}</CardDescription>
-              <CardTitle className="text-3xl">{card.value}</CardTitle>
-            </CardHeader>
-          </Card>
+          <StatTile key={card.label} icon={card.icon} label={card.label} value={card.value} />
         ))}
-      </div>
-
-      <div className="flex flex-wrap gap-3">
-        <Button asChild size="sm">
-          <Link href="/app/admin/courses/new">{isAr ? "إنشاء دورة" : "Create course"}</Link>
-        </Button>
-        <Button asChild size="sm" variant="outline">
-          <Link href="/app/admin/courses">{isAr ? "إدارة الدورات" : "Manage courses"}</Link>
-        </Button>
-        <Button asChild size="sm" variant="outline">
-          <Link href="/app/admin/users">{isAr ? "إدارة المستخدمين" : "Manage users"}</Link>
-        </Button>
       </div>
     </div>
   );

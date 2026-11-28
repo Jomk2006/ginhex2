@@ -72,7 +72,7 @@ export function SignInForm() {
           <div className="flex flex-col gap-1.5">
             <div className="flex items-center justify-between">
               <Label htmlFor="password">{t("password")}</Label>
-              <Link href="/reset-password" className="text-xs text-primary hover:underline">
+              <Link href="/reset-password" className="gx-link text-xs">
                 {t("forgotPassword")}
               </Link>
             </div>
@@ -86,7 +86,7 @@ export function SignInForm() {
 
         <p className="text-center text-sm text-muted-foreground">
           {t("noAccount")}{" "}
-          <Link href="/sign-up" className="text-primary hover:underline">
+          <Link href="/sign-up" className="gx-link">
             {t("signUpLink")}
           </Link>
         </p>

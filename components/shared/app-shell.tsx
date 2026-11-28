@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { Menu, X } from "lucide-react";
 import { Link, usePathname } from "@/i18n/navigation";
@@ -33,16 +33,11 @@ function NavLinks({ items, onNavigate }: { items: NavItem[]; onNavigate?: () => 
             onClick={onNavigate}
             aria-current={isActive ? "page" : undefined}
             className={cn(
-              "group relative flex items-center gap-3 rounded-md px-3 py-2.5 text-sm font-medium transition-[background-color,color] duration-150 ease-out",
-              isActive
-                ? "bg-accent text-accent-foreground shadow-xs"
-                : "text-muted-foreground hover:bg-muted hover:text-foreground"
+              "gx-nav-item group flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium",
+              isActive ? "text-accent-foreground" : "text-muted-foreground hover:bg-muted hover:text-foreground"
             )}
           >
-            {isActive && (
-              <span aria-hidden="true" className="absolute inset-y-2 start-0 w-0.5 rounded-full bg-primary" />
-            )}
-            <Icon className="h-[18px] w-[18px] shrink-0" />
+            <Icon className="gx-nav-icon h-[18px] w-[18px] shrink-0" />
             {isAr ? item.labelAr : item.labelEn}
           </Link>
         );
@@ -69,6 +64,15 @@ export function AppShell({
   children: React.ReactNode;
 }) {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const pathname = usePathname();
+
+  // Escape closes the drawer; the drawer also closes on any route change.
+  useEffect(() => {
+    if (!mobileOpen) return;
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setMobileOpen(false);
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, [mobileOpen]);
   const tNav = useTranslations("nav");
   // Computed here (client-side) from the plain role string, not received
   // as a prop -- NavItem.icon holds actual component references, and
@@ -79,15 +83,15 @@ export function AppShell({
   const navItems = getAppNavItems(role);
 
   return (
-    <div className="flex min-h-screen flex-col bg-canvas">
-      <header className="glass sticky top-0 z-40 border-x-0 border-t-0">
+    <div className="gx-mesh flex min-h-screen flex-col">
+      <header className="glass sticky top-0 z-40 border-x-0 border-t-0 shadow-[0_1px_0_var(--border),0_8px_24px_-16px_rgb(52_61_70/0.25)]">
         <div className="flex items-center justify-between px-4 py-2.5 sm:px-6">
           <div className="flex items-center gap-3">
             <button
               type="button"
               onClick={() => setMobileOpen(true)}
               aria-label={tNav("openMenu")}
-              className="flex h-10 w-10 items-center justify-center rounded-md border border-border bg-card/60 text-foreground transition-colors hover:bg-muted sm:hidden"
+              className="flex h-10 w-10 items-center justify-center rounded-xl border border-border bg-card/60 text-foreground transition-colors hover:bg-muted sm:hidden"
             >
               <Menu className="h-5 w-5" />
             </button>
@@ -106,32 +110,34 @@ export function AppShell({
 
       <div className="flex flex-1">
         {/* Permanent sidebar on sm+ (laptop/tablet/desktop) */}
-        <aside className="sticky top-[65px] hidden h-[calc(100vh-65px)] w-64 shrink-0 self-start overflow-y-auto border-e border-border bg-background sm:block">
+        <aside className="sticky top-[65px] hidden h-[calc(100vh-65px)] w-64 shrink-0 self-start overflow-y-auto border-e border-border bg-card/50 backdrop-blur-sm sm:block">
           <NavLinks items={navItems} />
         </aside>
 
-        {/* Mobile overlay drawer */}
-        {mobileOpen && (
-          <div className="fixed inset-0 z-50 sm:hidden">
-            <div className="absolute inset-0 bg-[#313A43]/60 backdrop-blur-sm" onClick={() => setMobileOpen(false)} aria-hidden="true" />
-            <div className="absolute inset-y-0 start-0 w-72 border-e border-border bg-background shadow-xl">
-              <div className="flex items-center justify-between border-b border-border p-3">
-                <Logo height={40} />
-                <button
-                  type="button"
-                  onClick={() => setMobileOpen(false)}
-                  aria-label={tNav("closeMenu")}
-                  className="flex h-10 w-10 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-muted"
-                >
-                  <X className="h-5 w-5" />
-                </button>
-              </div>
-              <NavLinks items={navItems} onNavigate={() => setMobileOpen(false)} />
+        {/* Mobile drawer: always mounted so it can slide; inert + invisible when closed */}
+        <div className="gx-drawer sm:hidden" data-open={mobileOpen} inert={!mobileOpen}>
+          <div className="gx-drawer-scrim" onClick={() => setMobileOpen(false)} aria-hidden="true" />
+          <div role="dialog" aria-modal="true" aria-label={tNav("openMenu")} className="gx-drawer-panel border-e border-border bg-background shadow-xl">
+            <div className="flex items-center justify-between border-b border-border p-3">
+              <Logo height={40} />
+              <button
+                type="button"
+                onClick={() => setMobileOpen(false)}
+                aria-label={tNav("closeMenu")}
+                className="flex h-10 w-10 items-center justify-center rounded-xl text-muted-foreground transition-colors hover:bg-muted"
+              >
+                <X className="h-5 w-5" />
+              </button>
             </div>
+            <NavLinks items={navItems} onNavigate={() => setMobileOpen(false)} />
           </div>
-        )}
+        </div>
 
-        <main className="mx-auto w-full min-w-0 max-w-6xl flex-1 px-4 py-8 sm:px-8 sm:py-10">{children}</main>
+        <main id="main" className="gx-app-main mx-auto w-full min-w-0 max-w-6xl flex-1 px-4 py-8 sm:px-8 sm:py-10">
+          <div key={pathname} className="gx-enter">
+            {children}
+          </div>
+        </main>
       </div>
     </div>
   );

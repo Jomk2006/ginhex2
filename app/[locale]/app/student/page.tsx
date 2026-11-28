@@ -3,8 +3,11 @@ import { getLocale, getTranslations } from "next-intl/server";
 import { createClient } from "@/lib/supabase/server";
 import { getStudentEnrollments } from "@/lib/data/enrollments";
 import { EnrolledCourseCard } from "@/components/student/enrolled-course-card";
-import { Card, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { BookOpen, CheckCircle2, ListChecks, PlayCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { EmptyState } from "@/components/ui/empty-state";
+import { PageHeader, SectionHeader } from "@/components/ui/page-header";
+import { StatTile } from "@/components/ui/stat-tile";
 import { Link } from "@/i18n/navigation";
 
 export default async function StudentDashboardPage() {
@@ -28,38 +31,49 @@ export default async function StudentDashboardPage() {
   const inProgress = enrollments.filter((e) => e.progressPercent < 100);
   const completed = enrollments.filter((e) => e.progressPercent >= 100);
 
+  const lessonsDone = enrollments.reduce((n, e) => n + e.completedLessons, 0);
+  const lessonsTotal = enrollments.reduce((n, e) => n + e.totalLessons, 0);
+
   return (
     <div className="flex flex-col gap-8">
-      <div className="flex flex-col gap-2">
-        <div className="flex items-center justify-between">
-          <h1 className="text-2xl font-semibold">{t("welcome", { name: name ?? user.email ?? "" })}</h1>
+      <PageHeader
+        title={t("welcome", { name: name ?? user.email ?? "" })}
+        description={t("studentOverview")}
+        actions={
           <Button asChild size="sm" variant="outline">
             <Link href="/app/student/attendance">{isAr ? "الحضور" : "Attendance"}</Link>
           </Button>
+        }
+      />
+
+      {enrollments.length > 0 && (
+        <div className="gx-stagger grid grid-cols-2 gap-4 lg:grid-cols-4">
+          <StatTile icon={BookOpen} label={isAr ? "الدورات المسجّل بها" : "Enrolled"} value={enrollments.length} />
+          <StatTile icon={PlayCircle} label={isAr ? "قيد التعلّم" : "In progress"} value={inProgress.length} />
+          <StatTile icon={CheckCircle2} label={isAr ? "مكتملة" : "Completed"} value={completed.length} />
+          <StatTile
+            icon={ListChecks}
+            label={isAr ? "الدروس المنجزة" : "Lessons done"}
+            value={<span dir="ltr">{lessonsDone}/{lessonsTotal}</span>}
+          />
         </div>
-        <p className="text-muted-foreground">{t("studentOverview")}</p>
-      </div>
+      )}
 
       {enrollments.length === 0 ? (
-        <Card>
-          <CardHeader>
-            <CardTitle>{isAr ? "أول دورة لك في انتظارك" : "Your first course is waiting"}</CardTitle>
-            <CardDescription>
-              {isAr ? "تصفّح الدورات وسجّل مجانًا وابدأ أول درس." : "Browse the catalog, enroll for free, and start your first lesson."}
-            </CardDescription>
-          </CardHeader>
-          <div className="px-6 pb-6">
-            <Button asChild>
-              <Link href="/courses">{isAr ? "استعرض الدورات" : "Browse courses"}</Link>
-            </Button>
-          </div>
-        </Card>
+        <EmptyState
+          title={isAr ? "أول دورة لك في انتظارك" : "Your first course is waiting"}
+          description={isAr ? "تصفّح الدورات وسجّل مجانًا وابدأ أول درس." : "Browse the catalog, enroll for free, and start your first lesson."}
+        >
+          <Button asChild>
+            <Link href="/courses">{isAr ? "استعرض الدورات" : "Browse courses"}</Link>
+          </Button>
+        </EmptyState>
       ) : (
         <>
           {inProgress.length > 0 && (
             <section className="flex flex-col gap-4">
-              <h2 className="text-lg font-medium">{isAr ? "متابعة التعلّم" : "Continue learning"}</h2>
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              <SectionHeader title={isAr ? "متابعة التعلّم" : "Continue learning"} />
+              <div className="gx-stagger grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
                 {inProgress.map(({ enrollment, progressPercent, completedLessons, totalLessons }) => {
                   const course = (enrollment as unknown as { courses: { slug: string; title_en: string; title_ar: string } }).courses;
                   return (
@@ -80,8 +94,8 @@ export default async function StudentDashboardPage() {
 
           {completed.length > 0 && (
             <section className="flex flex-col gap-4">
-              <h2 className="text-lg font-medium">{isAr ? "الدورات المكتملة" : "Completed courses"}</h2>
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              <SectionHeader title={isAr ? "الدورات المكتملة" : "Completed courses"} />
+              <div className="gx-stagger grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
                 {completed.map(({ enrollment, progressPercent, completedLessons, totalLessons }) => {
                   const course = (enrollment as unknown as { courses: { slug: string; title_en: string; title_ar: string } }).courses;
                   return (

@@ -1,6 +1,8 @@
 import { notFound } from "next/navigation";
 import { getLocale } from "next-intl/server";
 import { createClient } from "@/lib/supabase/server";
+import { BadgeCheck, ShieldAlert } from "lucide-react";
+import { Card } from "@/components/ui/card";
 import { PrintButton } from "@/components/certificates/print-button";
 
 export const metadata = { robots: { index: false, follow: false } };
@@ -22,19 +24,36 @@ export default async function VerifyCertificatePage({ params }: { params: Promis
   const date = new Date(cert.issued_at).toLocaleDateString(isAr ? "ar-EG" : "en-GB", { dateStyle: "long" });
 
   return (
-    <div className="mx-auto max-w-3xl px-6 py-12">
-      <div
-        role="status"
-        className={`mb-6 rounded-md px-4 py-3 text-sm font-medium ${revoked ? "bg-destructive/10 text-destructive" : "bg-[#00B6BF]/10 text-[#00B6BF]"}`}
-      >
-        {revoked
-          ? isAr ? "هذه الشهادة أُلغيت ولم تعد صالحة." : "This certificate has been revoked and is no longer valid."
-          : isAr ? "تم التحقق. هذه الشهادة أصلية." : "Verified. This certificate is authentic."}
-      </div>
+    <div className="gx-wash">
+    <div className="mx-auto max-w-3xl px-4 py-12 sm:px-6">
+      <Card variant="glass" className="gx-enter mb-6 flex items-center gap-4 p-5" role="status">
+        <span
+          aria-hidden="true"
+          className={`gx-hex-in flex h-12 w-12 shrink-0 items-center justify-center rounded-full ${
+            revoked
+              ? "bg-destructive/10 text-destructive ring-1 ring-destructive/30"
+              : "bg-primary text-primary-foreground shadow-[0_0_0_6px_var(--glow)]"
+          }`}
+        >
+          {revoked ? <ShieldAlert className="h-6 w-6" /> : <BadgeCheck className="h-6 w-6" />}
+        </span>
+        <div className="min-w-0">
+          <p className="text-base font-semibold">
+            {revoked
+              ? isAr ? "هذه الشهادة أُلغيت" : "Certificate revoked"
+              : isAr ? "تم التحقق من الشهادة" : "Certificate verified"}
+          </p>
+          <p className="text-sm text-muted-foreground">
+            {revoked
+              ? isAr ? "هذه الشهادة أُلغيت ولم تعد صالحة." : "This certificate has been revoked and is no longer valid."
+              : isAr ? "تم التحقق. هذه الشهادة أصلية." : "Verified. This certificate is authentic."}
+          </p>
+        </div>
+      </Card>
 
-      <article className="rounded-lg border-2 border-[#00B6BF] bg-white p-10 text-center text-[#313A43] shadow-sm print:shadow-none sm:p-14">
+      <article className="gx-enter rounded-2xl border-2 border-[#00B6BF] bg-white p-8 shadow-lg ring-4 ring-[#00B6BF]/10 [animation-delay:120ms] text-center text-[#313A43] print:shadow-none print:ring-0 sm:p-14">
         <p className="brand-wordmark text-3xl font-bold">
-          GEN<span className="text-[#00B6BF]">HEX</span>
+          GEN<span className="text-[#00757C]">HEX</span>
         </p>
         <p className="mt-6 text-sm text-[#313A43]/70">{isAr ? "تشهد منصة GENHEX بأن" : "GENHEX certifies that"}</p>
         <h1 className="mt-3 text-3xl font-semibold">{isAr ? cert.student_name_ar : cert.student_name_en}</h1>
@@ -58,6 +77,7 @@ export default async function VerifyCertificatePage({ params }: { params: Promis
       <div className="mt-6 flex justify-center">
         <PrintButton label={isAr ? "طباعة / حفظ PDF" : "Print / Save as PDF"} />
       </div>
+    </div>
     </div>
   );
 }

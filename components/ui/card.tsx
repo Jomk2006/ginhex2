@@ -1,14 +1,20 @@
 import * as React from "react";
 import { cn } from "@/lib/utils";
 
-function Card({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
+type CardProps = React.HTMLAttributes<HTMLDivElement> & {
+  /** "glass" = frosted floating panel (auth, hero panels); "flat" = no sheen/shadow (nested). */
+  variant?: "default" | "glass" | "flat";
+  /** Lifts on hover. Cards wrapped in a link lift automatically. */
+  interactive?: boolean;
+};
+
+function Card({ className, variant = "default", interactive = false, ...props }: CardProps) {
   return (
     <div
       data-slot="card"
-      className={cn(
-        "rounded-xl border border-border bg-card text-card-foreground shadow-sm",
-        className
-      )}
+      data-variant={variant}
+      data-interactive={interactive ? "true" : undefined}
+      className={cn("border border-border bg-card text-card-foreground shadow-sm", className)}
       {...props}
     />
   );

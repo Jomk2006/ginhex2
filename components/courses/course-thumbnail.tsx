@@ -1,6 +1,8 @@
 import Image from "next/image";
+import { HexMotif } from "@/components/ui/hex-motif";
 import { cn } from "@/lib/utils";
 
+/** Course cover. Falls back to a brand gradient with the hex motif when there is no image. */
 export function CourseThumbnail({
   src,
   alt,
@@ -11,34 +13,12 @@ export function CourseThumbnail({
   className?: string;
 }) {
   if (src) {
-    return <Image src={src} alt={alt} fill className={cn("object-cover", className)} />;
+    return <Image src={src} alt={alt} fill className={cn("gx-cover-img object-cover", className)} />;
   }
 
   return (
-    <div className="relative flex h-full w-full items-center justify-center overflow-hidden bg-[#0A0A0A]">
-      <div
-        className="absolute inset-0 opacity-30"
-        style={{
-          backgroundImage:
-            "repeating-linear-gradient(120deg, transparent 0 22px, rgba(0,188,200,0.5) 22px 23px), repeating-linear-gradient(60deg, transparent 0 22px, rgba(0,188,200,0.5) 22px 23px)",
-        }}
-        aria-hidden="true"
-      />
-      <svg viewBox="0 0 100 100" className="relative h-1/3 w-1/3 opacity-90" aria-hidden="true">
-        <polygon
-          points="50,6 89,28 89,72 50,94 11,72 11,28"
-          fill="none"
-          stroke="#00BCC8"
-          strokeWidth="3"
-        />
-        <polygon
-          points="50,24 73,37 73,63 50,76 27,63 27,37"
-          fill="none"
-          stroke="#00B6BF"
-          strokeWidth="1.5"
-          opacity="0.7"
-        />
-      </svg>
+    <div className="gx-cover gx-cover-fallback flex h-full w-full items-center justify-center" aria-hidden="true">
+      <HexMotif tone="dark" still className="gx-cover-img h-[78%] w-auto" />
     </div>
   );
 }

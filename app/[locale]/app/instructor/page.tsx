@@ -3,8 +3,11 @@ import { getLocale, getTranslations } from "next-intl/server";
 import { createClient } from "@/lib/supabase/server";
 import { getInstructorCourses, getInstructorStudentCount } from "@/lib/data/instructor";
 import { InstructorCourseCard } from "@/components/instructor/instructor-course-card";
-import { Card, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { BookOpen, FileEdit, Globe2, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { EmptyState } from "@/components/ui/empty-state";
+import { PageHeader, SectionHeader } from "@/components/ui/page-header";
+import { StatTile } from "@/components/ui/stat-tile";
 import { Link } from "@/i18n/navigation";
 
 export default async function InstructorDashboardPage() {
@@ -31,61 +34,40 @@ export default async function InstructorDashboardPage() {
 
   return (
     <div className="flex flex-col gap-8">
-      <div className="flex flex-col gap-2">
-        <h1 className="text-2xl font-semibold">{t("welcome", { name: name ?? user.email ?? "" })}</h1>
-        <p className="text-muted-foreground">{t("instructorOverview")}</p>
+      <PageHeader title={t("welcome", { name: name ?? user.email ?? "" })} description={t("instructorOverview")} />
+
+      <div className="gx-stagger grid grid-cols-2 gap-4 lg:grid-cols-4">
+        <StatTile icon={BookOpen} label={isAr ? "إجمالي الدورات" : "Total courses"} value={courses.length} />
+        <StatTile icon={Globe2} label={isAr ? "منشورة" : "Published"} value={published} />
+        <StatTile icon={FileEdit} label={isAr ? "مسودة" : "Draft"} value={draft} />
+        <StatTile icon={Users} label={isAr ? "عدد الطلاب" : "Students"} value={studentCount} />
       </div>
 
-      <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
-        <Card>
-          <CardHeader>
-            <CardDescription>{isAr ? "إجمالي الدورات" : "Total courses"}</CardDescription>
-            <CardTitle className="text-3xl">{courses.length}</CardTitle>
-          </CardHeader>
-        </Card>
-        <Card>
-          <CardHeader>
-            <CardDescription>{isAr ? "منشورة" : "Published"}</CardDescription>
-            <CardTitle className="text-3xl">{published}</CardTitle>
-          </CardHeader>
-        </Card>
-        <Card>
-          <CardHeader>
-            <CardDescription>{isAr ? "مسودة" : "Draft"}</CardDescription>
-            <CardTitle className="text-3xl">{draft}</CardTitle>
-          </CardHeader>
-        </Card>
-        <Card>
-          <CardHeader>
-            <CardDescription>{isAr ? "عدد الطلاب" : "Students"}</CardDescription>
-            <CardTitle className="text-3xl">{studentCount}</CardTitle>
-          </CardHeader>
-        </Card>
-      </div>
-
-      <div className="flex items-center justify-between">
-        <h2 className="text-lg font-medium">{isAr ? "دوراتك" : "Your courses"}</h2>
-        <div className="flex gap-2">
-          <Button asChild size="sm" variant="outline">
-            <Link href="/app/instructor/attendance">{isAr ? "الحضور" : "Attendance"}</Link>
-          </Button>
-          <Button asChild size="sm">
-            <Link href="/app/instructor/courses/new">{isAr ? "دورة جديدة" : "New course"}</Link>
-          </Button>
-        </div>
-      </div>
+      <SectionHeader
+        title={isAr ? "دوراتك" : "Your courses"}
+        action={
+          <div className="flex gap-2">
+            <Button asChild size="sm" variant="outline">
+              <Link href="/app/instructor/attendance">{isAr ? "الحضور" : "Attendance"}</Link>
+            </Button>
+            <Button asChild size="sm">
+              <Link href="/app/instructor/courses/new">{isAr ? "دورة جديدة" : "New course"}</Link>
+            </Button>
+          </div>
+        }
+      />
 
       {courses.length === 0 ? (
-        <Card>
-          <CardHeader>
-            <CardTitle>{isAr ? "انشر أول دورة لك" : "Publish your first course"}</CardTitle>
-            <CardDescription>
-              {isAr ? "أضف الوحدات والدروس، وانشر حين تكون جاهزًا." : "Add modules and lessons, then publish when you're ready."}
-            </CardDescription>
-          </CardHeader>
-        </Card>
+        <EmptyState
+          title={isAr ? "انشر أول دورة لك" : "Publish your first course"}
+          description={isAr ? "أضف الوحدات والدروس، وانشر حين تكون جاهزًا." : "Add modules and lessons, then publish when you're ready."}
+        >
+          <Button asChild>
+            <Link href="/app/instructor/courses/new">{isAr ? "دورة جديدة" : "New course"}</Link>
+          </Button>
+        </EmptyState>
       ) : (
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="gx-stagger grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {courses.map((course) => (
             <InstructorCourseCard key={course.id} course={course} />
           ))}

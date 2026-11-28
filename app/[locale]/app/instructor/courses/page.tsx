@@ -3,7 +3,8 @@ import { getLocale } from "next-intl/server";
 import { createClient } from "@/lib/supabase/server";
 import { getInstructorCourses } from "@/lib/data/instructor";
 import { InstructorCourseCard } from "@/components/instructor/instructor-course-card";
-import { Card, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { EmptyState } from "@/components/ui/empty-state";
+import { PageHeader } from "@/components/ui/page-header";
 import { Button } from "@/components/ui/button";
 import { Link } from "@/i18n/navigation";
 
@@ -25,24 +26,22 @@ export default async function InstructorCoursesPage() {
 
   return (
     <div className="flex flex-col gap-6">
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-semibold">{isAr ? "دوراتك" : "Your courses"}</h1>
-        <Button asChild size="sm">
-          <Link href="/app/instructor/courses/new">{isAr ? "دورة جديدة" : "New course"}</Link>
-        </Button>
-      </div>
+      <PageHeader
+        title={isAr ? "دوراتك" : "Your courses"}
+        actions={
+          <Button asChild size="sm">
+            <Link href="/app/instructor/courses/new">{isAr ? "دورة جديدة" : "New course"}</Link>
+          </Button>
+        }
+      />
 
       {courses.length === 0 ? (
-        <Card>
-          <CardHeader>
-            <CardTitle>{isAr ? "انشر أول دورة لك" : "Publish your first course"}</CardTitle>
-            <CardDescription>
-              {isAr ? "أضف الوحدات والدروس، وانشر حين تكون جاهزًا." : "Add modules and lessons, then publish when you're ready."}
-            </CardDescription>
-          </CardHeader>
-        </Card>
+        <EmptyState
+          title={isAr ? "انشر أول دورة لك" : "Publish your first course"}
+          description={isAr ? "أضف الوحدات والدروس، وانشر حين تكون جاهزًا." : "Add modules and lessons, then publish when you're ready."}
+        />
       ) : (
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="gx-stagger grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {courses.map((course) => (
             <InstructorCourseCard key={course.id} course={course} />
           ))}

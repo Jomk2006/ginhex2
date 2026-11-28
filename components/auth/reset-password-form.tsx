@@ -44,7 +44,7 @@ export function ResetPasswordForm() {
         )}
 
         <p className="mt-4 text-center text-sm text-muted-foreground">
-          <Link href="/sign-in" className="text-primary hover:underline">
+          <Link href="/sign-in" className="gx-link">
             {t("backToSignIn")}
           </Link>
         </p>
