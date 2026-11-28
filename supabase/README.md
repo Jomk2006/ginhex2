@@ -22,4 +22,4 @@ Tested against PostgreSQL 16 with a Supabase-compatible stub (88 checks: sign-up
 - `verify_certificate`: public by design (unguessable 40-hex slug).
 - `register_for_event`: requires a signed-in user.
 
-Last reviewed against the live project on 2026-11-26 by reading each function body. Behavioural tests exist for issue_certificate and verify_certificate; attendance_percent, certificate_eligibility, revoke_certificate and promote_from_waitlist were reviewed by reading only.
+Last reviewed against the live project on 2026-11-26 by reading each function body. Behavioural tests exist for all six: issue_certificate and verify_certificate, plus attendance_percent, certificate_eligibility, revoke_certificate and promote_from_waitlist (`tests/03_behaviour_attendance_cert_waitlist.sql`, 58 checks, run 2026-11-28 on the live project inside rolled-back transactions). Known quirk: revoke_certificate on an unknown or already-revoked id still writes an audit row.
